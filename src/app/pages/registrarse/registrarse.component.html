@@ -10,6 +10,8 @@
     <div>
       <label class="text-gray-300 font-medium">Cédula</label>
       <input 
+        [(ngModel)]="usuario.cedula"
+        name="cedula"
         type="number"
         placeholder="Ingresa tu cédula"
         class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
@@ -19,6 +21,8 @@
     <div>
       <label class="text-gray-300 font-medium">Primer nombre</label>
       <input 
+        [(ngModel)]="usuario.primerNombre"
+        name="primerNombre"
         type="text"
         placeholder="Ingresa tu primer nombre"
         class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
@@ -26,8 +30,10 @@
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium">Segundo nombre</label>
+      <label class="text-gray-300 font-medium">Primer apellido</label>
       <input 
+        [(ngModel)]="usuario.primerApellido"
+        name="segundoNombre"
         type="text"
         placeholder="Ingresa tu segundo nombre"
         class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
@@ -37,6 +43,8 @@
     <div>
       <label class="text-gray-300 font-medium">Usuario</label>
       <input 
+        [(ngModel)]="usuario.nombreUsuario"
+        name="usuario"
         type="text"
         placeholder="Ingresa tu usuario"
         class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
@@ -46,6 +54,8 @@
     <div>
       <label class="text-gray-300 font-medium">Correo</label>
       <input 
+        [(ngModel)]="usuario.correo"
+        name="correo"
         type="email"
         placeholder="correo@ejemplo.com"
         class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
@@ -55,6 +65,8 @@
     <div>
       <label class="text-gray-300 font-medium">Fecha de nacimiento</label>
       <input 
+        [(ngModel)]="usuario.fechaNacimiento"
+        name="fechaNacimiento"
         type="date"
         class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
       />
@@ -65,6 +77,8 @@
 
       <div class="relative mt-1">
         <input 
+          [(ngModel)]="usuario.contrasena"
+          name="contrasena"
           id="passwordReg"
           type="password"
           placeholder="Crea una contraseña"
@@ -82,15 +96,24 @@
     </div>
 
     <div class="flex items-start gap-3">
-      <input type="checkbox" class="mt-1 w-5 h-5 bg-gray-700 rounded">
+      <input 
+        [(ngModel)]="usuario.aceptaTerminos" 
+        name="aceptaTerminos"
+        type="checkbox" class="mt-1 w-5 h-5 bg-gray-700 rounded">
       <p class="text-gray-300 text-sm">
         Acepto los 
         <span class="text-green-400 cursor-pointer hover:underline">términos y condiciones</span>.
       </p>
     </div>
 
-    <button class="w-full bg-green-500 hover:bg-green-400 text-gray-900 font-semibold py-3 rounded-xl shadow mt-3">
-      Registrarme
+    <button 
+      (click)="crear()"
+      [ngClass]="{
+        'bg-green-500 hover:bg-green-400 cursor-pointer': isRegistrando == false,
+        'bg-gray-500 hover:bg-gray-400' : isRegistrando == true 
+      }"
+      class="w-full text-gray-900 font-semibold py-3 rounded-xl shadow mt-3">
+      {{ (isRegistrando) ? 'Registrando...' : 'Registrarme' }}
     </button>
 
     <p class="text-gray-400 text-center text-sm mt-2">
@@ -99,5 +122,40 @@
     </p>
 
   </form>
+
+
+  <app-modal-normal #modalRegistroExitoso titulo="Mensaje de aplicación.">
+
+    <p> {{ mensajeRegistroExitoso }} </p>
+
+    <div class="flex justify-end mt-4">
+      <button (click)="cerrarModalYRedireccionar()"
+        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition cursor-pointer">
+        Aceptar 
+      </button>
+    </div>
+
+  </app-modal-normal>
+
+  <app-modal-normal #modalError titulo="Mensaje de error.">
+
+    @if (mensajeErrorTryCatch != '') {
+    <p class="text-red-500"> {{ mensajeErrorTryCatch }} </p>
+    }
+
+    @if (multiplesErrores.length > 0) {
+    <ul>
+      @for (error of multiplesErrores; track $index) {
+      <li class="text-red-500 text-sm"> {{ error }} </li>
+      }
+    </ul>
+    }
+
+    <div class="flex justify-end mt-4">
+      <button (click)="modalError.cerrar(); mensajeErrorTryCatch = ''; multiplesErrores = []"
+        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition cursor-pointer">
+        Aceptar</button>
+    </div>
+  </app-modal-normal>
 
 </section>
