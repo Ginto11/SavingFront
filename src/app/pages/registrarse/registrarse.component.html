@@ -1,0 +1,103 @@
+<section class="flex flex-col items-center justify-center bg-gray-900 p-6">
+
+  <div class="text-center mb-10">
+    <h2 class="text-3xl font-extrabold text-green-400">Crear cuenta</h2>
+    <p class="text-gray-300 mt-2">Completa tus datos para continuar</p>
+  </div>
+
+  <form class="w-full max-w-md bg-gray-800 p-6 rounded-2xl shadow-lg space-y-5">
+
+    <div>
+      <label class="text-gray-300 font-medium">Cédula</label>
+      <input 
+        type="number"
+        placeholder="Ingresa tu cédula"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+      />
+    </div>
+
+    <div>
+      <label class="text-gray-300 font-medium">Primer nombre</label>
+      <input 
+        type="text"
+        placeholder="Ingresa tu primer nombre"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+      />
+    </div>
+
+    <div>
+      <label class="text-gray-300 font-medium">Segundo nombre</label>
+      <input 
+        type="text"
+        placeholder="Ingresa tu segundo nombre"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+      />
+    </div>
+
+    <div>
+      <label class="text-gray-300 font-medium">Usuario</label>
+      <input 
+        type="text"
+        placeholder="Ingresa tu usuario"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+      />
+    </div>
+
+    <div>
+      <label class="text-gray-300 font-medium">Correo</label>
+      <input 
+        type="email"
+        placeholder="correo@ejemplo.com"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+      />
+    </div>
+
+    <div>
+      <label class="text-gray-300 font-medium">Fecha de nacimiento</label>
+      <input 
+        type="date"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+      />
+    </div>
+
+    <div>
+      <label class="text-gray-300 font-medium">Contraseña</label>
+
+      <div class="relative mt-1">
+        <input 
+          id="passwordReg"
+          type="password"
+          placeholder="Crea una contraseña"
+          class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+        />
+
+        <button
+          type="button"
+          onclick="const p=document.getElementById('passwordReg'); p.type = p.type === 'password' ? 'text' : 'password'"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white"
+        >
+          👁
+        </button>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-3">
+      <input type="checkbox" class="mt-1 w-5 h-5 bg-gray-700 rounded">
+      <p class="text-gray-300 text-sm">
+        Acepto los 
+        <span class="text-green-400 cursor-pointer hover:underline">términos y condiciones</span>.
+      </p>
+    </div>
+
+    <button class="w-full bg-green-500 hover:bg-green-400 text-gray-900 font-semibold py-3 rounded-xl shadow mt-3">
+      Registrarme
+    </button>
+
+    <p class="text-gray-400 text-center text-sm mt-2">
+      ¿Ya tienes una cuenta?
+      <a routerLink="/ingresar" class="text-green-400 hover:underline cursor-pointer">Iniciar sesión</a>
+    </p>
+
+  </form>
+
+</section>
