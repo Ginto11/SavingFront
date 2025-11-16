@@ -1,83 +1,84 @@
-
- ![Badge en Desarollo](https://img.shields.io/badge/STATUS-EN%20DESAROLLO-green)
+![Badge en Desarrollo](https://img.shields.io/badge/STATUS-EN%20DESARROLLO-green)
 
 ![Angular](https://img.shields.io/badge/Angular-19.2.4-DD0031?logo=angular&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-3178C6?logo=typescript&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-22.14.0-339933?logo=node.js&logoColor=white)
-
-# Aplicación de Ahorros
-
-La Aplicación de Ahorros es un sistema diseñado para gestionar metas financieras, registrar movimientos de dinero y visualizar estadísticas que permiten llevar un control claro de las finanzas personales.
+![Tailwind](https://img.shields.io/badge/TailwindCSS-3-06B6D4?logo=tailwindcss&logoColor=white)
 
 
-## Tabla de contenidos
+# 💰 SavingFront
 
-- [Aplicación de Ahorros](#aplicación-de-ahorros)
-  - [Tabla de contenidos](#tabla-de-contenidos)
-  - [Características](#características)
-  - [Tecnologías](#tecnologías)
-    - [Frontend](#frontend)
-    - [Estructura del proyecto](#estructura-del-proyecto)
-  - [Requisitos previos](#requisitos-previos)
-  - [Instalación y ejecución](#instalación-y-ejecución)
-    - [Clonar el repositorio](#clonar-el-repositorio)
-  - [Author](#author)
-
-## Características
-
-- Autenticación y gestión de usuarios.
-- Creación y administración de metas de ahorro.
-- Registro de ingresos y egresos.
-- Panel con métricas y gráficos.
-- Interfaz responsiva.
-- Alertas de progreso por meta.
+**SavingFront** es una plataforma diseñada para ayudar al usuario a gestionar metas financieras, realizar seguimiento de ingresos y egresos, administrar movimientos y visualizar estadísticas mediante gráficos.  
+Su enfoque principal es proporcionar una herramienta simple, ordenada y eficiente para controlar finanzas personales.
 
 
-## Tecnologías
+## 📑 Tabla de contenidos
 
-### Frontend
-- Angular
-- TypeScript
-- Tailwind CSS
+- [💰 SavingFront](#-savingfront)
+  - [📑 Tabla de contenidos](#-tabla-de-contenidos)
+  - [⭐ Características](#-características)
+  - [� Estructura del proyecto](#-estructura-del-proyecto)
+  - [🧰 Requisitos previos](#-requisitos-previos)
+  - [🚀 Instalación y ejecución](#-instalación-y-ejecución)
+  - [🗺️ Roadmap](#️-roadmap)
+  - [👨‍💻 Autor](#-autor)
 
 
-### Estructura del proyecto
+## ⭐ Características
 
-```bash
+- 🔐 **Autenticación** con manejo de sesiones y JWT.  
+- 📊 **Dashboard interactivo** con gráficas y métricas de ahorro.  
+- 🎯 **Metas de ahorro** totalmente administrables (crear, editar, eliminar).  
+- 💸 Registro de **ingresos** y **egresos** con categorización.  
+- 📱 Interfaz **responsive** adaptada para móvil y escritorio.  
+- ☁️ Consumo de **API REST** para interacción con el backend.  
+- 🧩 Arquitectura modular y escalable.  
+- 🎨 Uso de **TailwindCSS** para estilos limpios y modernos.  
+- ⚙️ Manejo de servicios centralizados para comunicación API.  
+- 📂 Organización clara de carpetas para mantener buenas prácticas.  
+- 🔒 Validaciones en frontend para formularios y datos.  
 
+
+
+## 📁 Estructura del proyecto
+
+```plaintext
 /src 📁
 ├── app 📁
-│ ├── interfaces 📁
-│ ├── layouts 📁
-│ ├── pagues 📁
-│ ├── services 📁
-│ └── shared 📁
-└── environments 📁
+│   ├── interfaces 📁     # Interfaces y modelos de datos
+│   ├── layouts 📁        # Layouts compartidos
+│   ├── pages 📁          # Páginas principales
+│   ├── services 📁       # Servicios para API y lógica
+│   └── shared 📁         # Componentes reutilizables
+└── environments 📁       # Configuración de entornos
 ```
 
-## Requisitos previos
-
+## 🧰 Requisitos previos
 - Node.js 19 o superior
-- npm 
+- npm
+- Angular CLI
 - Visual Studio Code
-  
 
-## Instalación y ejecución
-
-### Clonar el repositorio
+## 🚀 Instalación y ejecución
 ```bash
 git clone https://github.com/Ginto11/SavingFront.git
-
 cd SavingFront
-
 npm install
-
 ng serve
 ```
-## Author
+El proyecto se ejecutará en:
+```bash
+http://localhost:4200
+```
 
+## 🗺️ Roadmap
+- [ ] Implementar modo oscuro
+- [ ] Agregar gráficos avanzados (líneas, radar, donuts)
+- [ ] Notificaciones en tiempo real
+- [ ] Exportación PDF/Excel desde frontend
+- [ ] Mejoras en accesibilidad  
+- [ ] PWA (Progresive Web App)
+  
+## 👨‍💻 Autor
 Nelson Muñoz
-
-Correo: dev.studio.mz11@gmail.com
-GitHub: https://github.com/Ginto11
-Portafolio: https://portafolio-sigma-blue.vercel.app/
-
-
+- 📧 Correo: dev.studio.mz11@gmail.com
+- 🐙 GitHub: https://github.com/Ginto11
+- 🌐 Portafolio: https://portafolio-sigma-blue.vercel.app/
