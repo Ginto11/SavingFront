@@ -11,21 +11,57 @@
 
   <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-    <div class="bg-gray-800 rounded-xl p-6 shadow-md">
-      <p class="text-sm text-gray-400">Total Ahorrado</p>
-      <h2 class="text-3xl font-bold mt-2"> {{ cantidadesTotales.totalAhorrado | currency:'$ ':'symbol':'1.0-0' }} </h2>
+    <div class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center">
+      <div>
+        <p class="text-sm text-gray-400">Total Ahorrado</p>
+        <h2 class="text-3xl font-bold mt-2"> {{ cantidadesTotales.totalAhorrado | currency:'$ ':'symbol':'1.0-0' }} </h2>
+      </div>
+      <i class="pi pi-wallet bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
 
-    <div class="bg-gray-800 rounded-xl p-6 shadow-md">
-      <p class="text-sm text-gray-400">Ahorro del Mes</p>
-      <h2 class="text-3xl font-bold mt-2"> {{ cantidadesTotales.ahorroMes | currency:'$ ':'symbol':'1.0-0' }} </h2>
+    <div class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center">
+      <div>
+        <p class="text-sm text-gray-400">Ahorro del Mes</p>
+        <h2 class="text-3xl font-bold mt-2"> {{ cantidadesTotales.ahorroMes | currency:'$ ':'symbol':'1.0-0' }} </h2>
+      </div>
+      <i class="pi pi-chart-line bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
 
-    <div class="bg-gray-800 rounded-xl p-6 shadow-md">
-      <p class="text-sm text-gray-400">Metas Activas</p>
-      <h2 class="text-3xl font-bold mt-2"> {{ cantidadMetasActivas }} </h2>
+    <div class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center">
+      <div>
+        <p class="text-sm text-gray-400">Metas Activas</p>
+        <h2 class="text-3xl font-bold mt-2"> {{ cantidadMetasActivas }} </h2>
+      </div>
+      <i class="pi pi-bullseye bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
 
+  </section>
+
+  <section class="mb-4">
+    <h2 class="text-xl font-semibold mb-4">Metas de ahorro</h2>
+
+    <div class="bg-gray-800 rounded-xl p-4 shadow-md">
+
+      @for (meta of metasConCumplimiento; track meta.id) {
+      <div class="flex items-center justify-between border-b border-gray-700">
+        <div class="w-full">
+          <div class="flex justify-between mb-2">
+            <h2 class="font-medium"> {{ meta.nombre }} </h2>
+            <span class="bg-gray-600 p-0.5 px-3 rounded-2xl"> {{ (meta.fecha | date: 'MMMM YYYY') | uppercase }} </span>
+          </div>
+          <div class="flex justify-between text-xs text-gray-400 mb-1">
+            <p> {{ meta.montoActual | currency:'$ ':'symbol':'1.0-0' }} / {{ meta.montoObjetivo | currency:'$ ':'symbol':'1.0-0' }} </p>
+            <p> {{ meta.porcentaje }}%</p>
+          </div>
+          <div class="w-full bg-gray-600 rounded-full h-2">
+            <div class="bg-green-300 h-2 rounded-full" [ngStyle]="{ width: meta.porcentaje + '%' }"></div>
+          </div>
+        </div>
+        
+      </div>
+      }
+
+    </div>
   </section>
 
   <section>
@@ -35,28 +71,31 @@
 
       @for (movimiento of ultimosMovimientos; track $index) {
       <div class="flex items-center justify-between py-3 border-b border-gray-700">
-        <div>
-          <p class="font-medium"> {{ movimiento.descripcion }} </p>
-          <p class="text-xs text-gray-400"> {{ movimiento.fechaAhorro | date:'dd MMM yyyy' }}
-          </p>
+        <div class="flex gap-3">
+          <div>
+            <i class="pi pi-arrow-circle-up bg-green-200 p-3 rounded-3xl text-green-900"></i>
+          </div>
+          <div>
+            <p class="font-medium"> {{ movimiento.descripcion }} </p>
+            <p class="text-xs text-gray-400"> {{ movimiento.fechaAhorro | date:'dd MMM yyyy' }}</p>
+          </div>
         </div>
         <p class="font-semibold text-green-400"> {{ movimiento.monto | currency: '+ $ ':'symbol':'1.0-0' }} </p>
       </div>
       }
 
     </div>
-
   </section>
 
   <div class="mt-6 flex gap-2">
     <button (click)="modalCrearAhorro.abrir()"
       class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg text-sm cursor-pointer">
-      + Agregar ahorro
+      <i class="pi pi-plus"></i> Agregar ahorro
     </button>
 
     <button (click)="modalCrearMeta.abrir()"
       class="bg-violet-600 hover:bg-violet-700 text-white px-5 py-3 rounded-full shadow-lg text-sm cursor-pointer">
-      + Nueva Meta
+      <i class="pi pi-plus"></i> Nueva Meta
     </button>
   </div>
 

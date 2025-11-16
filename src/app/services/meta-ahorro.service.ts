@@ -27,9 +27,19 @@ export class MetaAhorroService {
   buscarMetasPorUsuarioId = async (id: number) :Promise<ServerResponse> => {
     try{
       return await lastValueFrom(
-        this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/${id}`)
+        this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/usuario/${id}`)
       )
     }catch(error){
+      throw error;
+    }
+  }
+
+  obtenerMetasConCumplimiento = async (id: number):Promise<ServerResponse> => {
+    try {
+      return await lastValueFrom(
+        this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/cumplimiento/usuario/${id}`)
+      );
+    } catch (error) {
       throw error;
     }
   }
