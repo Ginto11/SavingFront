@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://saving-front.vercel.app/inicio/sitemap.xml

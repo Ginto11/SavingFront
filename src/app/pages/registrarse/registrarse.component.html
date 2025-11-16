@@ -8,7 +8,7 @@
   <form class="w-full max-w-md bg-gray-800 p-6 rounded-2xl shadow-lg space-y-5">
 
     <div>
-      <label class="text-gray-300 font-medium">Cédula</label>
+      <label class="text-gray-300 font-medium" for="cedula">Cédula</label>
       <input 
         [(ngModel)]="usuario.cedula"
         name="cedula"
@@ -19,7 +19,7 @@
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium">Primer nombre</label>
+      <label class="text-gray-300 font-medium" for="primerNombre">Primer nombre</label>
       <input 
         [(ngModel)]="usuario.primerNombre"
         name="primerNombre"
@@ -30,7 +30,7 @@
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium">Primer apellido</label>
+      <label class="text-gray-300 font-medium" for="segundoNombre">Primer apellido</label>
       <input 
         [(ngModel)]="usuario.primerApellido"
         name="segundoNombre"
@@ -41,7 +41,7 @@
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium">Usuario</label>
+      <label class="text-gray-300 font-medium" for="usuario">Usuario</label>
       <input 
         [(ngModel)]="usuario.nombreUsuario"
         name="usuario"
@@ -52,7 +52,7 @@
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium">Correo</label>
+      <label class="text-gray-300 font-medium" for="correo">Correo</label>
       <input 
         [(ngModel)]="usuario.correo"
         name="correo"
@@ -63,7 +63,7 @@
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium">Fecha de nacimiento</label>
+      <label class="text-gray-300 font-medium" for="fechaNacimiento">Fecha de nacimiento</label>
       <input 
         [(ngModel)]="usuario.fechaNacimiento"
         name="fechaNacimiento"
@@ -73,7 +73,7 @@
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium">Contraseña</label>
+      <label class="text-gray-300 font-medium" for="contrasena">Contraseña</label>
 
       <div class="relative mt-1">
         <input 
