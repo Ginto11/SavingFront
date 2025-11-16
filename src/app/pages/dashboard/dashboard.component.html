@@ -14,7 +14,7 @@
     <div class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center">
       <div>
         <p class="text-sm text-gray-400">Total Ahorrado</p>
-        <h2 class="text-3xl font-bold mt-2"> {{ cantidadesTotales.totalAhorrado | currency:'$ ':'symbol':'1.0-0' }} </h2>
+        <h2 class="text-3xl font-bold mt-2"> {{ (cantidadesTotales.totalAhorrado) ? (cantidadesTotales.totalAhorrado | currency:'$ ':'symbol':'1.0-0') : '$ 0' }} </h2>
       </div>
       <i class="pi pi-wallet bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
@@ -22,7 +22,7 @@
     <div class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center">
       <div>
         <p class="text-sm text-gray-400">Ahorro del Mes</p>
-        <h2 class="text-3xl font-bold mt-2"> {{ cantidadesTotales.ahorroMes | currency:'$ ':'symbol':'1.0-0' }} </h2>
+        <h2 class="text-3xl font-bold mt-2"> {{ (cantidadesTotales.ahorroMes) ? (cantidadesTotales.ahorroMes | currency:'$ ':'symbol':'1.0-0') : '$ 0' }} </h2>
       </div>
       <i class="pi pi-chart-line bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
@@ -40,7 +40,7 @@
   <section class="mb-4">
     <h2 class="text-xl font-semibold mb-4">Metas de ahorro</h2>
 
-    <div class="bg-gray-800 rounded-xl p-4 shadow-md">
+    <div class="bg-gray-800 rounded-xl p-4 shadow-md flex flex-col gap-2">
 
       @for (meta of metasConCumplimiento; track meta.id) {
       <div class="flex items-center justify-between border-b border-gray-700">
@@ -50,11 +50,11 @@
             <span class="bg-gray-600 p-0.5 px-3 rounded-2xl"> {{ (meta.fecha | date: 'MMMM YYYY') | uppercase }} </span>
           </div>
           <div class="flex justify-between text-xs text-gray-400 mb-1">
-            <p> {{ meta.montoActual | currency:'$ ':'symbol':'1.0-0' }} / {{ meta.montoObjetivo | currency:'$ ':'symbol':'1.0-0' }} </p>
-            <p> {{ meta.porcentaje }}%</p>
+            <p>$ {{ (meta.montoActual) ? (meta.montoActual | currency:' ':'symbol':'1.0-0') : '0'  }} / $ {{ meta.montoObjetivo | currency:' ':'symbol':'1.0-0' }} </p>
+            <p> {{ (meta.porcentaje) ? (meta.porcentaje | number:'1.0-0') : '0' }}%</p>
           </div>
-          <div class="w-full bg-gray-600 rounded-full h-2">
-            <div class="bg-green-300 h-2 rounded-full" [ngStyle]="{ width: meta.porcentaje + '%' }"></div>
+          <div class="w-full bg-gray-600 rounded-full h-2 mb-1">
+            <div class="bg-green-300 h-2 rounded-full" [ngStyle]="{ width: (meta.porcentaje) ? meta.porcentaje + '%' : '0%' }"></div>
           </div>
         </div>
         
@@ -80,7 +80,7 @@
             <p class="text-xs text-gray-400"> {{ movimiento.fechaAhorro | date:'dd MMM yyyy' }}</p>
           </div>
         </div>
-        <p class="font-semibold text-green-400"> {{ movimiento.monto | currency: '+ $ ':'symbol':'1.0-0' }} </p>
+        <p class="font-semibold text-green-400"> + $ {{ movimiento.monto | currency: ' ':'symbol':'1.0-0' }} </p>
       </div>
       }
 

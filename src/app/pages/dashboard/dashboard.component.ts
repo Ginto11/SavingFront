@@ -174,6 +174,10 @@ export default class DashboardComponent implements OnInit {
 
       this.nuevoAhorro.usuarioId = this.localstorageService.getItem('usuario-saving').id;
 
+      this.nuevoAhorro.metaAhorroId = Number(this.nuevoAhorro.metaAhorroId);
+
+      console.log(this.nuevoAhorro)
+      
       const res = await this.ahorroService.agregar(this.nuevoAhorro);
       this.mensajeRegistroExitoso = res.mensaje;
       this.modalCrearAhorro.cerrar();
@@ -235,6 +239,8 @@ export default class DashboardComponent implements OnInit {
       const res = await this.metaAhorroService.obtenerMetasConCumplimiento(id);
 
       this.metasConCumplimiento = res.data;
+
+      console.log(this.metasConCumplimiento)
 
     } catch (error) {
       console.log(error);
