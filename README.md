@@ -15,7 +15,7 @@ Su enfoque principal es proporcionar una herramienta simple, ordenada y eficient
 - [💰 SavingFront](#-savingfront)
   - [📑 Tabla de contenidos](#-tabla-de-contenidos)
   - [⭐ Características](#-características)
-  - [� Estructura del proyecto](#-estructura-del-proyecto)
+  - [📁 Estructura del proyecto](#-estructura-del-proyecto)
   - [🧰 Requisitos previos](#-requisitos-previos)
   - [🚀 Instalación y ejecución](#-instalación-y-ejecución)
   - [🗺️ Roadmap](#️-roadmap)

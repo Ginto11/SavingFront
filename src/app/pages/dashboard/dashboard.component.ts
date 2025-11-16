@@ -12,6 +12,7 @@ import { AhorroService } from '../../services/ahorro.service';
 import { RespuestaService } from '../../services/respuesta.service';
 import { CantidadesTotales } from '../../interfaces/cantidades-totales.interface';
 import { UltimoMovimiento } from '../../interfaces/ultimo-movimiento.interface';
+import { CumplimientoMetaAhorro } from '../../interfaces/cumplimiento-meta-ahorro.interface';
 
 @Component({
   selector: 'app-dashboard',
@@ -35,6 +36,7 @@ export default class DashboardComponent implements OnInit {
   @ViewChild('modalError') modalError!: ModalNormalComponent;
 
 
+  metasConCumplimiento: CumplimientoMetaAhorro[] = []; 
   usuarioLogueado!: UsuarioLogueado;
   cantidadMetasActivas!: number;
   mensajeRegistroExitoso = '';
@@ -66,6 +68,7 @@ export default class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerTotales();
     this.obtenerUltimosMovimientos();
+    this.obtenerMetasConCumplimiento();
     this.obtenerCantidadMetasPorUsuario();
     this.usuarioLogueado = this.localstorageService.getItem('usuario-saving');
   }
@@ -221,6 +224,19 @@ export default class DashboardComponent implements OnInit {
       this.ultimosMovimientos = res.data;
 
     }catch(error){
+      console.log(error);
+    }
+  }
+
+  obtenerMetasConCumplimiento = async () :Promise<void> => {
+    try {
+      const id = this.localstorageService.getItem('usuario-saving').id;
+      
+      const res = await this.metaAhorroService.obtenerMetasConCumplimiento(id);
+
+      this.metasConCumplimiento = res.data;
+
+    } catch (error) {
       console.log(error);
     }
   }
