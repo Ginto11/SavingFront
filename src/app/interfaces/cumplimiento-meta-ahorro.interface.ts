@@ -4,5 +4,5 @@ export interface CumplimientoMetaAhorro {
     montoActual: number | null,
     montoObjetivo: number | null,
     porcentaje: number | null,
-    fecha: Date
+    estado: string | null
 }
