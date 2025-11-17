@@ -14,7 +14,7 @@
     <div class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center">
       <div>
         <p class="text-sm text-gray-400">Total Ahorrado</p>
-        <h2 class="text-3xl font-bold mt-2"> {{ (cantidadesTotales.totalAhorrado) ? (cantidadesTotales.totalAhorrado | currency:'$ ':'symbol':'1.0-0') : '$ 0' }} </h2>
+        <h2 class="text-3xl font-bold mt-2">$  {{ (cantidadesTotales.totalAhorrado) ? (cantidadesTotales.totalAhorrado | currency:' ':'symbol':'1.0-0') : '0' }} </h2>
       </div>
       <i class="pi pi-wallet bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
@@ -22,7 +22,7 @@
     <div class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center">
       <div>
         <p class="text-sm text-gray-400">Ahorro del Mes</p>
-        <h2 class="text-3xl font-bold mt-2"> {{ (cantidadesTotales.ahorroMes) ? (cantidadesTotales.ahorroMes | currency:'$ ':'symbol':'1.0-0') : '$ 0' }} </h2>
+        <h2 class="text-3xl font-bold mt-2"> $ {{ (cantidadesTotales.ahorroMes) ? (cantidadesTotales.ahorroMes | currency:' ':'symbol':'1.0-0') : '0' }} </h2>
       </div>
       <i class="pi pi-chart-line bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
@@ -47,7 +47,12 @@
         <div class="w-full">
           <div class="flex justify-between mb-2">
             <h2 class="font-medium"> {{ meta.nombre }} </h2>
-            <span class="bg-gray-600 p-0.5 px-3 rounded-2xl"> {{ (meta.fecha | date: 'MMMM YYYY') | uppercase }} </span>
+            <span 
+              class="flex justify-center items-center px-3 rounded-2xl text-xs sm:text-sm"
+              [ngClass]="{
+                'bg-green-300 text-green-900': meta.estado == 'Activa',
+                'bg-yellow-300 text-yellow-900': meta.estado == 'Cumplida'
+              }"> {{ meta.estado }} </span>
           </div>
           <div class="flex justify-between text-xs text-gray-400 mb-1">
             <p>$ {{ (meta.montoActual) ? (meta.montoActual | currency:' ':'symbol':'1.0-0') : '0'  }} / $ {{ meta.montoObjetivo | currency:' ':'symbol':'1.0-0' }} </p>
@@ -162,7 +167,7 @@
     <form class="flex flex-col gap-4">
 
       <div>
-        <label>Monto</label>
+        <label>Monto (Sin puntos)</label>
         <input [(ngModel)]="nuevoAhorro.monto" name="monto" type="number"
           class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700" placeholder="Ej: 150000">
       </div>
