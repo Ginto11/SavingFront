@@ -8,7 +8,7 @@ export class RespuestaService {
 
   constructor() { }
 
-  manejoRespuesta = (error: unknown):string => {
+  manejoRespuesta = (error: unknown) :string => {
     const errorConvertido = (error as HttpErrorResponse);
 
     if(errorConvertido.status == 0){
