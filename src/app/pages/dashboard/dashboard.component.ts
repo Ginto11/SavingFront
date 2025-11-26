@@ -1,7 +1,4 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { UsuarioLogueado } from '../../interfaces/usuario-logueado.interface';
-import { LocalstorageService } from '../../services/localstorage.service';
-import { Router } from '@angular/router';
 import { ModalNormalComponent } from '../../shared/modal-normal/modal-normal.component';
 import { CrearMetaDTO } from '../../interfaces/crear-meta-dto.interface';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +10,8 @@ import { RespuestaService } from '../../services/respuesta.service';
 import { CantidadesTotales } from '../../interfaces/cantidades-totales.interface';
 import { UltimoMovimiento } from '../../interfaces/ultimo-movimiento.interface';
 import { CumplimientoMetaAhorro } from '../../interfaces/cumplimiento-meta-ahorro.interface';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,24 +22,23 @@ import { CumplimientoMetaAhorro } from '../../interfaces/cumplimiento-meta-ahorr
 export default class DashboardComponent implements OnInit {
 
   private router = inject(Router);
+  private authService = inject(AuthService);
   private ahorroService = inject(AhorroService);
   private respuestasService = inject(RespuestaService);
-  private localstorageService = inject(LocalstorageService);
   private metaAhorroService = inject(MetaAhorroService);
 
   //MODALES
-  @ViewChild('modalRef') modalCerrarSesion!: ModalNormalComponent;
   @ViewChild('modalCrearMeta') modalCrearMeta!: ModalNormalComponent;
   @ViewChild('modalCrearAhorro') modalCrearAhorro!: ModalNormalComponent;
   @ViewChild('modalRegistroMetaExitoso') modalRegistroMetaExitoso!: ModalNormalComponent;
   @ViewChild('modalError') modalError!: ModalNormalComponent;
 
 
-  metasConCumplimiento: CumplimientoMetaAhorro[] = []; 
-  usuarioLogueado!: UsuarioLogueado;
+  metasConCumplimiento: CumplimientoMetaAhorro[] = [];
   cantidadMetasActivas!: number;
+  nombreUsuarioLogueado!: string;
   mensajeRegistroExitoso = '';
-  mensajeErrorTryCatch = '';
+  mensajeError = '';
   multiplesErrores: string[] = [];
   metas: any | null = null;
   totalAhorrado!: number;
@@ -64,33 +62,36 @@ export default class DashboardComponent implements OnInit {
     ahorroMes: 0
   };
 
-  ultimosMovimientos: UltimoMovimiento[] = []
+  ultimosMovimientos: UltimoMovimiento[] | null = []
   ngOnInit(): void {
+
+    window.scrollTo(0, 0);
+
     this.obtenerTotales();
     this.obtenerUltimosMovimientos();
+    this.authService.usuarioLogueado.subscribe(usuario => {
+      if (usuario == null) {
+        this.usuarioNoLogueado();
+        return;
+      }
+      this.nombreUsuarioLogueado = usuario.primerNombre;
+    })
     this.obtenerMetasConCumplimiento();
-    this.obtenerCantidadMetasPorUsuario();
-    this.usuarioLogueado = this.localstorageService.getItem('usuario-saving');
-  }
-
-  cerrarSesion = (): void => {
-    this.localstorageService.removerItem('usuario-saving');
-    this.router.navigate(['inicio']);
+    this.obtenerCantidadMetasActivasPorUsuario();
   }
 
   cerrarModalCrearMeta() {
     this.modalRegistroMetaExitoso.cerrar();
-    window.location.reload();
   }
 
-  validarMeta(meta: CrearMetaDTO): string[] {
+  validarMeta = (meta: CrearMetaDTO): string[] => {
     const errores: string[] = [];
 
     if (!meta.nombre || meta.nombre.trim().length === 0) {
       errores.push("El nombre es obligatorio.");
     }
 
-    if(meta.montoObjetivo == null){
+    if (meta.montoObjetivo == null) {
       errores.push('El monto objetivo es obligatorio.');
     }
 
@@ -102,46 +103,62 @@ export default class DashboardComponent implements OnInit {
     return errores;
   }
 
-  guardarMeta = async (): Promise<void> => {
+  guardarMeta = (): void => {
+    const errores = this.validarMeta(this.model);
 
-    try {
+    if (errores.length > 0) {
+      this.multiplesErrores = errores;
+      this.modalError.abrir();
+      return;
+    }
 
-      const errores = this.validarMeta(this.model);
-
-      if (errores.length > 0) {
-        this.multiplesErrores = errores;
-        this.modalError.abrir();
+    this.authService.usuarioLogueado.subscribe(usuario => {
+      if (usuario == null) {
+        this.usuarioNoLogueado();
         return;
       }
 
-      this.model.usuarioId = this.usuarioLogueado.id;
-      const res = await this.metaAhorroService.crearMeta(this.model);
-      this.mensajeRegistroExitoso = res.mensaje;
-      this.modalCrearMeta.cerrar();
-      this.modalRegistroMetaExitoso.abrir();
+      this.model.usuarioId = usuario.id
+      this.metaAhorroService.refrescarInformacion(usuario.id);
+      this.metaAhorroService.crearMeta(this.model).subscribe({
+        next: (res) => {
+          this.metaAhorroService.refrescarInformacion(usuario.id);
+          this.mensajeRegistroExitoso = res.mensaje;
+          this.modalCrearMeta.cerrar();
+          this.modalRegistroMetaExitoso.abrir();
 
-    } catch (error) {
-      console.log(error);
-    }
+        },
+        error: (err) => {
+          this.mensajeError = this.respuestasService.manejoRespuesta(err);
+          this.modalError.abrir();
+        }
+      })
+    })
+
   }
 
-  obtenerCantidadMetasPorUsuario = async (): Promise<void> => {
-    try {
-
-      const id = this.localstorageService.getItem('usuario-saving').id;
-
-      const res = await this.metaAhorroService.buscarMetasPorUsuarioId(id);
-
-      this.metas = res.data;
-
-      this.cantidadMetasActivas = res.data.length;
-
-    } catch (error) {
-      console.log(error);
-    }
+  obtenerCantidadMetasActivasPorUsuario(): void {
+    this.authService.usuarioLogueado.subscribe({
+      next: (usuario) => {
+        if (usuario == null) {
+          this.usuarioNoLogueado();
+          return;
+        }
+        this.metaAhorroService.cantidadMetasObservable.subscribe(res => {
+          this.cantidadMetasActivas = res;
+        })
+        this.metaAhorroService.metasActivasObservable.subscribe(res => {
+          this.metas = res;
+        })
+      },
+      error: (err) => {
+        this.mensajeError = this.respuestasService.manejoRespuesta(err);
+        this.modalError.abrir();
+      }
+    })
   }
 
-  validarNuevoAhorro(): string[] {
+  validarNuevoAhorro = (): string[] => {
 
     const errores = [];
 
@@ -160,33 +177,41 @@ export default class DashboardComponent implements OnInit {
     return errores;
   }
 
-  guardarAhorro = async () :Promise<void> => {
+  guardarAhorro = ():void => {
 
     const errores = this.validarNuevoAhorro();
 
-    if(errores.length > 0){
+    if (errores.length > 0) {
       this.multiplesErrores = errores;
       this.modalError.abrir();
       return;
     }
 
-    try{
+    this.authService.usuarioLogueado.subscribe(usuario => {
+      if (usuario == null) {
 
-      this.nuevoAhorro.usuarioId = this.localstorageService.getItem('usuario-saving').id;
-
+        this.usuarioNoLogueado();
+        return;
+      }
       this.nuevoAhorro.metaAhorroId = Number(this.nuevoAhorro.metaAhorroId);
+      this.nuevoAhorro.usuarioId = usuario.id;
 
-      console.log(this.nuevoAhorro)
-      
-      const res = await this.ahorroService.agregar(this.nuevoAhorro);
-      this.mensajeRegistroExitoso = res.mensaje;
-      this.modalCrearAhorro.cerrar();
-      this.modalRegistroMetaExitoso.abrir();
+      this.ahorroService.agregarO(this.nuevoAhorro).subscribe({
+        next: (res) => {
+          this.ahorroService.refrescarInformacion(usuario.id);
+          this.metaAhorroService.refrescarInformacion(usuario.id);
+          this.mensajeRegistroExitoso = res.mensaje;
 
-    }catch(error){
-      this.mensajeErrorTryCatch = this.respuestasService.manejoRespuesta(error);
-      this.modalError.abrir();
-    }
+          this.modalCrearAhorro.cerrar();
+          this.modalRegistroMetaExitoso.abrir();
+        },
+        error: (err) => {
+          this.mensajeError = this.respuestasService.manejoRespuesta(err);
+          this.modalError.abrir();
+        }
+      });
+    })
+
   }
 
   limpiarModelo = (): void => {
@@ -204,47 +229,71 @@ export default class DashboardComponent implements OnInit {
     }
   }
 
-  obtenerTotales = async () :Promise<void> => {
-    try{
+  obtenerTotales() {
+    this.ahorroService.cantidadesTotalesObservable.subscribe({
+      next: (res) => {
+        this.cantidadesTotales = res;
+      },
+      error: (err) => {
+        this.mensajeError = this.respuestasService.manejoRespuesta(err);
+        this.modalError.abrir();
+      }
+    })
 
-      const id = this.localstorageService.getItem('usuario-saving').id;
-
-      const res = await this.ahorroService.obtenerTotalesPorUsuarioId(id);
-
-      this.cantidadesTotales = res.data;
-
-    }catch(error){
-      console.log(error);
-    }
   }
 
-  obtenerUltimosMovimientos = async () :Promise<void> => {
-    try{
+  obtenerUltimosMovimientos() {
 
-      const id = this.localstorageService.getItem('usuario-saving').id;
+    this.authService.usuarioLogueado.subscribe(usuario => {
+      if (usuario == null) {
+        this.usuarioNoLogueado();
+        return;
+      }
+      this.ahorroService.refrescarInformacion(usuario.id);
+      this.ahorroService.movimientosObservable.subscribe({
+        next: (res) => {
+          this.ultimosMovimientos = res;
+        },
+        error: (err) => {
+          this.mensajeError = this.respuestasService.manejoRespuesta(err);
+          this.modalError.abrir();
+        }
+      });
+    })
 
-      const res = await this.ahorroService.obtenerUltimosMovimientosPorUsuarioId(id);
-      
-      this.ultimosMovimientos = res.data;
-
-    }catch(error){
-      console.log(error);
-    }
   }
 
-  obtenerMetasConCumplimiento = async () :Promise<void> => {
-    try {
-      const id = this.localstorageService.getItem('usuario-saving').id;
-      
-      const res = await this.metaAhorroService.obtenerMetasConCumplimiento(id);
+  obtenerMetasConCumplimiento():void{
+    this.authService.usuarioLogueado.subscribe(usuario => {
+      if (usuario == null) {
+        this.usuarioNoLogueado();
+        return;
+      }
 
-      this.metasConCumplimiento = res.data;
-
-      console.log(this.metasConCumplimiento)
-
-    } catch (error) {
-      console.log(error);
-    }
+      this.metaAhorroService.refrescarInformacion(usuario.id);
+      this.metaAhorroService.metaCumplimientoObservable.subscribe({
+        next: (res) => {
+          this.metasConCumplimiento = res;
+        },
+        error: (err) => {
+          this.mensajeError = this.respuestasService.manejoRespuesta(err);
+          this.modalError.abrir();
+        }
+      })
+    })
   }
 
+  usuarioNoLogueado(): void {
+    this.mensajeError = 'Usuario no logueado.';
+    this.modalError.abrir();
+  }
+
+
+  cerrarModalYLimpiarVariables():void {
+    this.modalError.cerrar();
+    this.mensajeError = '';
+    this.multiplesErrores = [];
+  }
 }
+
+

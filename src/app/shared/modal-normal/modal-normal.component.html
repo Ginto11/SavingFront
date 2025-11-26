@@ -1,13 +1,56 @@
-<dialog #modal class="backdrop:bg-black/50 rounded-xl p-6 w-full max-w-md fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+<dialog #modal
+  class="backdrop:bg-black/50 rounded-xl p-6 w-full max-w-md fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
 
   <!-- Título -->
   <h2 class="text-xl font-semibold mb-4 text-gray-900">
     {{ titulo }}
   </h2>
 
+  @if (manejador == 'normal') {
   <!-- Contenido proyectado -->
   <div class="text-gray-800">
     <ng-content></ng-content>
+  </div>
+  }
+  @if(manejador == 'errores') {
+    @if (mensajeError != '') {
+    <p class="text-red-500"> {{ mensajeError }} </p>
+    }
+
+  @if (multiplesErrores.length > 0) {
+  <ul>
+    @for (error of multiplesErrores; track $index) {
+    <li class="text-red-500 text-sm"> {{ error }} </li>
+    }
+  </ul>
+  }
+  }
+
+  <div *ngIf="tipo == 'error'" class="flex justify-end mt-4">
+    <button (click)="cerrar();"
+      class="px-4 py-2 bg-blue-300 hover:bg-blue-400 rounded-lg text-sm font-medium transition cursor-pointer">Aceptar
+    </button>
+  </div>
+
+  <div *ngIf="tipo == 'confirmacion'" class="flex justify-end gap-4 mt-4">
+    <button type="button" (click)="cerrar()"
+      class="px-4 py-2 bg-red-300 hover:bg-red-400 rounded-lg text-sm cursor-pointer">
+      Cancelar
+    </button>
+
+    <button (click)="callback1()" type="button"
+      class="px-4 py-2 bg-blue-300 hover:bg-blue-400 rounded-lg text-sm cursor-pointer">
+      {{ nombreBtnAccion1 }}
+    </button>
+  </div>
+
+
+
+  <div *ngIf="tipo == 'info'" class="flex justify-end mt-4">
+    <button (click)="cerrar()"
+      class="px-4 py-2 bg-blue-300 hover:bg-blue-400 rounded-lg text-sm font-medium transition cursor-pointer">
+      Aceptar
+    </button>
   </div>
 
 </dialog>

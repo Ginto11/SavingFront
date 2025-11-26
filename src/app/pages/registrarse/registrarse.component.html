@@ -1,7 +1,7 @@
 <section class="flex flex-col items-center justify-center bg-gray-900 p-6">
 
   <div class="text-center mb-10">
-    <h2 class="text-3xl font-extrabold text-green-400">Crear cuenta</h2>
+    <h2 class="text-3xl font-extrabold text-green-200">Crear cuenta</h2>
     <p class="text-gray-300 mt-2">Completa tus datos para continuar</p>
   </div>
 
@@ -14,7 +14,7 @@
         name="cedula"
         type="number"
         placeholder="Ingresa tu cédula"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
       />
     </div>
 
@@ -25,7 +25,7 @@
         name="primerNombre"
         type="text"
         placeholder="Ingresa tu primer nombre"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
       />
     </div>
 
@@ -36,7 +36,7 @@
         name="segundoNombre"
         type="text"
         placeholder="Ingresa tu segundo nombre"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
       />
     </div>
 
@@ -47,7 +47,7 @@
         name="usuario"
         type="text"
         placeholder="Ingresa tu usuario"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
       />
     </div>
 
@@ -58,7 +58,7 @@
         name="correo"
         type="email"
         placeholder="correo@ejemplo.com"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
       />
     </div>
 
@@ -68,7 +68,7 @@
         [(ngModel)]="usuario.fechaNacimiento"
         name="fechaNacimiento"
         type="date"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
       />
     </div>
 
@@ -82,7 +82,7 @@
           id="passwordReg"
           type="password"
           placeholder="Crea una contraseña"
-          class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400"
+          class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
         />
 
         <button
@@ -102,14 +102,14 @@
         type="checkbox" class="mt-1 w-5 h-5 bg-gray-700 rounded">
       <p class="text-gray-300 text-sm">
         Acepto los 
-        <span class="text-green-400 cursor-pointer hover:underline">términos y condiciones</span>.
+        <span class="text-green-200 cursor-pointer hover:underline">términos y condiciones</span>.
       </p>
     </div>
 
     <button 
       (click)="crear()"
       [ngClass]="{
-        'bg-green-500 hover:bg-green-400 cursor-pointer': isRegistrando == false,
+        'bg-green-200 hover:bg-green-300 cursor-pointer': isRegistrando == false,
         'bg-gray-500 hover:bg-gray-400' : isRegistrando == true 
       }"
       class="w-full text-gray-900 font-semibold py-3 rounded-xl shadow mt-3">
@@ -118,26 +118,26 @@
 
     <p class="text-gray-400 text-center text-sm mt-2">
       ¿Ya tienes una cuenta?
-      <a routerLink="/ingresar" class="text-green-400 hover:underline cursor-pointer">Iniciar sesión</a>
+      <a routerLink="/ingresar" class="text-green-200 hover:underline cursor-pointer">Iniciar sesión</a>
     </p>
 
   </form>
 
 
-  <app-modal-normal #modalRegistroExitoso titulo="Mensaje de aplicación.">
+  <app-modal-normal 
+    #modalRegistroExitoso 
+    titulo="Mensaje de aplicación." 
+    tipo="info"
+    [callback1]="cerrarModalYRedireccionar">
 
     <p> {{ mensajeRegistroExitoso }} </p>
-
-    <div class="flex justify-end mt-4">
-      <button (click)="cerrarModalYRedireccionar()"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition cursor-pointer">
-        Aceptar 
-      </button>
-    </div>
-
+    
   </app-modal-normal>
 
-  <app-modal-normal #modalError titulo="Mensaje de error.">
+  <app-modal-normal 
+    #modalError titulo="Mensaje de error." 
+    tipo="error"
+    [callback1]="cerrarModalYLimpiarVariables">
 
     @if (mensajeErrorTryCatch != '') {
     <p class="text-red-500"> {{ mensajeErrorTryCatch }} </p>
@@ -150,12 +150,6 @@
       }
     </ul>
     }
-
-    <div class="flex justify-end mt-4">
-      <button (click)="modalError.cerrar(); mensajeErrorTryCatch = ''; multiplesErrores = []"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition cursor-pointer">
-        Aceptar</button>
-    </div>
   </app-modal-normal>
 
 </section>

@@ -1,13 +1,7 @@
 <section class="w-full bg-gray-900 text-white p-6">
 
-  <header class="flex items-center justify-between mb-8">
-    <h1 class="text-2xl font-semibold">Bienvenido, {{ usuarioLogueado.primerNombre }} </h1>
-
-    <button (click)="modalCerrarSesion.abrir()"
-      title="Salir"
-      class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition cursor-pointer">
-      <i class="pi pi-sign-out"></i>
-    </button>
+  <header class="mb-8">
+    <h1 class="text-2xl font-semibold">Bienvenido, {{ nombreUsuarioLogueado }} </h1>
   </header>
 
   <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -51,8 +45,8 @@
             <span 
               class="flex justify-center items-center px-3 rounded-2xl text-xs sm:text-sm"
               [ngClass]="{
-                'bg-green-300 text-green-900': meta.estado == 'Activa',
-                'bg-yellow-300 text-yellow-900': meta.estado == 'Cumplida'
+                'bg-green-200 text-green-900': meta.estado == 'Activa',
+                'bg-yellow-200 text-yellow-900': meta.estado == 'Cumplida'
               }"> {{ meta.estado }} </span>
           </div>
           <div class="flex justify-between text-xs text-gray-400 mb-1">
@@ -60,7 +54,7 @@
             <p> {{ (meta.porcentaje) ? (meta.porcentaje | number:'1.0-0') : '0' }}%</p>
           </div>
           <div class="w-full bg-gray-600 rounded-full h-2 mb-1">
-            <div class="bg-green-300 h-2 rounded-full" [ngStyle]="{ width: (meta.porcentaje) ? meta.porcentaje + '%' : '0%' }"></div>
+            <div class="bg-green-200 h-2 rounded-full" [ngStyle]="{ width: (meta.porcentaje) ? meta.porcentaje + '%' : '0%' }"></div>
           </div>
         </div>
         
@@ -86,7 +80,7 @@
             <p class="text-xs text-gray-400"> {{ movimiento.fechaAhorro | date:'dd MMM yyyy' }}</p>
           </div>
         </div>
-        <p class="font-semibold text-green-400"> + $ {{ movimiento.monto | currency: ' ':'symbol':'1.0-0' }} </p>
+        <p class="font-semibold text-green-200"> + $ {{ movimiento.monto | currency: ' ':'symbol':'1.0-0' }} </p>
       </div>
       }
 
@@ -95,34 +89,24 @@
 
   <div class="mt-6 flex gap-2">
     <button (click)="modalCrearAhorro.abrir()"
-      class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg text-sm cursor-pointer">
+      class="bg-green-200 hover:bg-green-300 text-green-900 font-medium px-5 py-3 rounded-full shadow-lg text-sm cursor-pointer">
       <i class="pi pi-plus"></i> Agregar ahorro
     </button>
 
     <button (click)="modalCrearMeta.abrir()"
-      class="bg-violet-600 hover:bg-violet-700 text-white px-5 py-3 rounded-full shadow-lg text-sm cursor-pointer">
+      class="bg-green-200 hover:bg-green-300 text-green-900 font-medium px-5 py-3 rounded-full shadow-lg text-sm cursor-pointer">
       <i class="pi pi-plus"></i> Nueva Meta
     </button>
   </div>
 
-
-
-  <!-- MODAL PARA CERRAR SESION -->
-  <app-modal-normal #modalRef titulo="Mensaje de aplicación.">
-
-    <p>¿Seguro que quieres salir?</p>
-
-    <div class="flex justify-end gap-4 mt-4">
-      <button (click)="modalCerrarSesion.cerrar()"
-        class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition cursor-pointer">
-        Cancelar</button>
-      <button (click)="cerrarSesion()"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition cursor-pointer">Aceptar</button>
-    </div>
-  </app-modal-normal>
-
   <!-- MODAL PARA CREAR UNA META -->
-  <app-modal-normal #modalCrearMeta titulo="Crear Meta de Ahorro">
+  <app-modal-normal 
+    #modalCrearMeta 
+    titulo="Crear Meta de Ahorro"
+    tipo="confirmacion"
+    manejador="normal"
+    [callback1]="guardarMeta"
+    nombreBtnAccion1="Guardar">
     <form class="flex flex-col gap-4">
 
       <div>
@@ -138,33 +122,30 @@
           class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700" placeholder="Ej: 3000000">
       </div>
 
-      <div class="flex justify-end gap-4 mt-4">
-        <button type="button" (click)="modalCrearMeta.cerrar()"
-          class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm cursor-pointer">
-          Cancelar
-        </button>
-
-        <button type="button" (click)="guardarMeta()"
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm cursor-pointer">
-          Guardar
-        </button>
-      </div>
-
     </form>
   </app-modal-normal>
 
-  <app-modal-normal #modalRegistroMetaExitoso titulo="Mensaje de aplicación.">
+  <!-- MODAL PARA MOSTRAR MENSAJE -->
+  <app-modal-normal 
+    #modalRegistroMetaExitoso 
+    titulo="Mensaje de aplicación."
+    tipo="info"
+    manejador="normal"
+    [callback1]="cerrarModalCrearMeta"
+    nombreBtnAccion1="Aceptar">
 
     <p> {{ mensajeRegistroExitoso }} </p>
 
-    <div class="flex justify-end mt-4">
-      <button (click)="cerrarModalCrearMeta()"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition cursor-pointer">
-        Aceptar</button>
-    </div>
   </app-modal-normal>
 
-  <app-modal-normal #modalCrearAhorro titulo="Depositar nuevo ahorro.">
+  <!-- MODAL PARA CREAR UN AHORRO -->
+  <app-modal-normal 
+    #modalCrearAhorro 
+    titulo="Depositar nuevo ahorro."
+    tipo="confirmacion"
+    manejador="normal"
+    [callback1]="guardarAhorro"
+    nombreBtnAccion1="Guardar">
     <form class="flex flex-col gap-4">
 
       <div>
@@ -192,41 +173,18 @@
       </div>
 
       <input type="hidden" [(ngModel)]="nuevoAhorro.usuarioId" name="usuarioId">
-
-      <div class="flex justify-end gap-4 mt-4">
-        <button type="button" (click)="modalCrearAhorro.cerrar()"
-          class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm cursor-pointer">
-          Cancelar
-        </button>
-
-        <button (click)="guardarAhorro()" type="button"
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm cursor-pointer">
-          Guardar
-        </button>
-      </div>
-
     </form>
-
   </app-modal-normal>
 
-  <app-modal-normal #modalError titulo="Mensaje de error.">
-
-    @if (mensajeErrorTryCatch != '') {
-    <p class="text-red-500"> {{ mensajeErrorTryCatch }} </p>
-    }
-
-    @if (multiplesErrores.length > 0) {
-    <ul>
-      @for (error of multiplesErrores; track $index) {
-      <li class="text-red-500 text-sm"> {{ error }} </li>
-      }
-    </ul>
-    }
-
-    <div class="flex justify-end mt-4">
-      <button (click)="modalError.cerrar(); mensajeErrorTryCatch = ''; multiplesErrores = []"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition cursor-pointer">
-        Aceptar</button>
-    </div>
+  <!-- MODAL PARA MOSTRAR MULTIPLES ERRORES -->
+  <app-modal-normal 
+    #modalError 
+    titulo="Mensaje de error." 
+    tipo="error" 
+    manejador="errores"
+    nombreBtnAccion1="Aceptar"
+    [mensajeError]="mensajeError"
+    [multiplesErrores]="multiplesErrores"
+    [callback1]="cerrarModalYLimpiarVariables">
   </app-modal-normal>
 </section>

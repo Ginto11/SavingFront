@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import PublicoComponent from './layouts/publico/publico.component';
+import { PrivadoComponent } from './layouts/privado/privado.component';
 
 export const routes: Routes = [
     {
@@ -22,10 +23,24 @@ export const routes: Routes = [
             {
                 path: 'ingresar',
                 loadComponent: () => import('./pages/ingresar/ingresar.component')
+            }
+        ]
+    },
+    {
+        path: 'dashboard',
+        component: PrivadoComponent,
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./pages/dashboard/dashboard.component')
             },
             {
-                path: 'dashboard',
-                loadComponent: () => import('./pages/dashboard/dashboard.component')
+                path: 'info-usuario',
+                loadComponent: () => import('./pages/info-usuario/info-usuario.component')
+            },
+            {
+                path: 'metas',
+                loadComponent: () => import('./pages/metas/metas.component')
             }
         ]
     }

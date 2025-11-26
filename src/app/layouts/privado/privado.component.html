@@ -1,1 +1,11 @@
-<p>privado works!</p>
+<main>
+  <app-header-dashboard (showMenu)="recibirPropiedadDelHijo($event);"  />
+
+  @if(showMenu){
+    <div (click)="showMenu = false" class="fixed inset-0 bg-black/40 z-30" x-transition.opacity></div>
+    <app-sidebar (showMenuCerrar)="recibirPropiedadDelHijo($event);" />
+  }
+  <section>
+    <router-outlet />
+  </section>
+</main>

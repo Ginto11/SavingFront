@@ -1,0 +1,116 @@
+<div class="bg-gray-700 shadow-md p-6 w-full max-w-sm rounded-lg overflow-hidden mx-auto">
+    <div class="flex justify-between">
+        <div class="inline-block bg-[#edf2f7] rounded-lg py-2 px-3">
+            <img class="w-5" src="/images/estrella.png" alt="Icono de meta">
+        </div>
+        <div class="flex gap-4">
+            <button 
+                [disabled]="meta.estado != 'Activa'"
+                (click)="abrirConfirmModal(meta.id);">
+                <i class="pi pi-trash" [title]="'Cancelar meta' + meta.nombre"
+                    [ngClass]="{
+                    'cursor-not-allowed text-gray-400': meta.estado == 'Cumplida' || 'Cancelada',
+                    'cursor-pointer text-red-400': meta.estado == 'Activa'
+                }"></i></button>
+
+            <button 
+                [disabled]="meta.estado != 'Activa'"
+                (click)="abrirModalActualizacion(meta)">
+                <i class="pi pi-pencil" [title]="'Actualizar meta' + meta.nombre"
+                    [ngClass]="{
+                    'cursor-not-allowed text-gray-400': meta.estado == 'Cumplida' || 'Cancelada',
+                    'cursor-pointer text-yellow-400': meta.estado == 'Activa'
+                }"></i></button>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h3 class="text-xl font-semibold text-green-200"> {{ meta.nombre }} </h3>
+    </div>
+
+    <div class="mt-6">
+        <div class="mb-2">
+            <p class="text-white"><strong>Estado: </strong> <span [ngClass]="{
+                'text-green-200': meta.estado == 'Activa',
+                'text-yellow-300': meta.estado == 'Cumplida',
+                'text-red-400': meta.estado == 'Cancelada'
+            }">{{ meta.estado }}</span> </p>
+        </div>
+        <div class="flex mb-2">
+            <p class="text-sm text-gray-400 flex-1"> $ {{ (meta.montoActual) ? (meta.montoActual | currency:'
+                ':'symbol':'1.0-0') : '0' }} </p>
+            <p class="text-sm text-gray-400"> $ {{ meta.montoObjetivo | currency:' ':'symbol':'1.0-0'}} </p>
+        </div>
+        <div class="bg-gray-600 rounded-full w-full h-2.5 mb-1">
+            <div class="h-full rounded-full bg-green-200 flex items-center"
+                [ngStyle]="{ width: (meta.montoActual) ? ((meta.montoActual * 100) / meta.montoObjetivo) + '%' : '0%' }">
+            </div>
+        </div>
+        <hr>
+    </div>
+</div>
+
+<!-- MODAL PARA CONFIRMAR CANCELACION -->
+<app-modal-normal 
+    #modalConfirmCancelar 
+    titulo="Mensaje de aplicación."
+    tipo="confirmacion"
+    manejador="normal"
+    [callback1]="cancelarMeta"
+    nombreBtnAccion1="Aceptar">
+
+    <p>¿Seguro que quieres cancelar la meta?</p>
+</app-modal-normal>
+
+<!-- MODAL PARA MENSAJES -->
+<app-modal-normal 
+    #modalMensaje
+    titulo="Mensaje de aplicación."
+    manejador="normal"
+    tipo="info">
+    <p> {{ mensajeModal }} </p>
+</app-modal-normal>
+
+<!-- MODAL PARA MANEJAR ERRORES -->
+<app-modal-normal 
+    #modalError 
+    titulo="Mensaje de error." 
+    tipo="error" 
+    manejador="errores"
+    nombreBtnAccion1="Aceptar"
+    [mensajeError]="mensajeError"
+    [multiplesErrores]="multiplesErrores"
+    [callback1]="cerrarModalYLimpiarVariables">
+</app-modal-normal>
+
+<!-- MODAL PARA ACTUALIZAR -->
+<app-modal-normal 
+    #modalActualizacion
+    titulo="Actualizando meta."
+    manejador="normal"
+    tipo="confirmacion"
+    [callback1]="actualizar"
+    nombreBtnAccion1="Actualizar">
+    
+    <form class="flex flex-col gap-4">
+
+        <div>
+            <label>Nombre de la meta</label>
+            <input [(ngModel)]="metaPorActualizar.nombre" name="nombre" type="text"
+            class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700"
+            placeholder="Ej: Ahorro para moto">
+        </div>
+
+        <div>
+            <label>Monto objetivo</label>
+            <input [(ngModel)]="metaPorActualizar.montoObjetivo" name="montoObjetivo" type="number"
+            class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700"
+            placeholder="Ej: 3000000">
+        </div>
+
+    </form>
+
+
+</app-modal-normal>
+
+
