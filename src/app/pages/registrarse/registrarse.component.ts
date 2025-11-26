@@ -15,8 +15,9 @@ import { Router } from '@angular/router';
   styles: ``
 })
 export default class RegistrarseComponent {
-
+  
   private router = inject(Router);
+  private usuarioService = inject(UsuarioService);
   private respuestasService = inject(RespuestaService);
 
   @ViewChild('modalError') modalError!: ModalNormalComponent;
@@ -39,7 +40,6 @@ export default class RegistrarseComponent {
     aceptaTerminos: null
   }
 
-  private usuarioService = inject(UsuarioService);
 
   crear = async (): Promise<void> => {
     try {
@@ -122,6 +122,12 @@ export default class RegistrarseComponent {
       contrasena: null,
       aceptaTerminos: null
     };
+  }
+
+  cerrarModalYLimpiarVariables():void {
+    this.modalError.cerrar();
+    this.mensajeErrorTryCatch = '';
+    this.multiplesErrores = [];
   }
 
 

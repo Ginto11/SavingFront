@@ -1,5 +1,6 @@
 export interface UsuarioLogueado {
     id: number, 
     primerNombre: string,
-    rol: string
+    rol: string,
+    token: string
 }

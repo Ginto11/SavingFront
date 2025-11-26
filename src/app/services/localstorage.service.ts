@@ -18,11 +18,11 @@ export class LocalstorageService {
     return null;
   }
 
-  setItem<T>(nombre: string, data: T){
-    localStorage.setItem(nombre, JSON.stringify(data));
+  setItem<T>(data: T){
+    localStorage.setItem('usuario-saving', JSON.stringify(data));
   }
 
-  removerItem(nombre: string){
-    localStorage.removeItem(nombre);
+  removerItem(){
+    localStorage.removeItem('usuario-saving');
   }  
 }

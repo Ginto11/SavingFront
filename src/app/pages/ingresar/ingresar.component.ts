@@ -18,9 +18,7 @@ import { CommonModule } from '@angular/common';
 })
 export default class IngresarComponent {
 
-  private router = inject(Router);
   private authService = inject(AuthService);
-  private localstorage = inject(LocalstorageService);
   private respuestaService = inject(RespuestaService);
   @ViewChild('modal') modal!: ModalNormalComponent;
 
@@ -32,28 +30,15 @@ export default class IngresarComponent {
     contrasena: ''
   }
 
-  ingresar = async ():Promise<void> => {
-    try{
-
-      this.isIngresando = true;
-      const res = await this.authService.login(this.usuario);
-
-      console.log(res);
-
-      if(res.codigo == 200){
-
+  ingresar(): void {
+    this.isIngresando = true;
+    this.authService.login(this.usuario).subscribe({
+      next: () => this.isIngresando = true,
+      error: (err) => {
         this.isIngresando = false;
-        this.localstorage.setItem('usuario-saving', res.data);
-
-        this.router.navigate(['dashboard']);
+        this.mensajeErrorModal = this.respuestaService.manejoRespuesta(err);
+        this.modal.abrir();
       }
-
-    }catch(error){
-      this.isIngresando = false;
-      console.log(error)
-      this.mensajeErrorModal = this.respuestaService.manejoRespuesta(error);
-      console.log(this.mensajeErrorModal)
-      this.modal.abrir();
-    }
-  } 
+    })
+  }
 }

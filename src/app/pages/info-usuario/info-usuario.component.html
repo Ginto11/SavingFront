@@ -1,0 +1,189 @@
+<section class="p-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-semibold text-white">Mi Perfil</h1>
+      <p class="text-sm text-gray-300">Revisa y actualiza tu información personal.</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button
+        *ngIf="!editMode"
+        (click)="iniciarEdicion()"
+        class="px-4 py-2 cursor-pointer bg-green-200 text-green-900 rounded-full font-semibold hover:brightness-95"
+      >
+        Editar Perfil
+      </button>
+
+      <button
+        *ngIf="editMode"
+        (click)="guardarCambios()"
+        class="px-4 py-2 cursor-pointer bg-green-200 text-green-900 rounded-full font-semibold"
+      >
+        Guardar
+      </button>
+
+      <button
+        *ngIf="editMode"
+        (click)="cancelarEdicion()"
+        class="px-3 py-2 cursor-pointer rounded-full bg-gray-700 text-gray-200"
+      >
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <!-- Card principal -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Foto + Nombre -->
+    <div class="bg-gray-800 rounded-lg p-6 flex flex-col items-center">
+      <!-- Usa la imagen local subida como placeholder -->
+      <img
+        src=""
+        alt="Foto de perfil"
+        class="w-28 h-28 object-cover rounded-full border-4 border-slate-700 mb-4"
+      />
+
+      <h2 class="text-lg font-semibold text-white mb-1">{{ nombreCompleto }}</h2>
+      <p class="text-sm text-gray-300 mb-4">{{ usuario.correo }}</p>
+
+      <div class="w-full">
+        <div class="text-xs text-gray-400 mb-2">Información rápida</div>
+        <div class="flex flex-col gap-2 text-sm text-gray-200">
+          <div><span class="text-gray-400">Cédula:</span> {{ usuario.cedula }}</div>
+          <div><span class="text-gray-400">Teléfono:</span> {{ usuario.telefono }}</div>
+          <div><span class="text-gray-400">Ciudad:</span> {{ usuario.ciudad }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info detallada / Formulario -->
+    <div class="md:col-span-2 bg-gray-800 rounded-lg p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Nombre -->
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Nombre</label>
+
+          <ng-container *ngIf="!editMode; else nombreEdit">
+            <div class="text-white">{{ usuario.primerNombre }}</div>
+          </ng-container>
+
+          <ng-template #nombreEdit>
+            <input
+              [(ngModel)]="editingCopy!.primerNombre"
+              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+            />
+          </ng-template>
+        </div>
+
+        <!-- Apellido -->
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Apellido</label>
+
+          <ng-container *ngIf="!editMode; else apellidoEdit">
+            <div class="text-white">{{ usuario.primerApellido }}</div>
+          </ng-container>
+
+          <ng-template #apellidoEdit>
+            <input
+              [(ngModel)]="editingCopy!.primerApellido"
+              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+            />
+          </ng-template>
+        </div>
+
+        <!-- Correo -->
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Correo</label>
+
+          <ng-container *ngIf="!editMode; else correoEdit">
+            <div class="text-white">{{ usuario.correo }}</div>
+          </ng-container>
+
+          <ng-template #correoEdit>
+            <input
+              [(ngModel)]="editingCopy!.correo"
+              type="email"
+              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+            />
+          </ng-template>
+        </div>
+
+        <!-- Teléfono -->
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Teléfono</label>
+
+          <ng-container *ngIf="!editMode; else telefonoEdit">
+            <div class="text-white">{{ usuario.telefono }}</div>
+          </ng-container>
+
+          <ng-template #telefonoEdit>
+            <input
+              [(ngModel)]="editingCopy!.telefono"
+              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+            />
+          </ng-template>
+        </div>
+
+        <!-- Cédula -->
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Cédula</label>
+
+          <ng-container *ngIf="!editMode; else cedulaEdit">
+            <div class="text-white">{{ usuario.cedula }}</div>
+          </ng-container>
+
+          <ng-template #cedulaEdit>
+            <input
+              [(ngModel)]="editingCopy!.cedula"
+              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+            />
+          </ng-template>
+        </div>
+
+        <!-- Fecha Nacimiento -->
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Fecha nacimiento</label>
+
+          <ng-container *ngIf="!editMode; else fechaEdit">
+            <div class="text-white">{{ usuario.fechaNacimiento | date: 'dd/MM/yyyy' }}</div>
+          </ng-container>
+
+          <ng-template #fechaEdit>
+            <input
+              [(ngModel)]="editingCopy!.fechaNacimiento"
+              type="date"
+              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+            />
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Preferencias / Otros -->
+      <div class="mt-6 border-t border-slate-700 pt-4">
+        <h3 class="text-white font-semibold mb-3">Preferencias</h3>
+
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-1">
+            <label class="block text-xs text-gray-400 mb-1">Idioma</label>
+            <div *ngIf="!editMode" class="text-white">Español</div>
+            <select *ngIf="editMode" class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200">
+              <option value="es">Español</option>
+              <option value="en">Inglés</option>
+            </select>
+          </div>
+
+          <div class="flex-1">
+            <label class="block text-xs text-gray-400 mb-1">Notificaciones</label>
+            <div *ngIf="!editMode" class="text-white">Email activado</div>
+            <div *ngIf="editMode" class="flex gap-3 items-center">
+              <label class="text-sm text-gray-300">Email</label>
+              <input type="checkbox" class="ml-2" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

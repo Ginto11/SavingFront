@@ -1,0 +1,26 @@
+<section class="text-gray-600 body-font w-full p-6">
+    <h2 class="text-2xl font-semibold text-white mb-8">Metas</h2>
+
+    <div class="p-4 flex-col md:flex-row flex justify-between items-center bg-gray-800 rounded-xl mb-8 gap-2">
+        
+        <div class="flex gap-3 w-full md:w-md">
+            <input class="w-full! md:w-md p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200" type="search" placeholder="Busque sus metas">
+            <button class="bg-green-200 rounded-xl w-10 cursor-pointer"><i class="pi pi-search text-green-900 font-medium"></i></button>
+        </div>
+
+        <ul class="w-full md:w-md grid gap-3 text-green-200 grid-cols-3">
+            <a href="" class="bg-green-200 p-3 rounded-xl text-green-900 font-medium text-center">Cumplidas</a>
+            <a href="" class="bg-green-200 p-3 rounded-xl text-green-900 font-medium text-center">Activas</a>
+            <a href="" class="bg-green-200 p-3 rounded-xl text-green-900 font-medium text-center">Canceladas</a>
+        </ul>
+    </div>
+
+    <div class="p-4 bg-gray-800 rounded-xl grid grid-cols-2 md:grid-cols-3 sm:grid-cols-2 gap-4">
+        @for(meta of metas; track meta.id){
+            <app-card-meta [meta]="meta" />
+        }
+    </div>
+
+</section>
+
+<app-modal-normal></app-modal-normal>

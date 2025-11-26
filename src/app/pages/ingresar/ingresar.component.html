@@ -1,7 +1,7 @@
 <div class="flex flex-col items-center justify-center bg-gray-900 p-6">
 
   <div class="text-center mb-10">
-    <h2 class="text-3xl font-extrabold text-green-400">Iniciar sesión</h2>
+    <h2 class="text-3xl font-extrabold text-green-200">Iniciar sesión</h2>
     <p class="text-gray-300 mt-2">Accede a tu cuenta para continuar</p>
   </div>
 
@@ -10,7 +10,7 @@
     <div>
       <label class="text-gray-300 font-medium">Usuario</label>
       <input [(ngModel)]="usuario.usuario" type="text" placeholder="Ingresa tu usuario"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400" />
+        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200" />
     </div>
 
     <div>
@@ -18,7 +18,7 @@
 
       <div class="relative mt-1">
         <input [(ngModel)]="usuario.contrasena" id="passwordInput" type="password" placeholder="Ingresa tu contraseña"
-          class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-400" />
+          class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200" />
 
         <button type="button"
           onclick="const p=document.getElementById('passwordInput'); p.type = p.type === 'password' ? 'text' : 'password'"
@@ -32,7 +32,7 @@
       (click)="ingresar()"
       [disabled]="isIngresando"
       [ngClass]="{
-        'bg-green-500 hover:bg-green-400 cursor-pointer': isIngresando == false,
+        'bg-green-200 hover:bg-green-300 cursor-pointer': isIngresando == false,
         'bg-gray-500 hover:bg-gray-400': isIngresando == true
       }"
       class="w-full text-gray-900 font-semibold py-3 rounded-xl shadow">
@@ -41,18 +41,17 @@
 
     <p class="text-gray-400 text-center text-sm">
       ¿No tienes cuenta?
-      <a title="Ir a formulario de registro." routerLink="/registrarse" class="text-green-400 hover:underline cursor-pointer">Crear cuenta</a>
+      <a title="Ir a formulario de registro." routerLink="/registrarse" class="text-green-200 hover:underline cursor-pointer">Crear cuenta</a>
     </p>
 
   </div>
 
-  <app-modal-normal #modal titulo="Mensaje de aplicación.">
-    <p> {{ mensajeErrorModal }} </p>
-    <div class="mt-4 flex justify-end">
-      <button (click)="modal.cerrar()"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition cursor-pointer">
-        Aceptar</button>
-    </div>
+  <!-- MODAL PARA MENSAJE DE ERROR -->
+  <app-modal-normal 
+    #modal 
+    titulo="Mensaje de aplicación."
+    tipo="error">
+    <p class="text-red-500 text-sm"> {{ mensajeErrorModal }} </p>
   </app-modal-normal>
 
 </div>

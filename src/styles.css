@@ -1,3 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
 @import "primeicons/primeicons.css";
+
+body::-webkit-scrollbar {
+    width: .5rem;
+    background-color: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+    width: .5rem;
+    border-radius: 3px;
+    background-color: #B9F8CF;
+}
