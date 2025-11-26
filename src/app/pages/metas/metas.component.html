@@ -15,7 +15,7 @@
         </ul>
     </div>
 
-    <div class="p-4 bg-gray-800 rounded-xl grid grid-cols-2 md:grid-cols-3 sm:grid-cols-2 gap-4">
+    <div class="p-4 bg-gray-800 rounded-xl grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
         @for(meta of metas; track meta.id){
             <app-card-meta [meta]="meta" />
         }
