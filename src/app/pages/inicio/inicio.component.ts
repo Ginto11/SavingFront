@@ -7,6 +7,8 @@ import { RouterLink } from '@angular/router';
   templateUrl: './inicio.component.html',
   styles: ``
 })
-export default class InicioComponent {
+export default class InicioComponent  {
+
+  
 
 }
