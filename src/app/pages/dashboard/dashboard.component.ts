@@ -198,6 +198,7 @@ export default class DashboardComponent implements OnInit {
 
       this.ahorroService.agregarO(this.nuevoAhorro).subscribe({
         next: (res) => {
+          console.log('Insercion exitosa, actualizando')
           this.metaAhorroService.refrescarInformacion(usuario.id);
           this.mensajeRegistroExitoso = res.mensaje;
 
