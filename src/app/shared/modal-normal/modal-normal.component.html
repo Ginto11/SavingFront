@@ -17,13 +17,13 @@
     <p class="text-red-500"> {{ mensajeError }} </p>
     }
 
-  @if (multiplesErrores.length > 0) {
-  <ul>
-    @for (error of multiplesErrores; track $index) {
-    <li class="text-red-500 text-sm"> {{ error }} </li>
+    @if (multiplesErrores.length > 0) {
+    <ul>
+      @for (error of multiplesErrores; track $index) {
+      <li class="text-red-500 text-sm"> {{ error }} </li>
+      }
+    </ul>
     }
-  </ul>
-  }
   }
 
   <div *ngIf="tipo == 'error'" class="flex justify-end mt-4">
@@ -47,7 +47,7 @@
 
 
   <div *ngIf="tipo == 'info'" class="flex justify-end mt-4">
-    <button (click)="cerrar()"
+    <button (click)="callback1()"
       class="px-4 py-2 bg-blue-300 hover:bg-blue-400 rounded-lg text-sm font-medium transition cursor-pointer">
       Aceptar
     </button>

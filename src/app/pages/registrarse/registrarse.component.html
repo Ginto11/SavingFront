@@ -128,6 +128,8 @@
     #modalRegistroExitoso 
     titulo="Mensaje de aplicación." 
     tipo="info"
+    manejador="normal"
+    nombreBtnAccion1="Aceptar"
     [callback1]="cerrarModalYRedireccionar">
 
     <p> {{ mensajeRegistroExitoso }} </p>
@@ -137,19 +139,12 @@
   <app-modal-normal 
     #modalError titulo="Mensaje de error." 
     tipo="error"
+    manejador="errores"
+    nombreBtnAccion1="Aceptar"
+    [mensajeError]="mensajeError"
+    [multiplesErrores]="multiplesErrores"
     [callback1]="cerrarModalYLimpiarVariables">
 
-    @if (mensajeErrorTryCatch != '') {
-    <p class="text-red-500"> {{ mensajeErrorTryCatch }} </p>
-    }
-
-    @if (multiplesErrores.length > 0) {
-    <ul>
-      @for (error of multiplesErrores; track $index) {
-      <li class="text-red-500 text-sm"> {{ error }} </li>
-      }
-    </ul>
-    }
   </app-modal-normal>
 
 </section>

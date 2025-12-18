@@ -19,10 +19,6 @@ export class RespuestaService {
       return 'Complete todos los campos.';
     }
 
-    if(errorConvertido.status == 401){
-      return 'Credenciales incorrectas';
-    }
-
     if(errorConvertido.status >= 500){
       return 'Error interno del servidor. Comuníquese con soporte.';
     }

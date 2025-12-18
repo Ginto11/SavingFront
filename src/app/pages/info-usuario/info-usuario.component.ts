@@ -1,61 +1,116 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface Usuario {
-  primerNombre: string;
-  primerApellido: string;
-  correo: string;
-  cedula?: string;
-  telefono?: string;
-  fechaNacimiento?: string; 
-  ciudad?: string;
-}
+import { UsuarioDto } from '../../interfaces/usuario-dto.interface';
+import { UsuarioService } from '../../services/usuario.service';
+import { LocalstorageService } from '../../services/localstorage.service';
+import { environment } from '../../../environments/environment';
+import { ModalNormalComponent } from '../../shared/modal-normal/modal-normal.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-info-usuario',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ModalNormalComponent],
   templateUrl: './info-usuario.component.html',
   styles: ``
 })
-export default class InfoUsuarioComponent {
-  // Datos de ejemplo: reemplaza con lo que traigas del backend
-  usuario: Usuario = {
-    primerNombre: 'Nelson',
-    primerApellido: 'Muñoz',
-    correo: 'nelson@example.com',
-    cedula: '1234567890',
-    telefono: '+57 300 000 0000',
-    fechaNacimiento: '2000-03-20',
-    ciudad: 'Bogotá'
+export default class InfoUsuarioComponent implements OnInit{
+
+  private authService = inject(AuthService);
+  private usuarioService = inject(UsuarioService);
+  private localstorageService = inject(LocalstorageService);
+  
+  @ViewChild('ModalActualizar') ModalActualizar!: ModalNormalComponent;
+  urlFoto!: string;
+  nombre!: string;
+  correo!: string;
+  usuario: UsuarioDto = {
+    id: 0,
+    primerNombre: '',
+    primerApellido: '',
+    cedula: 0,
+    correo: '',
+    fechaNacimiento: null,
+    manejaGastos: false,
+    fotoPerfil: '',
+    nuevaFoto: null
   };
 
-  editMode = false;
-  editingCopy: Usuario | null = null;
+  fotoNueva!: File;
+  edicioModo = false;
+
+  ngOnInit(): void {
+    this.obtenerInformacionUsuario();
+  }
+
+  obtenerInformacionUsuario(){
+    this.authService.usuarioLogueado.subscribe(usuario => {
+        if(usuario == null){
+          console.log("Error")
+          return;
+        }
+
+        this.usuarioService.refrescarInformacion(usuario.id);
+        this.usuarioService.usuarioObservable.subscribe(res => {
+          this.usuario = res;
+          this.urlFoto = environment.URL_SERVER_FOTOS;
+          this.nombre = `${this.usuario.primerNombre} ${this.usuario.primerApellido}`
+          this.correo = this.usuario.correo;
+        })
+      }
+    )
+  }
+
+  seleccionarArchivo(evento: Event){
+    const input = evento.target as HTMLInputElement;
+
+    if(input.files && input.files.length > 0){
+      this.fotoNueva = input.files[0];
+    }
+  }
 
   iniciarEdicion() {
-    this.editingCopy = { ...this.usuario };
-    this.editMode = true;
+    this.edicioModo = true;
   }
 
   cancelarEdicion() {
-    this.editingCopy = null;
-    this.editMode = false;
+    this.edicioModo = false;
   }
 
-  guardarCambios() {
-    if (!this.editingCopy) return;
-    // aquí debes llamar a tu servicio para guardar en backend
-    // ejemplo: this.usuarioService.actualizar(this.editingCopy).subscribe(...)
-    // por ahora solo aplicamos la copia localmente:
-    this.usuario = { ...this.editingCopy };
-    this.editingCopy = null;
-    this.editMode = false;
-    // opcional: mostrar toast o notificación
+  confirmacion() {
+    this.ModalActualizar.abrir();
   }
 
-  // helper para mostrar nombre completo
-  get nombreCompleto() {
-    return `${this.usuario.primerNombre} ${this.usuario.primerApellido}`;
+  actualizarInformacion = () => {
+
+    const id = this.localstorageService.getItem('usuario-saving').id;
+
+    const formData = new FormData();
+
+    formData.append('id', this.usuario.id.toString());
+    formData.append('primerNombre', this.usuario.primerNombre);
+    formData.append('primerApellido', this.usuario.primerApellido);
+    formData.append('cedula', this.usuario.cedula.toString());
+    formData.append('correo', this.usuario.correo);
+    formData.append('manejaGastos', this.usuario.manejaGastos.toString());
+
+    if (this.usuario.fechaNacimiento) {
+      formData.append(
+        'fechaNacimiento',
+        new Date(this.usuario.fechaNacimiento).toISOString()
+    )}
+
+    if (this.fotoNueva) {
+      formData.append('nuevaFoto', this.fotoNueva);
+    }
+
+    this.usuarioService.actualizar(id, formData).subscribe(res => {
+      this.usuarioService.refrescarInformacion(id);
+    });
+    this.edicioModo = false;
+    this.ModalActualizar.cerrar();
+
   }
+
+
 }

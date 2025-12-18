@@ -74,10 +74,11 @@
 <!-- MODAL PARA CERRAR SESION -->
 <app-modal-normal 
 #modalRef 
+manejador="normal"
 titulo="Mensaje de aplicación."
 tipo="confirmacion"
 nombreBtnAccion1="Aceptar"
 [callback1]="cerrarSesion">
 
-<p>¿Seguro que quieres salir?</p>
+    <p>¿Seguro que quieres salir?</p>
 </app-modal-normal>

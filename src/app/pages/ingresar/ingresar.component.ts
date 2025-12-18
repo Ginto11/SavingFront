@@ -35,8 +35,10 @@ export default class IngresarComponent {
     this.authService.login(this.usuario).subscribe({
       next: () => this.isIngresando = true,
       error: (err) => {
+        console.log(err);
         this.isIngresando = false;
         this.mensajeErrorModal = this.respuestaService.manejoRespuesta(err);
+        console.log(this.mensajeErrorModal)
         this.modal.abrir();
       }
     })

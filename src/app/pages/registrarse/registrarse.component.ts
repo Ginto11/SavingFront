@@ -24,7 +24,7 @@ export default class RegistrarseComponent {
   @ViewChild('modalRegistroExitoso') modalRegistroExitoso!: ModalNormalComponent;
 
   mensajeRegistroExitoso = '';
-  mensajeErrorTryCatch = '';
+  mensajeError = '';
   multiplesErrores: string[] = [];
   isRegistrando = false;
 
@@ -61,7 +61,7 @@ export default class RegistrarseComponent {
 
     } catch (error) {
       this.isRegistrando = false;
-      this.mensajeErrorTryCatch = this.respuestasService.manejoRespuesta(error);
+      this.mensajeError = this.respuestasService.manejoRespuesta(error);
       this.modalError.abrir();
     }
   }
@@ -126,7 +126,7 @@ export default class RegistrarseComponent {
 
   cerrarModalYLimpiarVariables():void {
     this.modalError.cerrar();
-    this.mensajeErrorTryCatch = '';
+    this.mensajeError = '';
     this.multiplesErrores = [];
   }
 

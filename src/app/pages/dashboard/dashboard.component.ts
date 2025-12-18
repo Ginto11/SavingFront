@@ -80,7 +80,7 @@ export default class DashboardComponent implements OnInit {
     this.obtenerCantidadMetasActivasPorUsuario();
   }
 
-  cerrarModalCrearMeta() {
+  cerrarModalCrearMeta = () => {
     this.modalRegistroMetaExitoso.cerrar();
   }
 
