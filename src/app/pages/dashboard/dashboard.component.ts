@@ -198,7 +198,6 @@ export default class DashboardComponent implements OnInit {
 
       this.ahorroService.agregarO(this.nuevoAhorro).subscribe({
         next: (res) => {
-          this.ahorroService.refrescarInformacion(usuario.id);
           this.metaAhorroService.refrescarInformacion(usuario.id);
           this.mensajeRegistroExitoso = res.mensaje;
 
@@ -206,6 +205,7 @@ export default class DashboardComponent implements OnInit {
           this.modalRegistroMetaExitoso.abrir();
         },
         error: (err) => {
+          console.log(err)
           this.mensajeError = this.respuestasService.manejoRespuesta(err);
           this.modalError.abrir();
         }
