@@ -67,17 +67,27 @@ export default class DashboardComponent implements OnInit {
 
     window.scrollTo(0, 0);
 
-    this.obtenerTotales();
-    this.obtenerUltimosMovimientos();
-    this.authService.usuarioLogueado.subscribe(usuario => {
-      if (usuario == null) {
-        this.usuarioNoLogueado();
-        return;
+    this.authService.validarToken().subscribe({
+      next: res => {
+        console.log(res)
+        this.authService.usuarioLogueado.subscribe(usuario => {
+          
+          if(usuario == null){
+            return;
+          }
+          this.obtenerTotales();
+          this.obtenerUltimosMovimientos();
+          this.obtenerMetasConCumplimiento();
+          this.obtenerCantidadMetasActivasPorUsuario();
+          this.nombreUsuarioLogueado = usuario.primerNombre;
+
+        })
+      },
+      error: err => {
+        this.mensajeError = this.respuestasService.manejoRespuesta(err);
+        this.modalError.abrir();
       }
-      this.nombreUsuarioLogueado = usuario.primerNombre;
     })
-    this.obtenerMetasConCumplimiento();
-    this.obtenerCantidadMetasActivasPorUsuario();
   }
 
   cerrarModalCrearMeta = () => {
@@ -119,7 +129,6 @@ export default class DashboardComponent implements OnInit {
       }
 
       this.model.usuarioId = usuario.id
-      this.metaAhorroService.refrescarInformacion(usuario.id);
       this.metaAhorroService.crearMeta(this.model).subscribe({
         next: (res) => {
           this.metaAhorroService.refrescarInformacion(usuario.id);
@@ -198,15 +207,16 @@ export default class DashboardComponent implements OnInit {
 
       this.ahorroService.agregarO(this.nuevoAhorro).subscribe({
         next: (res) => {
-          console.log('Insercion exitosa, actualizando')
+          this.ahorroService.refrescarInformacion(usuario.id);
           this.metaAhorroService.refrescarInformacion(usuario.id);
           this.mensajeRegistroExitoso = res.mensaje;
 
           this.modalCrearAhorro.cerrar();
           this.modalRegistroMetaExitoso.abrir();
+
+          this.limpiarModelo();
         },
         error: (err) => {
-          console.log(err)
           this.mensajeError = this.respuestasService.manejoRespuesta(err);
           this.modalError.abrir();
         }
@@ -231,15 +241,23 @@ export default class DashboardComponent implements OnInit {
   }
 
   obtenerTotales() {
-    this.ahorroService.cantidadesTotalesObservable.subscribe({
-      next: (res) => {
-        this.cantidadesTotales = res;
-      },
-      error: (err) => {
-        this.mensajeError = this.respuestasService.manejoRespuesta(err);
-        this.modalError.abrir();
+    this.authService.usuarioLogueado.subscribe(usuario => {
+      if(usuario == null){
+        this.usuarioNoLogueado();
+        return;
       }
+      this.metaAhorroService.refrescarInformacion(usuario.id);
+      this.ahorroService.cantidadesTotalesObservable.subscribe({
+        next: (res) => {
+          this.cantidadesTotales = res;
+        },
+        error: (err) => {
+          this.mensajeError = this.respuestasService.manejoRespuesta(err);
+          this.modalError.abrir();
+        }
+      })
     })
+
 
   }
 

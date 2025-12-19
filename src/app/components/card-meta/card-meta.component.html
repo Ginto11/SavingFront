@@ -67,7 +67,9 @@
     #modalMensaje
     titulo="Mensaje de aplicación."
     manejador="normal"
-    tipo="info">
+    tipo="info"
+    [callback1]="modalMensaje.cerrar"
+    nombreBtnAccion1="Aceptar">
     <p> {{ mensajeModal }} </p>
 </app-modal-normal>
 
