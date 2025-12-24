@@ -51,11 +51,14 @@ export default class InfoUsuarioComponent implements OnInit{
         }
 
         this.usuarioService.refrescarInformacion(usuario.id);
-        this.usuarioService.usuarioObservable.subscribe(res => {
-          this.usuario = res;
-          this.urlFoto = environment.URL_SERVER_FOTOS;
-          this.nombre = `${this.usuario.primerNombre} ${this.usuario.primerApellido}`
-          this.correo = this.usuario.correo;
+        this.usuarioService.usuarioObservable.subscribe({ 
+          next: (res) => {
+            this.usuario = res;
+            this.urlFoto = `${environment.URL_SERVER_FOTOS}/${this.usuario.fotoPerfil}`;
+            this.nombre = `${this.usuario.primerNombre} ${this.usuario.primerApellido}`
+            this.correo = this.usuario.correo;
+          },
+          error: (err) => console.log(err)  
         })
       }
     )
@@ -105,6 +108,7 @@ export default class InfoUsuarioComponent implements OnInit{
     }
 
     this.usuarioService.actualizar(id, formData).subscribe(res => {
+      console.log(res)
       this.usuarioService.refrescarInformacion(id);
     });
     this.edicioModo = false;
