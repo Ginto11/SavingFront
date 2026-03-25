@@ -84,7 +84,8 @@ export default class DashboardComponent implements OnInit {
         })
       },
       error: err => {
-        this.mensajeError = this.respuestasService.manejoRespuesta(err);
+        console.log(err)
+        this.mensajeError = 'Token expirado. Inicie sesion nuevamente.';
         this.modalError.abrir();
       }
     })
@@ -305,6 +306,10 @@ export default class DashboardComponent implements OnInit {
   usuarioNoLogueado(): void {
     this.mensajeError = 'Usuario no logueado.';
     this.modalError.abrir();
+  }
+
+  tokenExpirado(): void {
+    this.router.navigate(['/ingresar'])
   }
 
 

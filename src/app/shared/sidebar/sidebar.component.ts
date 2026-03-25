@@ -54,8 +54,16 @@ export class SidebarComponent {
   linksSeccion3: LinkMenu[] = [
     {
       nombreIcon: 'pi-unlock',
-      nombreRuta: '/cambiar-contrasena',
+      nombreRuta: 'cambiar-contrasena',
       nombreLink: 'Cambiar Contraseña'
+    }
+  ]
+
+  linksSeccion4: LinkMenu[] = [
+    {
+      nombreIcon: 'pi-briefcase',
+      nombreRuta: 'trabajo-aplicaciones',
+      nombreLink: 'Trabajo Aplicaciones'
     }
   ]
   

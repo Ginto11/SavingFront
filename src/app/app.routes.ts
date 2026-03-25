@@ -41,6 +41,10 @@ export const routes: Routes = [
             {
                 path: 'metas',
                 loadComponent: () => import('./pages/metas/metas.component')
+            },
+            {
+                path: 'trabajo-aplicaciones',
+                loadComponent: () => import('./pages/trabajo-aplicaciones/trabajo-aplicaciones.component')
             }
         ]
     }

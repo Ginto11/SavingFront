@@ -14,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './info-usuario.component.html',
   styles: ``
 })
-export default class InfoUsuarioComponent implements OnInit{
+export default class InfoUsuarioCompPonent implements OnInit{
 
   private authService = inject(AuthService);
   private usuarioService = inject(UsuarioService);
