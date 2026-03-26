@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModalNormalComponent } from '../../shared/modal-normal/modal-normal.component';
 import { CrearMetaDTO } from '../../interfaces/crear-meta-dto.interface';
 import { FormsModule } from '@angular/forms';
@@ -12,27 +12,28 @@ import { UltimoMovimiento } from '../../interfaces/ultimo-movimiento.interface';
 import { CumplimientoMetaAhorro } from '../../interfaces/cumplimiento-meta-ahorro.interface';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   imports: [ModalNormalComponent, FormsModule, CommonModule],
   templateUrl: './dashboard.component.html',
-  styles: ``
+  styles: ``,
 })
-export default class DashboardComponent implements OnInit {
-
+export default class DashboardComponent implements AfterViewInit, OnDestroy {
   private router = inject(Router);
   private authService = inject(AuthService);
   private ahorroService = inject(AhorroService);
   private respuestasService = inject(RespuestaService);
   private metaAhorroService = inject(MetaAhorroService);
+  private onDestroy: Subject<boolean> = new Subject();
 
   //MODALES
   @ViewChild('modalCrearMeta') modalCrearMeta!: ModalNormalComponent;
   @ViewChild('modalCrearAhorro') modalCrearAhorro!: ModalNormalComponent;
-  @ViewChild('modalRegistroMetaExitoso') modalRegistroMetaExitoso!: ModalNormalComponent;
+  @ViewChild('modalRegistroMetaExitoso')
+  modalRegistroMetaExitoso!: ModalNormalComponent;
   @ViewChild('modalError') modalError!: ModalNormalComponent;
-
 
   metasConCumplimiento: CumplimientoMetaAhorro[] = [];
   cantidadMetasActivas!: number;
@@ -43,63 +44,67 @@ export default class DashboardComponent implements OnInit {
   metas: any | null = null;
   totalAhorrado!: number;
   ahorroMes!: number;
-
+  tokenEsValido: boolean | null = null;
+  
   nuevoAhorro: CrearNuevoAhorroDto = {
     usuarioId: 0,
     monto: null,
     descripcion: null,
-    metaAhorroId: ''
-  }
+    metaAhorroId: '',
+  };
 
   model: CrearMetaDTO = {
     usuarioId: null,
-    nombre: "",
-    montoObjetivo: null
+    nombre: '',
+    montoObjetivo: null,
   };
-
+  
   cantidadesTotales: CantidadesTotales = {
     totalAhorrado: 0,
-    ahorroMes: 0
+    ahorroMes: 0,
   };
 
-  ultimosMovimientos: UltimoMovimiento[] | null = []
-  ngOnInit(): void {
-
+  ultimosMovimientos: UltimoMovimiento[] | null = [];
+  ngAfterViewInit(): void {
     window.scrollTo(0, 0);
 
-    this.authService.validarToken().subscribe({
-      next: res => {
-        console.log(res)
-        this.authService.usuarioLogueado.subscribe(usuario => {
-          
-          if(usuario == null){
-            return;
+    this.authService.validarToken()
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe({
+      next: () => {
+        this.authService.usuarioLogueado
+        .pipe(takeUntil(this.onDestroy))
+        .subscribe({
+          next: (usuario) => {
+            this.obtenerTotales();
+            this.obtenerUltimosMovimientos();
+            this.obtenerMetasConCumplimiento();
+            this.obtenerCantidadMetasActivasPorUsuario();
+            this.nombreUsuarioLogueado = usuario!.primerNombre;
           }
-          this.obtenerTotales();
-          this.obtenerUltimosMovimientos();
-          this.obtenerMetasConCumplimiento();
-          this.obtenerCantidadMetasActivasPorUsuario();
-          this.nombreUsuarioLogueado = usuario.primerNombre;
-
-        })
+        });
       },
-      error: err => {
-        console.log(err)
-        this.mensajeError = 'Token expirado. Inicie sesion nuevamente.';
+      error: (err) => {
+        this.mensajeError = (err.status == 500) ? 'Token expirado o inexistente. Inicie sesion nuevamente.' : this.mensajeError = err.message;
         this.modalError.abrir();
       }
-    })
+    });
   }
-
+  
+  ngOnDestroy(): void {
+    this.onDestroy.next(true);
+    this.onDestroy.complete();
+  }
+  
   cerrarModalCrearMeta = () => {
     this.modalRegistroMetaExitoso.cerrar();
-  }
+  };
 
   validarMeta = (meta: CrearMetaDTO): string[] => {
     const errores: string[] = [];
 
     if (!meta.nombre || meta.nombre.trim().length === 0) {
-      errores.push("El nombre es obligatorio.");
+      errores.push('El nombre es obligatorio.');
     }
 
     if (meta.montoObjetivo == null) {
@@ -108,11 +113,11 @@ export default class DashboardComponent implements OnInit {
 
     if (meta.montoObjetivo !== null) {
       if (meta.montoObjetivo <= 0) {
-        errores.push("El monto objetivo debe ser mayor a 0.");
+        errores.push('El monto objetivo debe ser mayor a 0.');
       }
     }
     return errores;
-  }
+  };
 
   guardarMeta = (): void => {
     const errores = this.validarMeta(this.model);
@@ -123,29 +128,27 @@ export default class DashboardComponent implements OnInit {
       return;
     }
 
-    this.authService.usuarioLogueado.subscribe(usuario => {
+    this.authService.usuarioLogueado.subscribe((usuario) => {
       if (usuario == null) {
         this.usuarioNoLogueado();
         return;
       }
 
-      this.model.usuarioId = usuario.id
+      this.model.usuarioId = usuario.id;
       this.metaAhorroService.crearMeta(this.model).subscribe({
         next: (res) => {
           this.metaAhorroService.refrescarInformacion(usuario.id);
           this.mensajeRegistroExitoso = res.mensaje;
           this.modalCrearMeta.cerrar();
           this.modalRegistroMetaExitoso.abrir();
-
         },
         error: (err) => {
           this.mensajeError = this.respuestasService.manejoRespuesta(err);
           this.modalError.abrir();
-        }
-      })
-    })
-
-  }
+        },
+      });
+    });
+  };
 
   obtenerCantidadMetasActivasPorUsuario(): void {
     this.authService.usuarioLogueado.subscribe({
@@ -154,30 +157,34 @@ export default class DashboardComponent implements OnInit {
           this.usuarioNoLogueado();
           return;
         }
-        this.metaAhorroService.cantidadMetasObservable.subscribe(res => {
+        this.metaAhorroService.cantidadMetasObservable.subscribe((res) => {
           this.cantidadMetasActivas = res;
-        })
-        this.metaAhorroService.metasActivasObservable.subscribe(res => {
+        });
+        this.metaAhorroService.metasActivasObservable.subscribe((res) => {
           this.metas = res;
-        })
+        });
       },
       error: (err) => {
         this.mensajeError = this.respuestasService.manejoRespuesta(err);
         this.modalError.abrir();
-      }
-    })
+      },
+    });
   }
 
   validarNuevoAhorro = (): string[] => {
-
     const errores = [];
 
     if (!this.nuevoAhorro.monto || this.nuevoAhorro.monto <= 0) {
       errores.push('El monto debe ser mayor a 0.');
     }
 
-    if (!this.nuevoAhorro.descripcion || this.nuevoAhorro.descripcion.trim().length < 3) {
-      errores.push('La descripción es obligatoria y debe tener al menos 3 caracteres.');
+    if (
+      !this.nuevoAhorro.descripcion ||
+      this.nuevoAhorro.descripcion.trim().length < 3
+    ) {
+      errores.push(
+        'La descripción es obligatoria y debe tener al menos 3 caracteres.',
+      );
     }
 
     if (!this.nuevoAhorro.metaAhorroId || this.nuevoAhorro.metaAhorroId == '') {
@@ -185,10 +192,9 @@ export default class DashboardComponent implements OnInit {
     }
 
     return errores;
-  }
+  };
 
-  guardarAhorro = ():void => {
-
+  guardarAhorro = (): void => {
     const errores = this.validarNuevoAhorro();
 
     if (errores.length > 0) {
@@ -197,9 +203,8 @@ export default class DashboardComponent implements OnInit {
       return;
     }
 
-    this.authService.usuarioLogueado.subscribe(usuario => {
+    this.authService.usuarioLogueado.subscribe((usuario) => {
       if (usuario == null) {
-
         this.usuarioNoLogueado();
         return;
       }
@@ -220,30 +225,29 @@ export default class DashboardComponent implements OnInit {
         error: (err) => {
           this.mensajeError = this.respuestasService.manejoRespuesta(err);
           this.modalError.abrir();
-        }
+        },
       });
-    })
-
-  }
+    });
+  };
 
   limpiarModelo = (): void => {
     this.model = {
       usuarioId: null,
-      nombre: "",
-      montoObjetivo: 0
+      nombre: '',
+      montoObjetivo: 0,
     };
 
     this.nuevoAhorro = {
       usuarioId: 0,
       monto: null,
       descripcion: null,
-      metaAhorroId: null
-    }
-  }
+      metaAhorroId: null,
+    };
+  };
 
   obtenerTotales() {
-    this.authService.usuarioLogueado.subscribe(usuario => {
-      if(usuario == null){
+    this.authService.usuarioLogueado.subscribe((usuario) => {
+      if (usuario == null) {
         this.usuarioNoLogueado();
         return;
       }
@@ -255,16 +259,13 @@ export default class DashboardComponent implements OnInit {
         error: (err) => {
           this.mensajeError = this.respuestasService.manejoRespuesta(err);
           this.modalError.abrir();
-        }
-      })
-    })
-
-
+        },
+      });
+    });
   }
 
   obtenerUltimosMovimientos() {
-
-    this.authService.usuarioLogueado.subscribe(usuario => {
+    this.authService.usuarioLogueado.subscribe((usuario) => {
       if (usuario == null) {
         this.usuarioNoLogueado();
         return;
@@ -277,14 +278,13 @@ export default class DashboardComponent implements OnInit {
         error: (err) => {
           this.mensajeError = this.respuestasService.manejoRespuesta(err);
           this.modalError.abrir();
-        }
+        },
       });
-    })
-
+    });
   }
 
-  obtenerMetasConCumplimiento():void{
-    this.authService.usuarioLogueado.subscribe(usuario => {
+  obtenerMetasConCumplimiento(): void {
+    this.authService.usuarioLogueado.subscribe((usuario) => {
       if (usuario == null) {
         this.usuarioNoLogueado();
         return;
@@ -298,9 +298,9 @@ export default class DashboardComponent implements OnInit {
         error: (err) => {
           this.mensajeError = this.respuestasService.manejoRespuesta(err);
           this.modalError.abrir();
-        }
-      })
-    })
+        },
+      });
+    });
   }
 
   usuarioNoLogueado(): void {
@@ -309,15 +309,13 @@ export default class DashboardComponent implements OnInit {
   }
 
   tokenExpirado(): void {
-    this.router.navigate(['/ingresar'])
+    this.router.navigate(['/ingresar']);
   }
 
-
-  cerrarModalYLimpiarVariables():void {
+  cerrarModalYLimpiarVariables(): void {
     this.modalError.cerrar();
     this.mensajeError = '';
     this.multiplesErrores = [];
+    this.router.navigate(['/iniciar-sesion']);
   }
 }
-
-
