@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import type { UsuarioLogin } from '../interfaces/usuario-login.interface';
 import { ServerResponse } from '../interfaces/server-response.interface';
-import { BehaviorSubject, lastValueFrom, Observable, tap } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, Observable, tap, of, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { UsuarioLogueado } from '../interfaces/usuario-logueado.interface';
 import { LocalstorageService } from './localstorage.service';
@@ -35,16 +35,19 @@ export class AuthService {
   }
 
   validarToken():Observable<any> {
-    const token = this.localstorageService.getItem('usuario-saving').token;
 
-    console.log(token)
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    })
-    return this.http.get(`${environment.URL_SERVER}/api/auth/validar_token`, { headers }).pipe(
-      tap(res => console.log(res))
-    )
+      const usuario = this.localstorageService.getItem('usuario-saving');
+
+      if (!usuario || !usuario.token) {
+        return throwError(() => new Error('Token expirado o inexistente. Inicie sesion nuevamente.'));
+      } 
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${usuario.token}`
+      })
+      return this.http.get(`${environment.URL_SERVER}/api/auth/validar_token`, { headers });
+      
+
   }
 
   cerrarSesion() :void {

@@ -10,7 +10,7 @@ export class ModalNormalComponent {
 
   @ViewChild('modal') modal!: ElementRef<HTMLDialogElement>;
 
-  @Input() mensajeError = '';
+  @Input() mensajeError: string | null = null;
   @Input() multiplesErrores:string[] = [];
   @Input() manejador: string = '';
   @Input() titulo: string = '';
