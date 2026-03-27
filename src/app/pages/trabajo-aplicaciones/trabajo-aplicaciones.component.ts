@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ModalNormalComponent } from '../../shared/modal-normal/modal-normal.component';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { IngresoService } from '../../services/ingreso.service';
 import { IngresoDto } from '../../interfaces/ingreso-dto.interface';
 import { FormsModule } from '@angular/forms';
 import { TiposIngresosTotales } from '../../interfaces/tipos-ingresos-totales-dto.interface';
 import { CommonModule } from '@angular/common';
-import { Subject, take, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
 import 'sweetalert2/themes/bootstrap-5.css'
@@ -14,22 +13,21 @@ import { EgresoService } from '../../services/egreso.service';
 import { CrearEgresoDto } from '../../interfaces/crear-egreso-dto.interface';
 import { TiposEgresosTotales } from '../../interfaces/tipos-egresos-totales-dto.interface';
 import { EgresoDto } from '../../interfaces/egreso-dto.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trabajo-aplicaciones',
-  imports: [ModalNormalComponent, FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './trabajo-aplicaciones.component.html',
   styles: ``
 })
 export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   
   private ingresoService = inject(IngresoService);
+  private router = inject(Router);
   private authService = inject(AuthService);
   private egresoService = inject(EgresoService);
   private onDestroy: Subject<boolean> = new Subject();
-  
-  @ViewChild('modalIngreso') modalIngreso!: ModalNormalComponent;
-  @ViewChild('modalEgreso') modalEgreso!: ModalNormalComponent;
   
   ingreso: CrearIngresoDto = {
     monto: 0,
@@ -82,6 +80,22 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
             this.listaEgresos = res;
           })
         },
+        error: (err) => {
+          console.log(err)
+          let error = '';
+          (err.message.includes('validar_token')) 
+            ? error = 'Token expirado o inexistente. Inicie sesion nuevamente.'
+            : error = err.message 
+
+          Swal.fire({
+            icon: 'warning',
+            title: error
+          }).then(result => {
+            if(result.isConfirmed){
+              this.router.navigate(['/ingresar']);
+            }
+          })
+        }
       })
   }
   
@@ -102,7 +116,7 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
           <div class="text-left"> 
             <label>Tipo</label>
             <select id="tipo-ingreso" class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700">
-              <option value="">Seleccionar</option>
+              <option value="" selected>Seleccionar</option>
               <option value="Efectivo">Efectivo</option>
               <option value="Nequi">Nequi</option>
               <option value="App">App</option>
@@ -121,16 +135,6 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
 
         const tipo = (popup?.querySelector('#tipo-ingreso') as HTMLSelectElement)?.value;
         const monto = (popup?.querySelector('#monto-ingreso') as HTMLInputElement)?.value;
-
-        if (!tipo || !monto) {
-          Swal.showValidationMessage('Todos los campos son obligatorios');
-          return;
-        }
-
-        if(Number(monto) <= 0){
-          Swal.showValidationMessage('El monto debe ser mayor a 0.');
-          return;
-        }
 
         return {
           tipo,
@@ -151,20 +155,28 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   }
 
   registrarAhorro = (ingreso: CrearIngresoDto) => {
+    console.log(ingreso)
     this.ingresoService.agregar(ingreso).subscribe({
-      next: () => {
+      next: (res) => {
         this.ingresoService.actualizarInformacion();
         Swal.fire({
           icon: 'success',
-          text: 'Registro exitoso.',
+          text: res.mensaje,
           confirmButtonText: 'Ok'
         })
 
       },
       error: (err) => {
+        console.log(err)
+
+        const errores = Object.values(err.error.errors).flat();
         Swal.fire({
           icon: 'error',
-          text: 'Ha ocurrido un error.',
+          html: `
+            <ul style="list-style: none;">
+              ${errores.map((e: any) => `<li>${e}</li>`).join('')}
+            </ul>
+          `,
           confirmButtonText: 'Ok'
         })
       }
@@ -172,17 +184,6 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   }
 
   mostrarModalEgreso = () => {
-
-    if((this.totalesIngresos.totalApp + this.totalesIngresos.totalEfectivo + this.totalesIngresos.totalNequi) == 0){
-      Swal.fire({
-        title: 'No puede registrar egresos, ya que no cuentas con ingresos.',
-        icon: 'warning',
-        confirmButtonText: 'Ok'
-      })
-
-      return;
-    }
-
     Swal.fire({
       title: 'Registrar un egreso',
       showCancelButton: true,
@@ -214,16 +215,6 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
         const tipo = (popup?.querySelector('#tipo-egreso') as HTMLSelectElement)?.value;
         const monto = (popup?.querySelector('#monto-egreso') as HTMLInputElement)?.value;
 
-        if (!tipo || !monto) {
-          Swal.showValidationMessage('Todos los campos son obligatorios');
-          return;
-        }
-
-        if(Number(monto) <= 0){
-          Swal.showValidationMessage('El monto debe ser mayor a 0.');
-          return;
-        }
-
         return {
           tipo,
           monto: Number(monto)
@@ -244,21 +235,25 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
 
   registrarEgreso = (egreso: CrearEgresoDto) => {
     this.egresoService.agregar(egreso).subscribe({
-      next: () => {
+      next: (res) => {
         this.ingresoService.actualizarInformacion();
         this.egresoService.actualizarInformacion();
         Swal.fire({
           icon: 'success',
-          text: 'Registro exitoso.',
+          text: res.mensaje,
           confirmButtonText: 'Ok'
         })
 
       },
       error: (err) => {
-        console.log(err)
+        const errores =  Object.values(err.error.errors).flat();
         Swal.fire({
           icon: 'error',
-          text: 'Ha ocurrido un error.',
+          html: `
+            <ul style="list-style: none;">
+              ${errores.map((e: any) => `<li>${e}</li>`).join('')}
+            </ul>
+          `,
           confirmButtonText: 'Ok'
         })
       }
