@@ -85,7 +85,10 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
         });
       },
       error: (err) => {
-        this.mensajeError = (err.status == 500) ? 'Token expirado o inexistente. Inicie sesion nuevamente.' : this.mensajeError = err.message;
+        this.mensajeError = 
+          (err.status == 500) 
+            ? 'Token expirado o inexistente. Inicie sesion nuevamente.' 
+            : this.respuestasService.manejoRespuesta(err.message);
         this.modalError.abrir();
       }
     });
@@ -128,35 +131,40 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this.authService.usuarioLogueado.subscribe((usuario) => {
-      if (usuario == null) {
-        this.usuarioNoLogueado();
-        return;
+    this.authService.validarToken().subscribe({
+      next: (res) => {
+        console.log(res)
+        this.authService.usuarioLogueado.subscribe((usuario) => {
+          this.model.usuarioId = usuario!.id;
+          this.metaAhorroService.crearMeta(this.model).subscribe({
+            next: (res) => {
+              this.metaAhorroService.refrescarInformacion(usuario!.id);
+              this.mensajeRegistroExitoso = res.mensaje;
+              this.modalCrearMeta.cerrar();
+              this.modalRegistroMetaExitoso.abrir();
+            },
+            error: (err) => {
+              this.mensajeError = this.respuestasService.manejoRespuesta(err);
+              this.modalError.abrir();
+            },
+          });
+        });
+      },
+      error: (err) => {
+        //this.mensajeError = (err.status == 500) 
+        //  ? 'Token expirado o inexistente. Inicie sesion nuevamente.' 
+        //  : this.respuestasService.manejoRespuesta(err);
+        this.mensajeError = err.message;
+        this.modalError.abrir();
       }
+    })
 
-      this.model.usuarioId = usuario.id;
-      this.metaAhorroService.crearMeta(this.model).subscribe({
-        next: (res) => {
-          this.metaAhorroService.refrescarInformacion(usuario.id);
-          this.mensajeRegistroExitoso = res.mensaje;
-          this.modalCrearMeta.cerrar();
-          this.modalRegistroMetaExitoso.abrir();
-        },
-        error: (err) => {
-          this.mensajeError = this.respuestasService.manejoRespuesta(err);
-          this.modalError.abrir();
-        },
-      });
-    });
   };
 
   obtenerCantidadMetasActivasPorUsuario(): void {
-    this.authService.usuarioLogueado.subscribe({
-      next: (usuario) => {
-        if (usuario == null) {
-          this.usuarioNoLogueado();
-          return;
-        }
+    this.authService.validarToken().subscribe({
+      next: () => {
+        
         this.metaAhorroService.cantidadMetasObservable.subscribe((res) => {
           this.cantidadMetasActivas = res;
         });
@@ -203,31 +211,40 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this.authService.usuarioLogueado.subscribe((usuario) => {
-      if (usuario == null) {
-        this.usuarioNoLogueado();
-        return;
+    this.authService.validarToken().subscribe({
+      next: (res)  => {
+        console.log(res)
+        this.authService.usuarioLogueado.subscribe((usuario) => {
+          this.nuevoAhorro.metaAhorroId = Number(this.nuevoAhorro.metaAhorroId);
+          this.nuevoAhorro.usuarioId = usuario!.id;
+    
+          this.ahorroService.agregarO(this.nuevoAhorro).subscribe({
+            next: (res) => {
+              this.ahorroService.refrescarInformacion(usuario!.id);
+              this.metaAhorroService.refrescarInformacion(usuario!.id);
+              this.mensajeRegistroExitoso = res.mensaje;
+    
+              this.modalCrearAhorro.cerrar();
+              this.modalRegistroMetaExitoso.abrir();
+    
+              this.limpiarModelo();
+            },
+            error: (err) => {
+              this.mensajeError = this.respuestasService.manejoRespuesta(err);
+              this.modalError.abrir();
+            },
+          });
+        });
+      },
+      error: (err) => {
+        console.log(err)
+        this.mensajeError = (err.status == 500) 
+          ? 'Token expirado o inexistente. Inicie sesion nuevamente.' 
+          : this.respuestasService.manejoRespuesta(err);
+        this.modalError.abrir();
       }
-      this.nuevoAhorro.metaAhorroId = Number(this.nuevoAhorro.metaAhorroId);
-      this.nuevoAhorro.usuarioId = usuario.id;
+    })
 
-      this.ahorroService.agregarO(this.nuevoAhorro).subscribe({
-        next: (res) => {
-          this.ahorroService.refrescarInformacion(usuario.id);
-          this.metaAhorroService.refrescarInformacion(usuario.id);
-          this.mensajeRegistroExitoso = res.mensaje;
-
-          this.modalCrearAhorro.cerrar();
-          this.modalRegistroMetaExitoso.abrir();
-
-          this.limpiarModelo();
-        },
-        error: (err) => {
-          this.mensajeError = this.respuestasService.manejoRespuesta(err);
-          this.modalError.abrir();
-        },
-      });
-    });
   };
 
   limpiarModelo = (): void => {

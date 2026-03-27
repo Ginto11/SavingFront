@@ -53,48 +53,24 @@
         <div>
             <h3 class="text-xl mb-4 flex justify-between">
               <p class="font-semibold text-green-200">Ingresos</p> 
-              <button class="bg-blue-800 rounded-full w-7 cursor-pointer flex items-center justify-center pi pi-plus" (click)="modalIngreso.abrir()"></button>
+              <button class="bg-blue-800 rounded-full w-7 cursor-pointer flex items-center justify-center pi pi-plus" (click)="mostrarModal()"></button>
             </h3>
 
             <ul class="flex flex-col gap-3">
-              <li class="p-4 bg-gray-800 rounded-xl shadow-md flex justify-between items-center">
-                <div class="flex gap-3">
-                  <div>
-                    <i class="pi pi-arrow-circle-up bg-green-200 p-3 rounded-3xl text-green-900"></i>
+              @for (ingreso of listaIngresos; track ingreso.id) {
+                <li class="p-4 bg-gray-800 rounded-xl shadow-md flex justify-between items-center">
+                  <div class="flex gap-3">
+                    <div>
+                      <i class="pi pi-arrow-circle-up bg-green-200 p-3 rounded-3xl text-green-900"></i>
+                    </div>
+                    <div>
+                      <p class="font-semibold"> {{ ingreso.tipo }} </p>
+                      <p class="text-xs text-gray-400"> {{ ingreso.fechaRegistro | date: 'dd MMM yyyy' }} </p>
+                    </div>
                   </div>
-                  <div>
-                    <p class="font-semibold">Nequi</p>
-                    <p class="text-xs text-gray-400">25/03/2026</p>
-                  </div>
-                </div>
-                <p class="font-semibold text-green-200">+ $ 80.000</p>
-              </li>
-
-              <li class="p-4 bg-gray-800 rounded-xl shadow-md flex justify-between items-center">
-                <div class="flex gap-3">
-                  <div>
-                    <i class="pi pi-arrow-circle-up bg-green-200 p-3 rounded-3xl text-green-900"></i>
-                  </div>
-                  <div>
-                    <p class="font-semibold">App</p>
-                    <p class="text-xs text-gray-400">25/03/2026</p>
-                  </div>
-                </div>
-                <p class="font-semibold text-green-200">+ $ 70.000</p>
-              </li>
-
-              <li class="p-4 bg-gray-800 rounded-xl shadow-md flex justify-between items-center">
-                <div class="flex gap-3">
-                  <div>
-                    <i class="pi pi-arrow-circle-up bg-green-200 p-3 rounded-3xl text-green-900"></i>
-                  </div>
-                  <div>
-                    <p class="font-semibold">Efectivo</p>
-                    <p class="text-xs text-gray-400">25/03/2026</p>
-                  </div>
-                </div>
-                <p class="font-semibold text-green-200">+ $ 120.000</p>
-              </li>
+                  <p class="font-semibold text-green-200">+ $ {{ ingreso.monto | currency: ' ':'symbol':'1.0-0'}} </p>
+                </li>
+              }
             </ul>
         </div>
 
@@ -155,7 +131,7 @@
   titulo="Registrar Ingreso"
   manejador="normal"
   tipo="confirmacion"
-  [callback1]="registrarAhorro"
+  [callback1]="mostrarModal"
   nombreBtnAccion1="Registrar">
 
   <form class="flex flex-col gap-4">
