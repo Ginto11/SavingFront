@@ -102,35 +102,3 @@
   </section>
 </section>
 
-<app-modal-normal
-  #modalIngreso
-  titulo="Registrar Ingreso"
-  manejador="normal"
-  tipo="confirmacion"
-  [callback1]="mostrarModalIngreso"
-  nombreBtnAccion1="Registrar">
-
-  <form class="flex flex-col gap-4">
-
-      <div>
-        <label>Tipo</label>
-        <select [(ngModel)]="ingreso.tipo" class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700"
-          placeholder="Ej: Ahorro para moto" name="tipo" id="tipo">
-          <option value="" selected>Seleccionar</option>
-          <option value="Efectivo">Efectivo</option>
-          <option value="Nequi">Nequi</option>
-          <option value="App">App</option>
-        </select>
-      </div>
-
-      <div>
-        <label>Monto</label>
-        <input [(ngModel)]="ingreso.monto" name="monto" type="number"
-          class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700" placeholder="Ej: 3000000">
-      </div>
-
-    </form>
-
-</app-modal-normal>
-
-
