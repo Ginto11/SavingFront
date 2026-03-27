@@ -10,7 +10,7 @@
     >
       <div>
         <p class="text-sm text-gray-400">Efectivo</p>
-        <h2 class="text-3xl font-bold mt-2"> $ {{ (totales.totalEfectivo) ? (totales.totalEfectivo | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
+        <h2 class="text-3xl font-bold mt-2"> $ {{ (totalesIngresos.totalEfectivo) ? (totalesIngresos.totalEfectivo | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
       </div>
       <i class="pi pi-dollar bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
@@ -20,7 +20,7 @@
     >
       <div>
         <p class="text-sm text-gray-400">Nequi</p>
-        <h2 class="text-3xl font-bold mt-2"> $ {{ (totales.totalNequi) ? (totales.totalNequi | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
+        <h2 class="text-3xl font-bold mt-2"> $ {{ (totalesIngresos.totalNequi) ? (totalesIngresos.totalNequi | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
       </div>
       <i class="pi pi-dollar bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
@@ -30,7 +30,7 @@
     >
       <div>
         <p class="text-sm text-gray-400">App</p>
-        <h2 class="text-3xl font-bold mt-2"> $ {{ (totales.totalApp) ? (totales.totalApp | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
+        <h2 class="text-3xl font-bold mt-2"> $ {{ (totalesIngresos.totalApp) ? (totalesIngresos.totalApp | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
       </div>
       <i class="pi pi-dollar bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
@@ -40,7 +40,7 @@
     >
       <div>
         <p class="text-sm text-gray-400">Total</p>
-        <h2 class="text-3xl font-bold mt-2">$ {{ (totales.totalEfectivo + totales.totalNequi + totales.totalApp) | currency: ' ':'symbol':'1.0-0' }} </h2>
+        <h2 class="text-3xl font-bold mt-2">$ {{ (totalesIngresos.totalEfectivo + totalesIngresos.totalNequi + totalesIngresos.totalApp) | currency: ' ':'symbol':'1.0-0' }} </h2>
       </div>
       <i class="pi pi-wallet bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
@@ -53,7 +53,7 @@
         <div>
             <h3 class="text-xl mb-4 flex justify-between">
               <p class="font-semibold text-green-200">Ingresos</p> 
-              <button class="bg-blue-800 rounded-full w-7 cursor-pointer flex items-center justify-center pi pi-plus" (click)="mostrarModal()"></button>
+              <button class="bg-blue-800 rounded-full w-7 cursor-pointer flex items-center justify-center pi pi-plus" (click)="mostrarModalIngreso()"></button>
             </h3>
 
             <ul class="flex flex-col gap-3">
@@ -77,48 +77,24 @@
         <div>
             <h3 class="text-xl mb-4 flex justify-between">
               <p class="text-red-400 font-semibold">Egresos</p>
-              <button class="bg-red-800 rounded-full w-7 cursor-pointer flex items-center justify-center pi pi-minus" (click)="modalEgreso.abrir()"></button>
+              <button class="bg-red-800 rounded-full w-7 cursor-pointer flex items-center justify-center pi pi-minus" (click)="mostrarModalEgreso()"></button>
             </h3>
 
             <ul class="flex flex-col gap-3">
-              <li class="p-4 bg-gray-800 rounded-xl shadow-md flex justify-between items-center">
-                <div class="flex gap-4"> 
-                  <div>
-                    <i class="pi pi-arrow-circle-down bg-red-200 p-3 rounded-3xl text-red-900"></i>
+              @for (egreso of listaEgresos; track egreso.id) {
+                <li class="p-4 bg-gray-800 rounded-xl shadow-md flex justify-between items-center">
+                  <div class="flex gap-4"> 
+                    <div>
+                      <i class="pi pi-arrow-circle-down bg-red-200 p-3 rounded-3xl text-red-900"></i>
+                    </div>
+                    <div>
+                      <p class="font-semibold"> {{ egreso.tipo }} </p>
+                      <p class="text-xs text-gray-400"> {{ egreso.fechaRegistro | date: 'dd MMM yyyy' }} </p>
+                    </div>
                   </div>
-                  <div>
-                    <p class="font-semibold">Efectivo</p>
-                    <p class="text-xs text-gray-400">25/03/2026</p>
-                  </div>
-                </div>
-                <p class="text-red-400 font-semibold">- $ 80.000</p>
-              </li>
-
-              <li class="p-4 bg-gray-800 rounded-xl shadow-md flex justify-between items-center">
-                <div class="flex gap-3">
-                  <div>
-                    <i class="pi pi-arrow-circle-down bg-red-200 p-3 rounded-3xl text-red-900"></i>
-                  </div>
-                  <div>
-                    <p class="font-semibold">App</p>
-                    <p class="text-xs text-gray-400">25/03/2026</p>
-                  </div>
-                </div>
-                <p class="text-red-400 font-semibold">- $ 10.000</p>
-              </li>
-
-              <li class="p-4 bg-gray-800 rounded-xl shadow-md flex justify-between items-center">
-                <div class="flex gap-3">
-                  <div>
-                    <i class="pi pi-arrow-circle-down bg-red-200 p-3 rounded-3xl text-red-900"></i>
-                  </div>
-                  <div>
-                    <p class="font-semibold">Nequi</p>
-                    <p class="text-xs text-gray-400">25/03/2026</p>
-                  </div>
-                </div>
-                <p class="text-red-400 font-semibold">- $ 16.000</p>
-              </li>
+                  <p class="text-red-400 font-semibold">- $ {{ egreso.monto | currency: ' ':'symbol':'1.0-0' }} </p>
+                </li>
+              }
             </ul>
         </div>
 
@@ -131,7 +107,7 @@
   titulo="Registrar Ingreso"
   manejador="normal"
   tipo="confirmacion"
-  [callback1]="mostrarModal"
+  [callback1]="mostrarModalIngreso"
   nombreBtnAccion1="Registrar">
 
   <form class="flex flex-col gap-4">
@@ -158,33 +134,3 @@
 </app-modal-normal>
 
 
-<app-modal-normal
-  #modalEgreso
-  titulo="Registrar Egreso"
-  manejador="normal"
-  tipo="confirmacion"
-  [callback1]="registrarEgreso"
-  nombreBtnAccion1="Registrar">
-
-  <form class="flex flex-col gap-4">
-
-      <div>
-        <label>Tipo</label>
-        <select class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700"
-          placeholder="Ej: Ahorro para moto" name="tipo" id="tipo">
-          <option value="" selected>Seleccionar</option>
-          <option value="Efectivo">Efectivo</option>
-          <option value="Nequi">Nequi</option>
-          <option value="App">App</option>
-        </select>
-      </div>
-
-      <div>
-        <label>Monto</label>
-        <input name="monto" type="number"
-          class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700" placeholder="Ej: 3000000">
-      </div>
-
-    </form>
-
-</app-modal-normal>

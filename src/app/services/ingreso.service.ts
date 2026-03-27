@@ -37,7 +37,7 @@ export class IngresoService {
 
     const usuario = this.localstorage.getItem('usuario-saving');
 
-    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/ingresos/${usuario.id}`).subscribe(res => this.totales.next(res.data));
+    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/ingresos/totales/usuario/${usuario.id}`).subscribe(res => this.totales.next(res.data));
     this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/ingresos/usuario/${usuario.id}`).subscribe(res => this.listaIngresos.next(res.data));
   }
 
