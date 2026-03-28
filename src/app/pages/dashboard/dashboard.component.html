@@ -90,7 +90,11 @@
             <p class="text-xs text-gray-400"> {{ movimiento.fechaAhorro | date:'dd MMM yyyy' }}</p>
           </div>
         </div>
-        <p class="font-semibold text-green-200"> + $ {{ movimiento.monto | currency: ' ':'symbol':'1.0-0' }} </p>
+        <div class="font-semibold flex gap-2"> 
+          <p class="text-green-200">+ $ {{ movimiento.monto | currency: ' ':'symbol':'1.0-0' }}</p> 
+          <button class="pi pi-trash"></button> 
+          <button class="pi pi-pencil"></button> 
+        </div>
       </div>
       }
 

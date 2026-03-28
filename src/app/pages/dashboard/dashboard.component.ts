@@ -131,7 +131,7 @@ export default class DashboardComponent implements OnInit, OnDestroy {
         });
 
         Swal.fire({
-          title: 'Crear una meta',
+          title: 'Crear un ahorro',  
           showCancelButton: true,
           cancelButtonText: 'Cancelar',
           theme: 'bootstrap-5-light',
