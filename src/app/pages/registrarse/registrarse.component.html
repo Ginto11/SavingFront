@@ -124,27 +124,4 @@
   </form>
 
 
-  <app-modal-normal 
-    #modalRegistroExitoso 
-    titulo="Mensaje de aplicación." 
-    tipo="info"
-    manejador="normal"
-    nombreBtnAccion1="Aceptar"
-    [callback1]="cerrarModalYRedireccionar">
-
-    <p> {{ mensajeRegistroExitoso }} </p>
-    
-  </app-modal-normal>
-
-  <app-modal-normal 
-    #modalError titulo="Mensaje de error." 
-    tipo="error"
-    manejador="errores"
-    nombreBtnAccion1="Aceptar"
-    [mensajeError]="mensajeError"
-    [multiplesErrores]="multiplesErrores"
-    [callback1]="cerrarModalYLimpiarVariables">
-
-  </app-modal-normal>
-
-</section>
+  

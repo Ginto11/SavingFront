@@ -74,7 +74,7 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
             this.listaEgresos = res;
           })
         },
-        error: (err) => this.modalesService.modalTokenExpiradoOError(err)
+        error: (err) => this.modalesService.modalError(err)
       })
   }
   
@@ -139,7 +139,7 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
         this.ingresoService.actualizarInformacion();
         this.modalesService.modalExitoso(res.mensaje);        
       },
-      error: (err) => this.modalesService.modalMultiplesErrores(err)
+      error: (err) => this.modalesService.modalError(err)
     })
   }
 
@@ -201,7 +201,7 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
         this.modalesService.modalExitoso(res.mensaje);
 
       },
-      error: (err) => this.modalesService.modalMultiplesErrores(err)
+      error: (err) => this.modalesService.modalError(err)
     })
   }
 

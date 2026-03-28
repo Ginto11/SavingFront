@@ -1,28 +1,27 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { UsuarioLogin } from '../../interfaces/usuario-login.interface';
 import { FormsModule } from '@angular/forms';
-import { ServerResponse } from '../../interfaces/server-response.interface';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
-import { RespuestaService } from '../../services/respuesta.service';
-import { LocalstorageService } from '../../services/localstorage.service';
-import { ModalNormalComponent } from '../../shared/modal-normal/modal-normal.component';
 import { CommonModule } from '@angular/common';
+import { ModalesService } from '../../services/modales.service';
+import { Subject, takeUntil } from 'rxjs';
+import Swal from 'sweetalert2';
+import 'sweetalert2/themes/bootstrap-5.css'
+
 
 @Component({
   selector: 'app-ingresar',
-  imports: [RouterLink, FormsModule, ModalNormalComponent, CommonModule],
+  imports: [RouterLink, FormsModule, CommonModule],
   templateUrl: './ingresar.component.html',
   styles: ``
 })
-export default class IngresarComponent {
-
+export default class IngresarComponent implements OnDestroy {
+  
   private authService = inject(AuthService);
-  private respuestaService = inject(RespuestaService);
-  @ViewChild('modal') modal!: ModalNormalComponent;
+  private modalesService = inject(ModalesService);
+  private onDestroy: Subject<boolean> = new Subject();
 
-  mensajeErrorModal = '';
   isIngresando = false;
 
   usuario: UsuarioLogin = {
@@ -32,15 +31,19 @@ export default class IngresarComponent {
 
   ingresar(): void {
     this.isIngresando = true;
-    this.authService.login(this.usuario).subscribe({
+    this.authService.login(this.usuario)
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe({
       next: () => this.isIngresando = true,
       error: (err) => {
-        console.log(err);
         this.isIngresando = false;
-        this.mensajeErrorModal = this.respuestaService.manejoRespuesta(err);
-        console.log(this.mensajeErrorModal)
-        this.modal.abrir();
+        this.modalesService.modalError(err);
       }
     })
+  }
+  
+  ngOnDestroy(): void {
+    this.onDestroy.next(true);
+    this.onDestroy.complete();
   }
 }
