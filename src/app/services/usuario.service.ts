@@ -28,16 +28,9 @@ export class UsuarioService {
 
   constructor() {}
 
-  agregar = async (usuario: CrearUsuarioDto) :Promise<any> => {
-    try{
-
-      return await lastValueFrom(
-        this.http.post(`${environment.URL_SERVER}/api/usuarios`, usuario)
-      )
-
-    }catch(error){
-      throw error;
-    }
+  agregar = (usuario: CrearUsuarioDto) :Observable<any> => {
+    console.log(usuario)
+    return this.http.post(`${environment.URL_SERVER}/api/usuarios`, usuario);
   }
 
   actualizar(id: number, formData: FormData):Observable<ServerResponse> {

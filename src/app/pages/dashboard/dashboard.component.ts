@@ -61,7 +61,7 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
           }
         });
       },
-      error: (err) => this.modalesService.modalTokenExpiradoOError(err)
+      error: (err) => this.modalesService.modalError(err)
     });
   }
   
@@ -114,49 +114,79 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
           montoObjetivo: result.value.monto,
           usuarioId: 0
         }
-        console.log(meta.montoObjetivo)
         this.guardarMeta(meta);
       }
     })
   }
 
   mostrarModalCrearAhorro = () => {
-    Swal.fire({
-      title: 'Crear una meta',
-      showCancelButton: true,
-      cancelButtonText: 'Cancelar',
-      theme: 'bootstrap-5-light',
-      confirmButtonText: 'Guardar',
-      html: `
-        <form class="flex flex-col gap-4">
 
-          <div>
-            <label>Monto (Sin puntos)</label>
-            <input [(ngModel)]="nuevoAhorro.monto" name="monto" type="number"
-              class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700" placeholder="Ej: 150000">
-          </div>
+    let opciones = `<option selected value="">Seleccionar</option>`;
 
-          <div>
-            <label>Descripción</label>
-            <input [(ngModel)]="nuevoAhorro.descripcion" name="descripcion" type="text"
-              class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700" placeholder="Ej: Ahorro semanal">
-          </div>
+    this.authService.usuarioLogueado.subscribe((usuario)=> {
+      this.metaAhorroService.obtenerTodasLasMetasPorUsuarioId(usuario!.id).subscribe((res) =>{
+        console.log(res)
+        res.data.forEach((meta: any) => {
+          opciones += `<option value="${meta.id}">${meta.nombre}</option>`;
+        });
 
-          <div>
-            <label>Meta de ahorro</label>
-            <select [(ngModel)]="nuevoAhorro.metaAhorroId" name="metaAhorroId"
-              class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700">
-              <option selected value="">Seleccionar</option>
-              @for (meta of metas; track meta.id) {
-              <option [value]="meta.id">{{ meta.nombre }}</option>
-              }
+        Swal.fire({
+          title: 'Crear una meta',
+          showCancelButton: true,
+          cancelButtonText: 'Cancelar',
+          theme: 'bootstrap-5-light',
+          confirmButtonText: 'Guardar',
+          html: `
+            <form class="flex flex-col gap-4">
 
-            </select>
-          </div>
+              <div class="text-left">
+                <label>Monto (Sin puntos)</label>
+                <input id="monto-ahorro" name="monto" type="number"
+                  class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700" placeholder="Ej: 150000">
+              </div>
 
-          <input type="hidden" [(ngModel)]="nuevoAhorro.usuarioId" name="usuarioId">
-        </form>
-      `
+              <div class="text-left">
+                <label>Descripción</label>
+                <input id="descripcion-ahorro" name="descripcion" type="text"
+                  class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700" placeholder="Ej: Ahorro semanal">
+              </div>
+
+              <div class="text-left">
+                <label>Meta de ahorro</label>
+                <select id="meta-ahorro-id" name="metaAhorroId"
+                  class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700">
+                  ${opciones}
+                </select>
+              </div>
+            </form>
+          `,
+          preConfirm: () => {
+            const modal = Swal.getPopup();
+
+            const metaAhorroId = (modal!.querySelector('#meta-ahorro-id') as HTMLInputElement)?.value;
+            const monto = (modal!.querySelector('#monto-ahorro') as HTMLInputElement)?.value;
+            const descripcion = (modal!.querySelector('#descripcion-ahorro')as HTMLInputElement)?.value;
+
+            return {
+              metaAhorroId, 
+              monto: Number(monto),
+              descripcion, 
+              usuarioId: usuario!.id
+            }
+          }
+        }).then(result => {
+          if(result.isConfirmed){
+            const ahorro: CrearNuevoAhorroDto = {
+              descripcion: result.value.descripcion,
+              usuarioId: result.value.usuarioId,
+              monto: result.value.monto,
+              metaAhorroId: result.value.metaAhorroId
+            }
+
+            this.guardarAhorro(ahorro);
+          }
+        })
+      })
     })
   }
 
@@ -172,11 +202,11 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
               this.metaAhorroService.refrescarInformacion(usuario!.id);
               this.modalesService.modalExitoso(res.mensaje);
             },
-            error: (err) => this.modalesService.modalMultiplesErrores(err)
+            error: (err) => this.modalesService.modalError(err)
           });
         });
       },
-      error: (err) => this.modalesService.modalTokenExpiradoOError(err)
+      error: (err) => this.modalesService.modalError(err)
     })
 
   };
@@ -193,7 +223,7 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
           this.metas = res;
         });
       },
-      error: (err) => this.modalesService.modalTokenExpiradoOError(err)
+      error: (err) => this.modalesService.modalError(err)
     });
   }
 
@@ -210,11 +240,11 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
               this.metaAhorroService.refrescarInformacion(usuario!.id);
               this.modalesService.modalExitoso(res.mensaje);
             },
-            error: (err) => this.modalesService.modalMultiplesErrores(err),
+            error: (err) => this.modalesService.modalError(err),
           });
         });
       },
-      error: (err) => this.modalesService.modalTokenExpiradoOError(err)
+      error: (err) => this.modalesService.modalError(err)
     })
 
   };
@@ -228,11 +258,11 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
           this.metaAhorroService.refrescarInformacion(usuario!.id);
           this.ahorroService.cantidadesTotalesObservable.subscribe({
             next: (res) => this.cantidadesTotales = res,
-            error: (err) => this.modalesService.modalTokenExpiradoOError(err)
+            error: (err) => this.modalesService.modalError(err)
           });
         });
       }, 
-      error: (err) => this.modalesService.modalTokenExpiradoOError(err)
+      error: (err) => this.modalesService.modalError(err)
     })
   }
 
@@ -245,11 +275,11 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
           this.ahorroService.refrescarInformacion(usuario!.id);
           this.ahorroService.movimientosObservable.subscribe({
             next: (res) => this.ultimosMovimientos = res,
-            error: (err) => this.modalesService.modalTokenExpiradoOError(err),
+            error: (err) => this.modalesService.modalError(err),
           });
         });
       }, 
-      error: (err) => this.modalesService.modalTokenExpiradoOError(err)
+      error: (err) => this.modalesService.modalError(err)
     })
   }
 
@@ -262,11 +292,11 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
           this.metaAhorroService.refrescarInformacion(usuario!.id);
           this.metaAhorroService.metaCumplimientoObservable.subscribe({
             next: (res) => this.metasConCumplimiento = res,
-            error: (err) => this.modalesService.modalTokenExpiradoOError(err),
+            error: (err) => this.modalesService.modalError(err),
           });
         });
       },
-      error: (err) => this.modalesService.modalTokenExpiradoOError(err)
+      error: (err) => this.modalesService.modalError(err)
     })
   }
 

@@ -12,21 +12,29 @@ export class ModalesService {
   constructor() { }
 
   private router = inject(Router)
-  private mostrarModal = new BehaviorSubject<boolean>(false);
-  private mostrarModalObservable = this.mostrarModal.asObservable();
 
-  modalTokenExpiradoOError(err: any){
-    let error = '';
-        (err.message.includes('validar_token')) 
-          ? error = 'Token expirado o inexistente. Inicie sesion nuevamente.'
-          : error = err.message 
-    
+  modalError(err: any){
+    console.log(err)
+    const error: string[] = Object.values(err.error.errors).flat() as string[];
+
+    const mensajes: string[] = [];
+
+    (error.toString().includes('The token is expired'))
+      ? mensajes.push('Token expirado o inexistente, inicie sesión nuevamente')
+      : mensajes.push(...error);
+
     Swal.fire({
-      icon: 'warning',
-      text: error
+      icon: 'error',
+      html: `
+        <ul style="list-style: none;">
+          ${mensajes.map((e: string) => `<li>${e}</li>`).join('')}
+        </ul>
+      `,
     }).then(result => {
       if(result.isConfirmed){
-        this.router.navigate(['/ingresar']);
+        if(mensajes.toString().includes('The token is expired')){
+          this.router.navigate(['/ingresar']);
+        }
       }
     })
   }
@@ -35,19 +43,6 @@ export class ModalesService {
     Swal.fire({
       icon: 'success',
       text: mensaje,
-      confirmButtonText: 'Ok'
-    })
-  }
-
-  modalMultiplesErrores(err: any){
-    const errores = Object.values(err.error.errors).flat();
-    Swal.fire({
-      icon: 'error',
-      html: `
-        <ul style="list-style: none;">
-          ${errores.map((e: any) => `<li>${e}</li>`).join('')}
-        </ul>
-      `,
       confirmButtonText: 'Ok'
     })
   }

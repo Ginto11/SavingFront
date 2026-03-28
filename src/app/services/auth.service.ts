@@ -38,9 +38,6 @@ export class AuthService {
 
       const usuario = this.localstorageService.getItem('usuario-saving');
 
-      /*if (!usuario || !usuario.token) {
-        return throwError(() => new Error('Token expirado o inexistente. Inicie sesion nuevamente.'));
-      } */
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${usuario.token}`
