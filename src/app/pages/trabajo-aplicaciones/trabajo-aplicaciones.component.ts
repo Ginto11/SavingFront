@@ -1,19 +1,19 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { IngresoService } from '../../services/ingreso.service';
-import { IngresoDto } from '../../interfaces/ingreso-dto.interface';
-import { FormsModule } from '@angular/forms';
 import { TiposIngresosTotales } from '../../interfaces/tipos-ingresos-totales-dto.interface';
-import { CommonModule } from '@angular/common';
-import { Subject, takeUntil } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
-import Swal from 'sweetalert2';
-import 'sweetalert2/themes/bootstrap-5.css'
 import { CrearIngresoDto } from '../../interfaces/crear-ingreso-dto.interface';
-import { EgresoService } from '../../services/egreso.service';
 import { CrearEgresoDto } from '../../interfaces/crear-egreso-dto.interface';
 import { TiposEgresosTotales } from '../../interfaces/tipos-egresos-totales-dto.interface';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { IngresoDto } from '../../interfaces/ingreso-dto.interface';
 import { EgresoDto } from '../../interfaces/egreso-dto.interface';
-import { Router } from '@angular/router';
+import { ModalesService } from '../../services/modales.service';
+import { IngresoService } from '../../services/ingreso.service';
+import { EgresoService } from '../../services/egreso.service';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import 'sweetalert2/themes/bootstrap-5.css'
+import { Subject, takeUntil } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-trabajo-aplicaciones',
@@ -24,16 +24,10 @@ import { Router } from '@angular/router';
 export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   
   private ingresoService = inject(IngresoService);
-  private router = inject(Router);
   private authService = inject(AuthService);
   private egresoService = inject(EgresoService);
   private onDestroy: Subject<boolean> = new Subject();
-  
-  ingreso: CrearIngresoDto = {
-    monto: 0,
-    tipo: '',
-    usuarioId: 0,
-  }
+  private modalesService = inject(ModalesService);
   
   totalesIngresos: TiposIngresosTotales = {
     totalEfectivo: 0,
@@ -80,22 +74,7 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
             this.listaEgresos = res;
           })
         },
-        error: (err) => {
-          console.log(err)
-          let error = '';
-          (err.message.includes('validar_token')) 
-            ? error = 'Token expirado o inexistente. Inicie sesion nuevamente.'
-            : error = err.message 
-
-          Swal.fire({
-            icon: 'warning',
-            title: error
-          }).then(result => {
-            if(result.isConfirmed){
-              this.router.navigate(['/ingresar']);
-            }
-          })
-        }
+        error: (err) => this.modalesService.modalTokenExpiradoOError(err)
       })
   }
   
@@ -155,31 +134,12 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   }
 
   registrarAhorro = (ingreso: CrearIngresoDto) => {
-    console.log(ingreso)
     this.ingresoService.agregar(ingreso).subscribe({
       next: (res) => {
         this.ingresoService.actualizarInformacion();
-        Swal.fire({
-          icon: 'success',
-          text: res.mensaje,
-          confirmButtonText: 'Ok'
-        })
-
+        this.modalesService.modalExitoso(res.mensaje);        
       },
-      error: (err) => {
-        console.log(err)
-
-        const errores = Object.values(err.error.errors).flat();
-        Swal.fire({
-          icon: 'error',
-          html: `
-            <ul style="list-style: none;">
-              ${errores.map((e: any) => `<li>${e}</li>`).join('')}
-            </ul>
-          `,
-          confirmButtonText: 'Ok'
-        })
-      }
+      error: (err) => this.modalesService.modalMultiplesErrores(err)
     })
   }
 
@@ -238,25 +198,10 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.ingresoService.actualizarInformacion();
         this.egresoService.actualizarInformacion();
-        Swal.fire({
-          icon: 'success',
-          text: res.mensaje,
-          confirmButtonText: 'Ok'
-        })
+        this.modalesService.modalExitoso(res.mensaje);
 
       },
-      error: (err) => {
-        const errores =  Object.values(err.error.errors).flat();
-        Swal.fire({
-          icon: 'error',
-          html: `
-            <ul style="list-style: none;">
-              ${errores.map((e: any) => `<li>${e}</li>`).join('')}
-            </ul>
-          `,
-          confirmButtonText: 'Ok'
-        })
-      }
+      error: (err) => this.modalesService.modalMultiplesErrores(err)
     })
   }
 
