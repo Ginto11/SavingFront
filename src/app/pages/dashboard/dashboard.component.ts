@@ -20,7 +20,7 @@ import { ModalesService } from '../../services/modales.service';
   templateUrl: './dashboard.component.html',
   styles: ``,
 })
-export default class DashboardComponent implements AfterViewInit, OnDestroy {
+export default class DashboardComponent implements OnInit, OnDestroy {
   private modalesService = inject(ModalesService);
   private authService = inject(AuthService);
   private ahorroService = inject(AhorroService);
@@ -42,7 +42,7 @@ export default class DashboardComponent implements AfterViewInit, OnDestroy {
   };
 
   ultimosMovimientos: UltimoMovimiento[] | null = [];
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     window.scrollTo(0, 0);
 
     this.authService.validarToken()
