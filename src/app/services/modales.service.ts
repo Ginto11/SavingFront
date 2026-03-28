@@ -16,7 +16,6 @@ export class ModalesService {
   private authService = inject(AuthService);
 
   modalError(err: any){
-    console.log(err)
     const error: string[] = Object.values(err.error.errors).flat() as string[];
 
     const mensajes: string[] = [];
@@ -32,9 +31,11 @@ export class ModalesService {
           ${mensajes.map((e: string) => `<li>${e}</li>`).join('')}
         </ul>
       `,
+      confirmButtonText: 'Ok'
     }).then(result => {
       if(result.isConfirmed){
-        if(mensajes.toString().includes('The token is expired')){
+        if(mensajes.toString().includes('Token expirado')){
+          this.authService.limpiarLocalstorage();
           this.router.navigate(['/ingresar']);
         }
       }
@@ -64,7 +65,7 @@ export class ModalesService {
           confirmButtonText: 'OK'
         })
         this.router.navigate(['/ingresar']);
-        this.authService.cerrarSesion();
+        this.authService.limpiarLocalstorage();
       }
     })
   }

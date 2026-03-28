@@ -47,9 +47,8 @@ export class AuthService {
 
   }
 
-  cerrarSesion() :void {
+  limpiarLocalstorage() :void {
     this.localstorageService.removerItem();
-    this.router.navigate(['inicio']);
   }
 
   obtenerUsuario(): UsuarioLogueado | null {
