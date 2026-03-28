@@ -1,26 +1,22 @@
-import { Component, EventEmitter, inject, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LinkMenu } from '../../interfaces/link-menu.interface';
 import { LinkMenuComponent } from '../../components/link-menu/link-menu.component';
-import { ModalNormalComponent } from '../modal-normal/modal-normal.component';
-import { LocalstorageService } from '../../services/localstorage.service';
-import { Router } from '@angular/router';
 import { EventosSidebarService } from '../../services/eventos-sidebar.service';
+import { ModalesService } from '../../services/modales.service';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [CommonModule, LinkMenuComponent, ModalNormalComponent],
+  imports: [CommonModule, LinkMenuComponent],
   templateUrl: './sidebar.component.html',
   styles: ``
 })
 export class SidebarComponent {
 
-  private router = inject(Router);
-  private localstorageService = inject(LocalstorageService);
+  modalesService = inject(ModalesService);
   private eventosSidebarService = inject(EventosSidebarService);
 
   @Output() showMenuCerrar = new EventEmitter<boolean>();
-  @ViewChild('modalRef') modalCerrarSesion!: ModalNormalComponent;
 
 
 
@@ -72,12 +68,6 @@ export class SidebarComponent {
   cerrarMenu() {
     this.eventosSidebarService.emitir(false);
   }
-
-  cerrarSesion = (): void => {
-    this.localstorageService.removerItem();
-    this.router.navigate(['inicio']);
-  }
-
 
   toggleMenu(menu: number) {
     this.openMenu = this.openMenu === menu ? null : menu;
