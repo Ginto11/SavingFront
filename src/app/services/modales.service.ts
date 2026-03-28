@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import Swal from 'sweetalert2';
 import 'sweetalert2/themes/bootstrap-5.css'
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class ModalesService {
   constructor() { }
 
   private router = inject(Router)
+  private authService = inject(AuthService);
 
   modalError(err: any){
     console.log(err)
@@ -62,6 +64,7 @@ export class ModalesService {
           confirmButtonText: 'OK'
         })
         this.router.navigate(['/ingresar']);
+        this.authService.cerrarSesion();
       }
     })
   }
