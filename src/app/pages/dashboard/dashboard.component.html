@@ -79,7 +79,7 @@
 
     <div class="bg-gray-800 rounded-xl p-4 shadow-md">
 
-      @for (movimiento of ultimosMovimientos; track $index) {
+      @for (movimiento of ultimosMovimientos; track movimiento.id) {
       <div class="flex items-center justify-between py-3 border-b border-gray-700">
         <div class="flex gap-3">
           <div>
@@ -92,8 +92,7 @@
         </div>
         <div class="font-semibold flex gap-2"> 
           <p class="text-green-200">+ $ {{ movimiento.monto | currency: ' ':'symbol':'1.0-0' }}</p> 
-          <button class="pi pi-trash"></button> 
-          <button class="pi pi-pencil"></button> 
+          <button (click)="mostrarModalEliminarMovimiento(movimiento.id)" class="pi pi-trash text-red-400 cursor-pointer"></button> 
         </div>
       </div>
       }
