@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsuarioDto } from '../../interfaces/usuario-dto.interface';
@@ -7,6 +7,9 @@ import { LocalstorageService } from '../../services/localstorage.service';
 import { environment } from '../../../environments/environment';
 import { ModalNormalComponent } from '../../shared/modal-normal/modal-normal.component';
 import { AuthService } from '../../services/auth.service';
+import { Subject, takeUntil } from 'rxjs';
+import { ModalesService } from '../../services/modales.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-info-usuario',
@@ -14,16 +17,22 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './info-usuario.component.html',
   styles: ``
 })
-export default class InfoUsuarioCompPonent implements OnInit{
+export default class InfoUsuarioCompPonent implements AfterViewInit{
 
   private authService = inject(AuthService);
+  private modalesService = inject(ModalesService);
   private usuarioService = inject(UsuarioService);
+  private onDestroy: Subject<boolean> = new Subject();
   private localstorageService = inject(LocalstorageService);
   
   @ViewChild('ModalActualizar') ModalActualizar!: ModalNormalComponent;
-  urlFoto!: string;
+
+  private URL = environment.URL_SERVER_FOTOS;
+
+  urlFoto: string = '/Uploads/Fotos/default.png';
   nombre!: string;
   correo!: string;
+
   usuario: UsuarioDto = {
     id: 0,
     primerNombre: '',
@@ -39,29 +48,34 @@ export default class InfoUsuarioCompPonent implements OnInit{
   fotoNueva!: File;
   edicioModo = false;
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.obtenerInformacionUsuario();
   }
 
   obtenerInformacionUsuario(){
-    this.authService.usuarioLogueado.subscribe(usuario => {
-        if(usuario == null){
-          console.log("Error")
-          return;
-        }
-
-        this.usuarioService.refrescarInformacion(usuario.id);
-        this.usuarioService.usuarioObservable.subscribe({ 
-          next: (res) => {
-            this.usuario = res;
-            this.urlFoto = `${environment.URL_SERVER_FOTOS}/${this.usuario.fotoPerfil}`;
-            this.nombre = `${this.usuario.primerNombre} ${this.usuario.primerApellido}`
-            this.correo = this.usuario.correo;
-          },
-          error: (err) => console.log(err)  
-        })
+    this.authService.validarToken()
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe({
+      next: () => {
+        this.authService.usuarioLogueado.subscribe(usuario => {
+            this.usuarioService.refrescarInformacion(usuario!.id);
+            this.usuarioService.usuarioObservable.subscribe({ 
+              next: (res) => {
+                console.log(res);
+                this.usuario = res;
+                this.urlFoto = `${this.URL}/${this.usuario.fotoPerfil}`;
+                this.nombre = `${this.usuario.primerNombre} ${this.usuario.primerApellido}`
+                this.correo = this.usuario.correo;
+              },
+              error: (err) => this.modalesService.modalError(err)
+            })
+          }
+        )
+      },
+      error: (err) => {
+        this.modalesService.modalError(err);
       }
-    )
+    })
   }
 
   seleccionarArchivo(evento: Event){
@@ -81,7 +95,22 @@ export default class InfoUsuarioCompPonent implements OnInit{
   }
 
   confirmacion() {
-    this.ModalActualizar.abrir();
+    Swal.fire({
+      icon: 'question',
+      text: '¿Segur@ que desea actualizar?',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Si, continuar'
+    }).then(result => {
+      if(result.isConfirmed){
+        this.actualizarInformacion();
+        Swal.fire({
+          icon:'success',
+          text: 'Registro actualizado exitosamente.',
+          confirmButtonText: 'Ok'
+        })
+      }
+    })
   }
 
   actualizarInformacion = () => {
@@ -112,7 +141,6 @@ export default class InfoUsuarioCompPonent implements OnInit{
       this.usuarioService.refrescarInformacion(id);
     });
     this.edicioModo = false;
-    this.ModalActualizar.cerrar();
 
   }
 

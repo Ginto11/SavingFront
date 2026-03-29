@@ -54,7 +54,7 @@ export class ModalesService {
     Swal.fire({
       icon: 'question',
       text: '¿Seguro que desea cerrar la sesión?',
-      denyButtonText: 'No',
+      showCancelButton: true,
       confirmButtonText: 'Si',
       cancelButtonText: 'Cancelar'
     }).then(result => {

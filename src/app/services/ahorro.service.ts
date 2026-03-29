@@ -29,16 +29,17 @@ export class AhorroService {
 
     const usuario = this.localstorageService.getItem('usuario-saving');
 
-    if (!usuario || !usuario.token) {
-      return throwError(() => new Error('Token expirado o inexistente. Inicie sesion nuevamente.'));
-    } 
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${usuario.token}`
     })
 
       return this.http.post(`${environment.URL_SERVER}/api/ahorros`, ahorro, { headers })
+  }
+
+  eliminarAhorro = (id: number): Observable<any> => {
+    console.log(id)
+    return this.http.delete(`${environment.URL_SERVER}/api/ahorros/${id}`)
   }
 
   obtenerTotalesPorUsuarioIdO(id: number):Observable<ServerResponse> {

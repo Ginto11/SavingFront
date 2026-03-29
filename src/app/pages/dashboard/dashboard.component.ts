@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { CrearMetaDTO } from '../../interfaces/crear-meta-dto.interface';
 import { FormsModule } from '@angular/forms';
 import { MetaAhorroService } from '../../services/meta-ahorro.service';
@@ -11,7 +17,7 @@ import { CumplimientoMetaAhorro } from '../../interfaces/cumplimiento-meta-ahorr
 import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
-import 'sweetalert2/themes/bootstrap-5.css'
+import 'sweetalert2/themes/bootstrap-5.css';
 import { ModalesService } from '../../services/modales.service';
 
 @Component({
@@ -33,8 +39,6 @@ export default class DashboardComponent implements OnInit, OnDestroy {
   metas: any | null = null;
   totalAhorrado!: number;
   ahorroMes!: number;
-  
-  
 
   cantidadesTotales: CantidadesTotales = {
     totalAhorrado: 0,
@@ -45,31 +49,32 @@ export default class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     window.scrollTo(0, 0);
 
-    this.authService.validarToken()
-    .pipe(takeUntil(this.onDestroy))
-    .subscribe({
-      next: () => {
-        this.authService.usuarioLogueado
-        .pipe(takeUntil(this.onDestroy))
-        .subscribe({
-          next: (usuario) => {
-            this.obtenerTotales();
-            this.obtenerUltimosMovimientos();
-            this.obtenerMetasConCumplimiento();
-            this.obtenerCantidadMetasActivasPorUsuario();
-            this.nombreUsuarioLogueado = usuario!.primerNombre;
-          }
-        });
-      },
-      error: (err) => this.modalesService.modalError(err)
-    });
+    this.authService
+      .validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: () => {
+          this.authService.usuarioLogueado
+            .pipe(takeUntil(this.onDestroy))
+            .subscribe({
+              next: (usuario) => {
+                this.obtenerTotales();
+                this.obtenerUltimosMovimientos();
+                this.obtenerMetasConCumplimiento();
+                this.obtenerCantidadMetasActivasPorUsuario();
+                this.nombreUsuarioLogueado = usuario!.primerNombre;
+              },
+            });
+        },
+        error: (err) => this.modalesService.modalError(err),
+      });
   }
-  
+
   ngOnDestroy(): void {
     this.onDestroy.next(true);
     this.onDestroy.complete();
   }
-  
+
   mostrarModalCrearMeta = () => {
     Swal.fire({
       title: 'Crear una meta',
@@ -96,47 +101,50 @@ export default class DashboardComponent implements OnInit, OnDestroy {
         </form>
       `,
       preConfirm: () => {
-
         const modal = Swal.getPopup();
 
-        const nombreMeta = (modal!.querySelector('#nombre-meta') as HTMLInputElement)?.value;
-        const montoObjetivo = (modal!.querySelector('#monto-objetivo') as HTMLInputElement)?.value;
+        const nombreMeta = (
+          modal!.querySelector('#nombre-meta') as HTMLInputElement
+        )?.value;
+        const montoObjetivo = (
+          modal!.querySelector('#monto-objetivo') as HTMLInputElement
+        )?.value;
 
         return {
-          nombreMeta, 
-          monto: Number(montoObjetivo)
-        }
-      }
-    }).then(result => {
-      if(result.isConfirmed){
+          nombreMeta,
+          monto: Number(montoObjetivo),
+        };
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
         const meta: CrearMetaDTO = {
           nombre: result.value.nombreMeta,
           montoObjetivo: result.value.monto,
-          usuarioId: 0
-        }
+          usuarioId: 0,
+        };
         this.guardarMeta(meta);
       }
-    })
-  }
+    });
+  };
 
   mostrarModalCrearAhorro = () => {
-
     let opciones = `<option selected value="">Seleccionar</option>`;
 
-    this.authService.usuarioLogueado.subscribe((usuario)=> {
-      this.metaAhorroService.obtenerTodasLasMetasPorUsuarioId(usuario!.id).subscribe((res) =>{
-        console.log(res)
-        res.data.forEach((meta: any) => {
-          opciones += `<option value="${meta.id}">${meta.nombre}</option>`;
-        });
+    this.authService.usuarioLogueado.subscribe((usuario) => {
+      this.metaAhorroService
+        .obtenerTodasLasMetasPorUsuarioId(usuario!.id)
+        .subscribe((res) => {
+          res.data.forEach((meta: any) => {
+            opciones += `<option value="${meta.id}">${meta.nombre}</option>`;
+          });
 
-        Swal.fire({
-          title: 'Crear un ahorro',  
-          showCancelButton: true,
-          cancelButtonText: 'Cancelar',
-          theme: 'bootstrap-5-light',
-          confirmButtonText: 'Guardar',
-          html: `
+          Swal.fire({
+            title: 'Crear un ahorro',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            theme: 'bootstrap-5-light',
+            confirmButtonText: 'Guardar',
+            html: `
             <form class="flex flex-col gap-4">
 
               <div class="text-left">
@@ -160,77 +168,83 @@ export default class DashboardComponent implements OnInit, OnDestroy {
               </div>
             </form>
           `,
-          preConfirm: () => {
-            const modal = Swal.getPopup();
+            preConfirm: () => {
+              const modal = Swal.getPopup();
 
-            const metaAhorroId = (modal!.querySelector('#meta-ahorro-id') as HTMLInputElement)?.value;
-            const monto = (modal!.querySelector('#monto-ahorro') as HTMLInputElement)?.value;
-            const descripcion = (modal!.querySelector('#descripcion-ahorro')as HTMLInputElement)?.value;
+              const metaAhorroId = (
+                modal!.querySelector('#meta-ahorro-id') as HTMLInputElement
+              )?.value;
+              const monto = (
+                modal!.querySelector('#monto-ahorro') as HTMLInputElement
+              )?.value;
+              const descripcion = (
+                modal!.querySelector('#descripcion-ahorro') as HTMLInputElement
+              )?.value;
 
-            return {
-              metaAhorroId, 
-              monto: Number(monto),
-              descripcion, 
-              usuarioId: usuario!.id
-            }
-          }
-        }).then(result => {
-          if(result.isConfirmed){
-            const ahorro: CrearNuevoAhorroDto = {
-              descripcion: result.value.descripcion,
-              usuarioId: result.value.usuarioId,
-              monto: result.value.monto,
-              metaAhorroId: result.value.metaAhorroId
-            }
-
-            this.guardarAhorro(ahorro);
-          }
-        })
-      })
-    })
-  }
-
-  guardarMeta = (modelo: CrearMetaDTO): void => {
-    this.authService.validarToken()
-    .pipe(takeUntil(this.onDestroy))
-    .subscribe({
-      next: () => {
-        this.authService.usuarioLogueado.subscribe((usuario) => {
-          modelo.usuarioId = usuario!.id;
-          this.metaAhorroService.crearMeta(modelo).subscribe({
-            next: (res) => {
-              this.metaAhorroService.refrescarInformacion(usuario!.id);
-              this.modalesService.modalExitoso(res.mensaje);
+              return {
+                metaAhorroId,
+                monto: Number(monto),
+                descripcion,
+                usuarioId: usuario!.id,
+              };
             },
-            error: (err) => this.modalesService.modalError(err)
+          }).then((result) => {
+            if (result.isConfirmed) {
+              const ahorro: CrearNuevoAhorroDto = {
+                descripcion: result.value.descripcion,
+                usuarioId: result.value.usuarioId,
+                monto: result.value.monto,
+                metaAhorroId: result.value.metaAhorroId,
+              };
+
+              this.guardarAhorro(ahorro);
+            }
           });
         });
-      },
-      error: (err) => this.modalesService.modalError(err)
-    })
+    });
+  };
 
+  guardarMeta = (modelo: CrearMetaDTO): void => {
+    this.authService
+      .validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: () => {
+          this.authService.usuarioLogueado.subscribe((usuario) => {
+            modelo.usuarioId = usuario!.id;
+            this.metaAhorroService.crearMeta(modelo).subscribe({
+              next: (res) => {
+                this.metaAhorroService.refrescarInformacion(usuario!.id);
+                this.modalesService.modalExitoso(res.mensaje);
+              },
+              error: (err) => this.modalesService.modalError(err),
+            });
+          });
+        },
+        error: (err) => this.modalesService.modalError(err),
+      });
   };
 
   obtenerCantidadMetasActivasPorUsuario(): void {
-    this.authService.validarToken()
-    .pipe(takeUntil(this.onDestroy))
-    .subscribe({
-      next: () => {
-        this.metaAhorroService.cantidadMetasObservable.subscribe((res) => {
-          this.cantidadMetasActivas = res;
-        });
-        this.metaAhorroService.metasActivasObservable.subscribe((res) => {
-          this.metas = res;
-        });
-      },
-      error: (err) => this.modalesService.modalError(err)
-    });
+    this.authService
+      .validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: () => {
+          this.metaAhorroService.cantidadMetasObservable.subscribe((res) => {
+            this.cantidadMetasActivas = res;
+          });
+          this.metaAhorroService.metasActivasObservable.subscribe((res) => {
+            this.metas = res;
+          });
+        },
+        error: (err) => this.modalesService.modalError(err),
+      });
   }
-
 
   guardarAhorro = (ahorro: CrearNuevoAhorroDto): void => {
     this.authService.validarToken().subscribe({
-      next: (res)  => {
+      next: (res) => {
         this.authService.usuarioLogueado.subscribe((usuario) => {
           ahorro.metaAhorroId = Number(ahorro.metaAhorroId);
           ahorro.usuarioId = usuario!.id;
@@ -244,60 +258,100 @@ export default class DashboardComponent implements OnInit, OnDestroy {
           });
         });
       },
-      error: (err) => this.modalesService.modalError(err)
-    })
-
+      error: (err) => this.modalesService.modalError(err),
+    });
   };
 
   obtenerTotales() {
-    this.authService.validarToken()
-    .pipe(takeUntil(this.onDestroy))
-    .subscribe({
-      next: () => {
-        this.authService.usuarioLogueado.subscribe((usuario) => {
-          this.metaAhorroService.refrescarInformacion(usuario!.id);
-          this.ahorroService.cantidadesTotalesObservable.subscribe({
-            next: (res) => this.cantidadesTotales = res,
-            error: (err) => this.modalesService.modalError(err)
+    this.authService
+      .validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: () => {
+          this.authService.usuarioLogueado.subscribe((usuario) => {
+            this.metaAhorroService.refrescarInformacion(usuario!.id);
+            this.ahorroService.cantidadesTotalesObservable.subscribe({
+              next: (res) => (this.cantidadesTotales = res),
+              error: (err) => this.modalesService.modalError(err),
+            });
           });
-        });
-      }, 
-      error: (err) => this.modalesService.modalError(err)
-    })
+        },
+        error: (err) => this.modalesService.modalError(err),
+      });
   }
 
   obtenerUltimosMovimientos() {
-    this.authService.validarToken()
-    .pipe(takeUntil(this.onDestroy))
-    .subscribe({
-      next: () => {
-        this.authService.usuarioLogueado.subscribe((usuario) => {
-          this.ahorroService.refrescarInformacion(usuario!.id);
-          this.ahorroService.movimientosObservable.subscribe({
-            next: (res) => this.ultimosMovimientos = res,
-            error: (err) => this.modalesService.modalError(err),
+    this.authService
+      .validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: () => {
+          this.authService.usuarioLogueado.subscribe((usuario) => {
+            this.ahorroService.refrescarInformacion(usuario!.id);
+            this.ahorroService.movimientosObservable.subscribe({
+              next: (res) => (this.ultimosMovimientos = res),
+              error: (err) => this.modalesService.modalError(err),
+            });
           });
-        });
-      }, 
-      error: (err) => this.modalesService.modalError(err)
-    })
+        },
+        error: (err) => this.modalesService.modalError(err),
+      });
   }
 
   obtenerMetasConCumplimiento(): void {
-    this.authService.validarToken()
-    .pipe(takeUntil(this.onDestroy))
-    .subscribe({
-      next: () => {
-        this.authService.usuarioLogueado.subscribe((usuario) => {
-          this.metaAhorroService.refrescarInformacion(usuario!.id);
-          this.metaAhorroService.metaCumplimientoObservable.subscribe({
-            next: (res) => this.metasConCumplimiento = res,
-            error: (err) => this.modalesService.modalError(err),
+    this.authService
+      .validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: () => {
+          this.authService.usuarioLogueado.subscribe((usuario) => {
+            this.metaAhorroService.refrescarInformacion(usuario!.id);
+            this.metaAhorroService.metaCumplimientoObservable.subscribe({
+              next: (res) => (this.metasConCumplimiento = res),
+              error: (err) => this.modalesService.modalError(err),
+            });
           });
-        });
-      },
-      error: (err) => this.modalesService.modalError(err)
-    })
+        },
+        error: (err) => this.modalesService.modalError(err),
+      });
   }
 
+  mostrarModalEliminarMovimiento = (id: number) => {
+    Swal.fire({
+      icon: 'warning',
+      text: '¿Seguro que desea eliminar este registro?',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Si, continuar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.eliminarAhorro(id);
+      }
+    });
+  };
+
+  eliminarAhorro = (id: number) => {
+    this.authService
+      .validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: (res) => {
+          this.authService.usuarioLogueado
+            .pipe(takeUntil(this.onDestroy))
+            .subscribe((usuario) => {
+              this.ahorroService.eliminarAhorro(id).subscribe({
+                next: () => {
+                  this.ahorroService.refrescarInformacion(usuario!.id);
+                  this.metaAhorroService.refrescarInformacion(usuario!.id);
+                  this.modalesService.modalExitoso(
+                    'Registro eliminado exitosamente.',
+                  );
+                },
+                error: (err) => this.modalesService.modalError(err),
+              });
+            });
+        },
+        error: (err) => this.modalesService.modalError(err),
+      });
+  };
 }
