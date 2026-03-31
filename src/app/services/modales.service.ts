@@ -67,7 +67,7 @@ export class ModalesService {
         this.router.navigate(['/ingresar']);
         this.authService.limpiarLocalstorage();
       }
-    })
+    }).finally(() => window.location.reload())
   }
 
 }
