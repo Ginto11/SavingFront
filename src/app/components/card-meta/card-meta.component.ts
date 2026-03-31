@@ -6,106 +6,144 @@ import { MetaAhorroService } from '../../services/meta-ahorro.service';
 import { ModalNormalComponent } from '../../shared/modal-normal/modal-normal.component';
 import { FormsModule } from '@angular/forms';
 import { ActualizarMetaDto } from '../../interfaces/actualizar-meta-dto.interface';
+import Swal from 'sweetalert2';
+import 'sweetalert2/themes/bootstrap-5.css';
+import { ModalesService } from '../../services/modales.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-card-meta',
-  imports: [CommonModule, ModalNormalComponent, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './card-meta.component.html',
-  styles: ``
+  styles: ``,
 })
 export class CardMetaComponent {
-
-  private auhService = inject(AuthService);
+  private authService = inject(AuthService);
+  private modalesService = inject(ModalesService);
   private metaAhorroService = inject(MetaAhorroService);
-
-  @ViewChild('modalConfirmCancelar') modalConfirmCancelar = new ModalNormalComponent(); 
-  @ViewChild('modalActualizacion') modalActualizacion = new ModalNormalComponent();
-  @ViewChild('modalMensaje') modalMensaje = new ModalNormalComponent();
-  @ViewChild('modalError') modalError = new ModalNormalComponent();
+  private onDestroy: Subject<Boolean> = new Subject();
 
   @Input() meta!: Meta;
 
   metaPorActualizar: ActualizarMetaDto = {
     nombre: '',
-    montoObjetivo: 0
+    montoObjetivo: 0,
   };
 
-  mensajeError = '';
-  mensajeModal = '';
-  metaIdSeleccionado = 0;
-  multiplesErrores = [];
-
-
-  abrirConfirmModal(id: number):void{
-    this.metaIdSeleccionado = id;
-    this.mensajeModal = '¿Seguro que deseas cancelar la meta?'
-    this.modalConfirmCancelar.abrir();
+  abrirModalCancelarMeta(id: number): void {
+    Swal.fire({
+      icon: 'question',
+      text: '¿Seguro que desea cancelar la meta?',
+      cancelButtonText: 'Cancelar',
+      showCancelButton: true,
+      confirmButtonText: 'Ok',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.cancelarMeta(id);
+      }
+    });
   }
 
-  cerrarConfirmModal():void {
-    this.metaIdSeleccionado = 0;
-    this.modalConfirmCancelar.cerrar();
-  }
+  cancelarMeta(id: number): void {
+    this.authService
+      .validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: () => {
+          this.metaAhorroService.cancelarMetaPorId(id).subscribe({
+            next: (res) => {
+              Swal.fire({
+                icon: 'success',
+                text: res.data,
+                confirmButtonText: 'Ok',
+              }).finally(() => window.location.reload());
+            },
+            error: (err) => this.modalesService.modalError(err)
+          })
+        }
+      });
+  };
 
   abrirModalActualizacion(meta: Meta):void{
-    this.metaIdSeleccionado = meta.id;
     this.metaPorActualizar = {
       nombre: meta.nombre,
       montoObjetivo: meta.montoObjetivo
     }
-    this.modalActualizacion.abrir();
+
+    Swal.fire({
+      icon: 'question',
+      text: '¿Seguro que desea actualizar la meta?',
+      html: `
+        <form class="flex flex-col gap-4">
+            <div class="text-left">
+                <label>Nombre de la meta</label>
+                <input id="nombre-meta-actualizacion" name="nombre" type="text"
+                class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700"
+                placeholder="Ej: Ahorro para moto" value="${meta.nombre}">
+            </div>
+            <div class="text-left">
+                <label>Monto objetivo</label>
+                <input id="monto-meta-actualizacion" name="montoObjetivo" type="number"
+                class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700"
+                placeholder="Ej: 3000000" value="${meta.montoObjetivo}">
+            </div>
+        </form>
+      `,
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Guardar',
+      preConfirm: () => {
+        const popup = Swal.getPopup();
+
+        const nombre = (popup?.querySelector('#nombre-meta-actualizacion') as HTMLInputElement)?.value;
+        const monto = (popup?.querySelector('#monto-meta-actualizacion') as HTMLInputElement)?.value;
+
+        this.metaPorActualizar.nombre = nombre;
+        this.metaPorActualizar.montoObjetivo = Number(monto);
+
+      }
+    }).then(result => {
+      if(result.isConfirmed){
+        Swal.fire({
+          icon: 'question',
+          text: '¿Seguro que desea actualizar la meta?',
+          showCancelButton: true,
+          cancelButtonText: 'Cancelar',
+          confirmButtonText: 'Ok'
+        }).then(result => {
+          if(result.isConfirmed){
+            this.actualizarMeta(meta);
+          }          
+        })
+      }
+    })
   }
 
-  actualizar = ():void => {
-    this.auhService.usuarioLogueado.subscribe(usuario => {
-      if(usuario == null){
-        this.mensajeError = 'Usuario no logueado';
-        this.modalError.abrir();
-        return;
-      }
+  actualizarMeta = (meta: Meta):void => {
+    this.authService
+      .validarToken()
+      .pipe(takeUntil(this.onDestroy))  
+      .subscribe(res => {
 
-      this.metaAhorroService.actualizarMeta(this.metaIdSeleccionado, this.metaPorActualizar).subscribe({
+      this.metaAhorroService.actualizarMeta(meta.id, this.metaPorActualizar).subscribe({
         next: (res) => {
-          this.metaAhorroService.refrescarInformacion(usuario.id);
-          this.mensajeModal = res.data;
-          this.modalActualizacion.cerrar();
-          this.mensajeModal = res.data;
-          this.modalMensaje.abrir();
+          Swal.fire({
+            icon: 'success',
+            text: res.data,
+            confirmButtonText: 'Ok'
+          }).then(result => {
+            if(result.isConfirmed){
+              window.location.reload();
+            }
+          })
         },
-        error: (err) => {
-          console.log(err);
-        }
+        error: (err) => this.modalesService.modalError(err)
       })
     })
   }
 
+  /*
 
-  cancelarMeta = ():void => {
-    this.auhService.usuarioLogueado.subscribe(usuario => {
-      if(usuario == null){
-        this.mensajeError = 'Usuario no logueado';
-        this.modalError.abrir();
-        return;
-      }
 
-      this.metaAhorroService.cancelarMetaPorId(this.metaIdSeleccionado).subscribe({
-        next: (res) => {
-          this.metaAhorroService.refrescarInformacion(usuario.id);
-          this.mensajeModal = res.data;
-          this.cerrarConfirmModal();
-          this.modalMensaje.abrir();
-        },
-        error: (err) => {
-          console.log(err);
-        }
-      })
-    })
-  }
-
-  cerrarModalYLimpiarVariables():void {
-    this.modalError.cerrar();
-    this.mensajeError = '';
-    this.multiplesErrores = [];
-  }
-
+  }*/
 }

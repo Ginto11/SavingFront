@@ -1,43 +1,66 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CardMetaComponent } from '../../components/card-meta/card-meta.component';
 import { AuthService } from '../../services/auth.service';
 import { MetaAhorroService } from '../../services/meta-ahorro.service';
 import { Meta } from '../../interfaces/meta.interface';
-import { ModalNormalComponent } from '../../shared/modal-normal/modal-normal.component';
+import { Subject, takeUntil } from 'rxjs';
+import { ModalesService } from '../../services/modales.service';
 
 @Component({
   selector: 'app-metas',
-  imports: [CardMetaComponent, ModalNormalComponent],
+  imports: [CardMetaComponent],
   templateUrl: './metas.component.html',
   styles: ``
 })
-export default class MetasComponent implements OnInit {
+export default class MetasComponent implements OnInit, OnDestroy {
 
   private auhService = inject(AuthService);
+  private modalesService = inject(ModalesService);
+  private onDestroy: Subject<boolean> = new Subject();
   private metaAhorroService = inject(MetaAhorroService);
 
-  @ViewChild("modalConfirmCancelar") modalConfirmCancelar = new ModalNormalComponent(); 
-  @ViewChild('modalError') modalError = new ModalNormalComponent();
-
-  mensajeDeExitoCancelacion = '';
-  mensajeModalError = '';
   metas: Meta[] = [];
 
   ngOnInit():void {
-    this.auhService.usuarioLogueado.subscribe(usuario => {
-      if(usuario == null){
-        return;
-      }
-
-      this.metaAhorroService.refrescarInformacion(usuario.id);
-      this.metaAhorroService.todasLasMetasObservable.subscribe({
-        next: (res) => {
-          this.metas = res;
+    this.auhService.validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: () => {
+          this.auhService.usuarioLogueado
+          .pipe(takeUntil(this.onDestroy))
+          .subscribe((usuario) => {
+            this.metaAhorroService.refrescarInformacion(usuario!.id);
+            this.metaAhorroService.todasLasMetasObservable.subscribe({
+              next: (res) => { this.metas = res; },
+              error: (err) => { this.modalesService.modalError(err) }
+            })
+          })
         },
-        error: (err) => {
-          console.log(err);
-        }
+        error: (err) => { this.modalesService.modalError(err) }})
+  }
+
+  buscarMetasCumplidas(estado: string):void {
+    this.auhService.validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: () => {
+          this.auhService.usuarioLogueado
+            .pipe(takeUntil(this.onDestroy))
+            .subscribe(usuario => {
+              this.metaAhorroService.obtenerMetasCumplidasPorUsuarioId(usuario!.id, estado);
+                this.metaAhorroService.metasCumplidasObservable
+                .subscribe({
+                  next: (res) => this.metas = res,
+                  error: (err) => this.modalesService.modalError(err) 
+                })
+            })
+        }, 
+        error: (err) => this.modalesService.modalError(err) 
       })
-    })
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy.next(true);
+    this.onDestroy.complete();
   }
 }

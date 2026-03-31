@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 import { CumplimientoMetaAhorro } from '../interfaces/cumplimiento-meta-ahorro.interface';
 import { Meta } from '../interfaces/meta.interface';
 import { ActualizarMetaDto } from '../interfaces/actualizar-meta-dto.interface';
+import { ModalesService } from './modales.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,10 @@ export class MetaAhorroService {
   private cantidadActivasMetas = new BehaviorSubject<number>(0);
   private metasActivas = new BehaviorSubject<Meta[]>([])
   private todasLasMetas = new BehaviorSubject<Meta[]>([]);
+  private metasCumplidas = new BehaviorSubject<Meta[]>([]);
+  private modalesService = inject(ModalesService);
 
+  metasCumplidasObservable = this.metasCumplidas.asObservable();
   metaCumplimientoObservable = this.metaCumplimiento.asObservable();
   cantidadMetasObservable = this.cantidadActivasMetas.asObservable();
   metasActivasObservable = this.metasActivas.asObservable();
@@ -46,6 +50,14 @@ export class MetaAhorroService {
 
   obtenerTodasLasMetasPorUsuarioId(id: number):Observable<ServerResponse> {
     return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/usuario/${id}/todas`);
+  }
+
+  obtenerMetasCumplidasPorUsuarioId(id: number, estado: string) {
+    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/cumplidas/usuario/${id}`, { params: { estado: estado} })
+      .subscribe({
+        next: (res) => this.metasCumplidas.next(res.data),
+        error: (err) => this.modalesService.modalError(err)
+      });
   }
 
   refrescarInformacion(id: number){
