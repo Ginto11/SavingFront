@@ -63,11 +63,14 @@ export class ModalesService {
           icon: 'success',
           text: 'Sesión cerrada exitosamente.',
           confirmButtonText: 'OK'
-        })
-        this.router.navigate(['/ingresar']);
-        this.authService.limpiarLocalstorage();
+        }).then(result => {
+          if(result.isConfirmed){
+            this.router.navigate(['/ingresar']);
+            this.authService.limpiarLocalstorage();
+          }
+        }).finally(() =>{ setTimeout(() => { window.location.reload() }) })
       }
-    }).finally(() => window.location.reload())
+    })
   }
 
 }
