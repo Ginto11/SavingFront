@@ -6,7 +6,7 @@
         <div class="flex gap-4">
             <button 
                 [disabled]="meta.estado != 'Activa'"
-                (click)="abrirConfirmModal(meta.id);">
+                (click)="abrirModalCancelarMeta(meta.id);">
                 <i class="pi pi-trash" [title]="'Cancelar meta' + meta.nombre"
                     [ngClass]="{
                     'cursor-not-allowed text-gray-400': meta.estado == 'Cumplida' || 'Cancelada',
@@ -49,70 +49,3 @@
         <hr>
     </div>
 </div>
-
-<!-- MODAL PARA CONFIRMAR CANCELACION -->
-<app-modal-normal 
-    #modalConfirmCancelar 
-    titulo="Mensaje de aplicación."
-    tipo="confirmacion"
-    manejador="normal"
-    [callback1]="cancelarMeta"
-    nombreBtnAccion1="Aceptar">
-
-    <p>¿Seguro que quieres cancelar la meta?</p>
-</app-modal-normal>
-
-<!-- MODAL PARA MENSAJES -->
-<app-modal-normal 
-    #modalMensaje
-    titulo="Mensaje de aplicación."
-    manejador="normal"
-    tipo="info"
-    [callback1]="modalMensaje.cerrar"
-    nombreBtnAccion1="Aceptar">
-    <p> {{ mensajeModal }} </p>
-</app-modal-normal>
-
-<!-- MODAL PARA MANEJAR ERRORES -->
-<app-modal-normal 
-    #modalError 
-    titulo="Mensaje de error." 
-    tipo="error" 
-    manejador="errores"
-    nombreBtnAccion1="Aceptar"
-    [mensajeError]="mensajeError"
-    [multiplesErrores]="multiplesErrores"
-    [callback1]="cerrarModalYLimpiarVariables">
-</app-modal-normal>
-
-<!-- MODAL PARA ACTUALIZAR -->
-<app-modal-normal 
-    #modalActualizacion
-    titulo="Actualizando meta."
-    manejador="normal"
-    tipo="confirmacion"
-    [callback1]="actualizar"
-    nombreBtnAccion1="Actualizar">
-    
-    <form class="flex flex-col gap-4">
-
-        <div>
-            <label>Nombre de la meta</label>
-            <input [(ngModel)]="metaPorActualizar.nombre" name="nombre" type="text"
-            class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700"
-            placeholder="Ej: Ahorro para moto">
-        </div>
-
-        <div>
-            <label>Monto objetivo</label>
-            <input [(ngModel)]="metaPorActualizar.montoObjetivo" name="montoObjetivo" type="number"
-            class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700"
-            placeholder="Ej: 3000000">
-        </div>
-
-    </form>
-
-
-</app-modal-normal>
-
-

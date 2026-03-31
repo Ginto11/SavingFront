@@ -61,7 +61,6 @@ export default class InfoUsuarioCompPonent implements AfterViewInit{
             this.usuarioService.refrescarInformacion(usuario!.id);
             this.usuarioService.usuarioObservable.subscribe({ 
               next: (res) => {
-                console.log(res);
                 this.usuario = res;
                 this.urlFoto = `${this.URL}/${this.usuario.fotoPerfil}`;
                 this.nombre = `${this.usuario.primerNombre} ${this.usuario.primerApellido}`

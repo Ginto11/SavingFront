@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import Swal from 'sweetalert2';
 import 'sweetalert2/themes/bootstrap-5.css'
 import { AuthService } from './auth.service';
@@ -65,12 +64,11 @@ export class ModalesService {
           confirmButtonText: 'OK'
         }).then(result => {
           if(result.isConfirmed){
-            this.router.navigate(['/ingresar']);
             this.authService.limpiarLocalstorage();
+            this.router.navigate(['/ingresar']);
           }
-        }).finally(() =>{ setTimeout(() => { window.location.reload() }) })
+        }).finally(() => setTimeout(() => { window.location.reload() }, 100))
       }
     })
   }
-
 }
