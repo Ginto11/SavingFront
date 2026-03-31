@@ -19,7 +19,7 @@ export default class MetasComponent implements OnInit, OnDestroy {
   private onDestroy: Subject<boolean> = new Subject();
   private metaAhorroService = inject(MetaAhorroService);
 
-  metas: Meta[] = [];
+  metas: Meta[] | null = null;
 
   ngOnInit():void {
     this.auhService.validarToken()
@@ -31,8 +31,8 @@ export default class MetasComponent implements OnInit, OnDestroy {
           .subscribe((usuario) => {
             this.metaAhorroService.refrescarInformacion(usuario!.id);
             this.metaAhorroService.todasLasMetasObservable.subscribe({
-              next: (res) => { this.metas = res; },
-              error: (err) => { this.modalesService.modalError(err) }
+            next: (res) => { this.metas = res; console.log(res); },
+            error: (err) => { this.modalesService.modalError(err) }
             })
           })
         },

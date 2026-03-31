@@ -20,14 +20,23 @@
         </ul>
     </div>
 
-    <div class="p-4 bg-gray-800 rounded-xl grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
-        @if (metas.length > 0) {
-            @for(meta of metas; track meta.id){
-                <app-card-meta [meta]="meta" />
+    @if (metas == null) {
+
+        <div class="text-center">
+            <i class="pi pi-spin pi-spinner text-green-200" style="font-size: 2rem"></i>
+        </div>
+    }
+    @else if (metas) {
+        <div class="p-4 bg-gray-800 rounded-xl grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
+            @if (metas.length > 0) {
+                @for(meta of metas; track meta.id){
+                    <app-card-meta [meta]="meta" />
+                }
             }
-        }@else {
-            <p class="text-gray-400">No se encontraron metas en estado.</p>
-        }
-    </div>
+        </div>
+    }
+    @else if (metas == []) {
+        <p class="text-gray-400">No se encontraron metas en estado.</p>
+    }
 
 </section>
