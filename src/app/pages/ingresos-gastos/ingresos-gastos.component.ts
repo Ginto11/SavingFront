@@ -190,7 +190,6 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
           <div class="text-left"> 
             <label>Categoria</label>
             <select id="categoria-egreso" class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700">
-            ${opciones}
             </select>
           </div>
 
@@ -201,6 +200,15 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
           </div>
         </form>
       `,
+      didOpen: () => {
+      const select = document.getElementById('categoria-egreso') as HTMLSelectElement;
+
+      this.categorias.forEach(m => {
+        const option = document.createElement('option');
+        option.value = m.id.toString();
+        option.text = m.nombre; // 👈 AQUÍ NO SE ROMPE NADA
+        select.appendChild(option);
+      })},
       preConfirm: () => {
         const popup = Swal.getPopup();
 
