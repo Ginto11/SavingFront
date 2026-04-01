@@ -4,4 +4,6 @@ export interface EgresoDto{
     monto: number;
     usuarioId: number;
     fechaRegistro: Date;
+    categoriaGastoId: number;
+    nombreCategoriaGasto: string;  
 }

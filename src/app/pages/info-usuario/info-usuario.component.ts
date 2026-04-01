@@ -5,7 +5,6 @@ import { UsuarioDto } from '../../interfaces/usuario-dto.interface';
 import { UsuarioService } from '../../services/usuario.service';
 import { LocalstorageService } from '../../services/localstorage.service';
 import { environment } from '../../../environments/environment';
-import { ModalNormalComponent } from '../../shared/modal-normal/modal-normal.component';
 import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ModalesService } from '../../services/modales.service';
@@ -13,7 +12,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-info-usuario',
-  imports: [CommonModule, FormsModule, ModalNormalComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './info-usuario.component.html',
   styles: ``
 })
@@ -25,8 +24,6 @@ export default class InfoUsuarioCompPonent implements AfterViewInit{
   private onDestroy: Subject<boolean> = new Subject();
   private localstorageService = inject(LocalstorageService);
   
-  @ViewChild('ModalActualizar') ModalActualizar!: ModalNormalComponent;
-
   private URL = environment.URL_SERVER_FOTOS;
 
   urlFoto: string = '/Uploads/Fotos/default.png';

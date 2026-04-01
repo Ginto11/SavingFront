@@ -57,9 +57,9 @@ export class SidebarComponent {
 
   linksSeccion4: LinkMenu[] = [
     {
-      nombreIcon: 'pi-briefcase',
-      nombreRuta: 'trabajo-aplicaciones',
-      nombreLink: 'Trabajo Aplicaciones'
+      nombreIcon: 'pi-wallet',
+      nombreRuta: 'ingresos-gastos',
+      nombreLink: 'Ingresos y Gastos'
     }
   ]
   

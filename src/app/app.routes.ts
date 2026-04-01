@@ -43,8 +43,8 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/metas/metas.component')
             },
             {
-                path: 'trabajo-aplicaciones',
-                loadComponent: () => import('./pages/trabajo-aplicaciones/trabajo-aplicaciones.component')
+                path: 'ingresos-gastos',
+                loadComponent: () => import('./pages/ingresos-gastos/ingresos-gastos.component')
             }
         ]
     }
