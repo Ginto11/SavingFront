@@ -166,8 +166,6 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
       opciones += `<option value="${categoria.id}">${categoria.nombre}</option>`
     })
 
-    console.log(this.categorias)
-
     Swal.fire({
       title: 'Registrar un egreso',
       showCancelButton: true,
