@@ -166,6 +166,8 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
       opciones += `<option value="${categoria.id}">${categoria.nombre}</option>`
     })
 
+    console.log(this.categorias)
+
     Swal.fire({
       title: 'Registrar un egreso',
       showCancelButton: true,
@@ -188,7 +190,7 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
           <div class="text-left"> 
             <label>Categoria</label>
             <select id="categoria-egreso" class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700">
-              ${opciones}              
+            ${opciones}
             </select>
           </div>
 
