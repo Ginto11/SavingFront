@@ -52,8 +52,8 @@ export class MetaAhorroService {
     return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/usuario/${id}/todas`);
   }
 
-  obtenerMetasCumplidasPorUsuarioId(id: number, estado: string) {
-    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/cumplidas/usuario/${id}`, { params: { estado: estado} })
+  obtenerMetasPorEstadoPorUsuarioId(id: number, estado: string) {
+    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/estado/usuario/${id}`, { params: { estado: estado} })
       .subscribe({
         next: (res) => this.metasCumplidas.next(res.data),
         error: (err) => this.modalesService.modalError(err)

@@ -31,7 +31,7 @@ export default class MetasComponent implements OnInit, OnDestroy {
           .subscribe((usuario) => {
             this.metaAhorroService.refrescarInformacion(usuario!.id);
             this.metaAhorroService.todasLasMetasObservable.subscribe({
-            next: (res) => { this.metas = res; console.log(res); },
+            next: (res) => { this.metas = res; },
             error: (err) => { this.modalesService.modalError(err) }
             })
           })
@@ -39,7 +39,7 @@ export default class MetasComponent implements OnInit, OnDestroy {
         error: (err) => { this.modalesService.modalError(err) }})
   }
 
-  buscarMetasCumplidas(estado: string):void {
+  buscarMetasPorEstado(estado: string):void {
     this.auhService.validarToken()
       .pipe(takeUntil(this.onDestroy))
       .subscribe({
@@ -47,7 +47,7 @@ export default class MetasComponent implements OnInit, OnDestroy {
           this.auhService.usuarioLogueado
             .pipe(takeUntil(this.onDestroy))
             .subscribe(usuario => {
-              this.metaAhorroService.obtenerMetasCumplidasPorUsuarioId(usuario!.id, estado);
+              this.metaAhorroService.obtenerMetasPorEstadoPorUsuarioId(usuario!.id, estado);
                 this.metaAhorroService.metasCumplidasObservable
                 .subscribe({
                   next: (res) => this.metas = res,
