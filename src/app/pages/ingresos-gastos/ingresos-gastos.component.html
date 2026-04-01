@@ -1,18 +1,26 @@
-<section class="text-white body-font w-full p-6">
-  <h2 class="text-2xl font-semibold text-white mb-8">
-    Trabajo en Aplicaciones
-  </h2>
+<section class="text-white w-full p-6">
+  <div class="mb-6">
+    <h2 class="text-2xl font-semibold text-white">
+      Ingresos y Gastos
+    </h2>
+    <p class="text-sm text-gray-300 text-justify">
+      En esta sección podras gestionar ingresos y gastos, las opciones que hay son: <strong>Efectivo</strong>, 
+      <strong>Billetera Digital (Nequi, Daviplata, etc)</strong>, <strong>App (Para personas que trabajan en 
+        aplicaciones)</strong> y <strong>Banco (Para llevar un control en entidades financieras) </strong>. Esto 
+        con el fin de llevar un control 360 de nuestros ingresos y gastos.
+    </p>
+  </div>
 
-  <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
     <div
       class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center"
       title="En este valor no se suman las metas cumplidas."
     >
       <div>
         <p class="text-sm text-gray-400">Efectivo</p>
-        <h2 class="text-3xl font-bold mt-2"> $ {{ (totalesIngresos.totalEfectivo) ? (totalesIngresos.totalEfectivo | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
+        <h2 class="text-3xl lg:text-2xl font-bold mt-2"> $ {{ (totalesIngresos.totalEfectivo) ? (totalesIngresos.totalEfectivo | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
       </div>
-      <i class="pi pi-dollar bg-green-200 p-4 rounded-3xl text-green-900"></i>
+      <i class="pi pi-dollar bg-green-200 p-4 lg:p-3 rounded-3xl text-green-900"></i>
     </div>
 
     <div
@@ -20,9 +28,9 @@
     >
       <div>
         <p class="text-sm text-gray-400">Nequi</p>
-        <h2 class="text-3xl font-bold mt-2"> $ {{ (totalesIngresos.totalNequi) ? (totalesIngresos.totalNequi | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
+        <h2 class="text-3xl lg:text-2xl font-bold mt-2"> $ {{ (totalesIngresos.totalNequi) ? (totalesIngresos.totalNequi | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
       </div>
-      <i class="pi pi-dollar bg-green-200 p-4 rounded-3xl text-green-900"></i>
+      <i class="pi pi-dollar bg-green-200 p-4 lg:p-3 rounded-3xl text-green-900"></i>
     </div>
 
     <div
@@ -30,19 +38,29 @@
     >
       <div>
         <p class="text-sm text-gray-400">App</p>
-        <h2 class="text-3xl font-bold mt-2"> $ {{ (totalesIngresos.totalApp) ? (totalesIngresos.totalApp | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
+        <h2 class="text-3xl lg:text-2xl font-bold mt-2"> $ {{ (totalesIngresos.totalApp) ? (totalesIngresos.totalApp | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
       </div>
-      <i class="pi pi-dollar bg-green-200 p-4 rounded-3xl text-green-900"></i>
+      <i class="pi pi-dollar bg-green-200 p-4 lg:p-3 rounded-3xl text-green-900"></i>
     </div>
 
     <div
       class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center"
     >
       <div>
-        <p class="text-sm text-gray-400">Total</p>
-        <h2 class="text-3xl font-bold mt-2">$ {{ (totalesIngresos.totalEfectivo + totalesIngresos.totalNequi + totalesIngresos.totalApp) | currency: ' ':'symbol':'1.0-0' }} </h2>
+        <p class="text-sm text-gray-400">Banco</p>
+        <h2 class="text-3xl lg:text-2xl font-bold mt-2"> $ {{ (totalesIngresos.totalBanco) ? (totalesIngresos.totalBanco | currency: ' ':'symbol':'1.0-0') : '0' }} </h2>
       </div>
-      <i class="pi pi-wallet bg-green-200 p-4 rounded-3xl text-green-900"></i>
+      <i class="pi pi-dollar bg-green-200 p-4 lg:p-3 rounded-3xl text-green-900"></i>
+    </div>
+
+    <div
+      class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center col-span-1 sm:col-span-2 md:col-span-2 lg:col-span-1"
+    >
+      <div>
+        <p class="text-sm text-gray-400">Total</p>
+        <h2 class="text-3xl lg:text-2xl font-bold mt-2">$ {{ (totalesIngresos.totalEfectivo + totalesIngresos.totalNequi + totalesIngresos.totalApp + totalesIngresos.totalBanco) | currency: ' ':'symbol':'1.0-0' }} </h2>
+      </div>
+      <i class="pi pi-wallet bg-green-200 p-4 lg:p-3 rounded-3xl text-green-900"></i>
     </div>
   </section>
 
@@ -89,7 +107,7 @@
                     </div>
                     <div>
                       <p class="font-semibold"> {{ egreso.tipo }} </p>
-                      <p class="text-xs text-gray-400"> {{ egreso.fechaRegistro | date: 'dd MMM yyyy' }} </p>
+                      <p class="text-xs text-gray-400"> {{ egreso.fechaRegistro | date: 'dd MMM yyyy' }} - {{ egreso.nombreCategoriaGasto }} </p>
                     </div>
                   </div>
                   <p class="text-red-400 font-semibold">- $ {{ egreso.monto | currency: ' ':'symbol':'1.0-0' }} </p>

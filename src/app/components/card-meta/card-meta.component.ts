@@ -3,7 +3,6 @@ import { Meta } from '../../interfaces/meta.interface';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { MetaAhorroService } from '../../services/meta-ahorro.service';
-import { ModalNormalComponent } from '../../shared/modal-normal/modal-normal.component';
 import { FormsModule } from '@angular/forms';
 import { ActualizarMetaDto } from '../../interfaces/actualizar-meta-dto.interface';
 import Swal from 'sweetalert2';

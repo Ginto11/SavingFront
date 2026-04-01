@@ -15,7 +15,7 @@ export class EgresoService {
 
   private http = inject(HttpClient);
   private localstorage = inject(LocalstorageService);
-  private totales = new BehaviorSubject<TiposEgresosTotales>({ totalApp: 0, totalEfectivo: 0, totalNequi: 0 });
+  private totales = new BehaviorSubject<TiposEgresosTotales>({ totalApp: 0, totalEfectivo: 0, totalNequi: 0, totalBanco: 0 });
   private listaEgresos = new BehaviorSubject<EgresoDto[] | null>(null);
 
   totalesObservable = this.totales.asObservable();

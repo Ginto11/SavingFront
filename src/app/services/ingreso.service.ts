@@ -14,7 +14,7 @@ export class IngresoService {
 
   private http = inject(HttpClient);
   private localstorage = inject(LocalstorageService);
-  private totales = new BehaviorSubject<TiposIngresosTotales>({ totalApp: 0, totalEfectivo: 0, totalNequi: 0 });
+  private totales = new BehaviorSubject<TiposIngresosTotales>({ totalApp: 0, totalEfectivo: 0, totalNequi: 0, totalBanco: 0 });
   private listaIngresos = new BehaviorSubject<IngresoDto[] | null>(null);
 
   totalesObservable = this.totales.asObservable();
