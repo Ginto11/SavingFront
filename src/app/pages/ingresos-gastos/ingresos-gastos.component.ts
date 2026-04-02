@@ -11,8 +11,7 @@ import { EgresoService } from '../../services/egreso.service';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import 'sweetalert2/themes/bootstrap-5.css'
-import { Subject, takeUntil } from 'rxjs';
+import { combineLatest, shareReplay, Subject, switchMap, take, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { CategoriaGastoService } from '../../services/categoria-gasto.service';
 import { CategoriaGasto } from '../../interfaces/categoria-gasto-dto.interface';
@@ -27,69 +26,20 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   
   private ingresoService = inject(IngresoService);
   private categoriaGastoService = inject(CategoriaGastoService);
-  private authService = inject(AuthService);
   private egresoService = inject(EgresoService);
   private onDestroy: Subject<boolean> = new Subject();
   private modalesService = inject(ModalesService);
   
-  totalesIngresos: TiposIngresosTotales = {
-    totalEfectivo: 0,
-    totalNequi: 0,
-    totalApp: 0,
-    totalBanco: 0
-  }
+  categorias$ = this.categoriaGastoService.categoriasObservable;
+  totalesIngresos$ = this.ingresoService.totalesObservable;
+  listaIngresos$ = this.ingresoService.listaIngresosObservable;
+  listaEgresos$ = this.egresoService.listaEgresosObservable
 
-  totalesEgresos: TiposEgresosTotales = {
-    totalEfectivo: 0,
-    totalNequi: 0,
-    totalApp: 0,
-    totalBanco: 0
-  }
-
-  categorias: CategoriaGasto[] = [];
-
-
-  listaIngresos: IngresoDto[] | null = null;
-  listaEgresos: EgresoDto[] | null = null;
-  
   ngOnInit(): void {
     window.scrollTo(0, 0);
-    this.authService.validarToken()
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe({
-        next: (res) => {
-          this.ingresoService.actualizarInformacion();
-          this.egresoService.actualizarInformacion();
-          
-          this.ingresoService.totalesObservable
-          .pipe(takeUntil(this.onDestroy))
-          .subscribe(res => {
-            this.totalesIngresos.totalEfectivo = res.totalEfectivo,
-            this.totalesIngresos.totalNequi = res.totalNequi,
-            this.totalesIngresos.totalApp = res.totalApp,
-            this.totalesIngresos.totalBanco = res.totalBanco
-          })
-
-          this.ingresoService.listaIngresosObservable
-          .pipe(takeUntil(this.onDestroy))
-          .subscribe(res => {
-            this.listaIngresos = res;
-          })
-
-          this.egresoService.listaEgresosObservable
-          .pipe(takeUntil(this.onDestroy))
-          .subscribe(res => {
-            this.listaEgresos = res;
-          })
-
-          this.categoriaGastoService.obtenerCategoriasGastos()
-          .pipe(takeUntil(this.onDestroy))
-          .subscribe(res => {
-            this.categorias = res.data;
-          })
-        },
-        error: (err) => this.modalesService.modalError(err)
-      })
+    this.ingresoService.actualizarInformacion();
+    this.egresoService.actualizarInformacion();
+    this.categoriaGastoService.obtenerCategoriasGastos();
   }
   
   ngOnDestroy(): void {
@@ -153,8 +103,7 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.ingresoService.actualizarInformacion();
         this.modalesService.modalExitoso(res.mensaje);        
-      },
-      error: (err) => this.modalesService.modalError(err)
+      }
     })
   }
 
@@ -162,9 +111,13 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
 
     let opciones = `<option value="" selected>Seleccionar</option>`;
 
-    this.categorias.forEach((categoria: any) => {
-      opciones += `<option value="${categoria.id}">${categoria.nombre}</option>`
-    })
+    this.categorias$
+      .pipe(take(1))
+      .subscribe((categorias: CategoriaGasto[])=> {
+        categorias.forEach((categoria: any) => {
+          opciones += `<option value="${categoria.id}">${categoria.nombre}</option>`
+        })
+      })
 
     Swal.fire({
       title: 'Registrar un egreso',
@@ -233,8 +186,7 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
         this.egresoService.actualizarInformacion();
         this.modalesService.modalExitoso(res.mensaje);
 
-      },
-      error: (err) => this.modalesService.modalError(err)
+      }
     })
   }
 

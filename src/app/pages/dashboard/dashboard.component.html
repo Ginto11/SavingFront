@@ -1,10 +1,14 @@
 <section class="w-full bg-gray-900 text-white p-6">
 
-  <header class="mb-8">
-    <h1 class="text-2xl font-semibold">Bienvenido, {{ nombreUsuarioLogueado }} </h1>
+  <header class="mb-8"
+    *ngIf="usuarioLogueado$ | async as usuario"
+  >
+    <h1 class="text-2xl font-semibold">Bienvenido, {{ usuario.primerNombre }} </h1>
   </header>
 
-  <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+    *ngIf="cantidadesTotales$ | async as cantidadesTotales"
+  >
 
     <div class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center" title="En este valor no se suman las metas cumplidas.">
       <div>
@@ -25,7 +29,7 @@
     <div class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center">
       <div>
         <p class="text-sm text-gray-400">Metas Activas</p>
-        <h2 class="text-3xl font-bold mt-2"> {{ cantidadMetasActivas }} </h2>
+        <h2 class="text-3xl font-bold mt-2"> {{ cantidadMetasActivas$ | async }} </h2>
       </div>
       <i class="pi pi-bullseye bg-green-200 p-4 rounded-3xl text-green-900"></i>
     </div>
@@ -40,8 +44,9 @@
       </button>
     </h2>
 
-    <div class="bg-gray-800 rounded-xl p-4 shadow-md flex flex-col gap-2">
-
+    <div class="bg-gray-800 rounded-xl p-4 shadow-md flex flex-col gap-2"
+      *ngIf="metasConCumplimiento$ | async as metasConCumplimiento"
+    >
       @for (meta of metasConCumplimiento; track meta.id) {
       <div class="flex items-center justify-between border-b border-gray-700">
         <div class="w-full">
@@ -77,8 +82,9 @@
       </button>
     </h2>
 
-    <div class="bg-gray-800 rounded-xl p-4 shadow-md">
-
+    <div class="bg-gray-800 rounded-xl p-4 shadow-md"
+      *ngIf="ultimosMovimientos$ | async as ultimosMovimientos"
+    >
       @for (movimiento of ultimosMovimientos; track movimiento.id) {
       <div class="flex items-center justify-between py-3 border-b border-gray-700">
         <div class="flex gap-3">

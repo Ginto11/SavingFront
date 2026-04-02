@@ -15,10 +15,10 @@ import { CantidadesTotales } from '../../interfaces/cantidades-totales.interface
 import { UltimoMovimiento } from '../../interfaces/ultimo-movimiento.interface';
 import { CumplimientoMetaAhorro } from '../../interfaces/cumplimiento-meta-ahorro.interface';
 import { AuthService } from '../../services/auth.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
-import 'sweetalert2/themes/bootstrap-5.css';
 import { ModalesService } from '../../services/modales.service';
+import { Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,41 +33,23 @@ export default class DashboardComponent implements OnInit, OnDestroy {
   private metaAhorroService = inject(MetaAhorroService);
   private onDestroy: Subject<boolean> = new Subject();
 
-  metasConCumplimiento: CumplimientoMetaAhorro[] = [];
-  cantidadMetasActivas!: number;
-  nombreUsuarioLogueado!: string;
-  metas: any | null = null;
-  totalAhorrado!: number;
-  ahorroMes!: number;
+  ultimosMovimientos$: Observable<UltimoMovimiento[] | null> = this.ahorroService.movimientosObservable;
+  metasConCumplimiento$: Observable<CumplimientoMetaAhorro[]> = this.metaAhorroService.metaCumplimientoObservable;
+  cantidadMetasActivas$: Observable<number> = this.metaAhorroService.cantidadMetasObservable;
+  usuarioLogueado$ = this.authService.usuarioLogueado;
+  metas$ = this.metaAhorroService.metasActivasObservable;
+  cantidadesTotales$: Observable<CantidadesTotales> = this.ahorroService.cantidadesTotalesObservable;
 
-  cantidadesTotales: CantidadesTotales = {
-    totalAhorrado: 0,
-    ahorroMes: 0,
-  };
 
   ultimosMovimientos: UltimoMovimiento[] | null = [];
   ngOnInit(): void {
     window.scrollTo(0, 0);
-
-    this.authService
-      .validarToken()
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe({
-        next: () => {
-          this.authService.usuarioLogueado
-            .pipe(takeUntil(this.onDestroy))
-            .subscribe({
-              next: (usuario) => {
-                this.obtenerTotales();
-                this.obtenerUltimosMovimientos();
-                this.obtenerMetasConCumplimiento();
-                this.obtenerCantidadMetasActivasPorUsuario();
-                this.nombreUsuarioLogueado = usuario!.primerNombre;
-              },
-            });
-        },
-        error: (err) => this.modalesService.modalError(err),
-      });
+    this.authService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(usuario => {
+      this.metaAhorroService.refrescarInformacion(usuario!.id);
+      this.ahorroService.refrescarInformacion(usuario!.id);
+    })
   }
 
   ngOnDestroy(): void {
@@ -205,116 +187,40 @@ export default class DashboardComponent implements OnInit, OnDestroy {
   };
 
   guardarMeta = (modelo: CrearMetaDTO): void => {
-    this.authService
-      .validarToken()
+    this.authService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe((usuario) => {
+      modelo.usuarioId = usuario!.id;
+      this.metaAhorroService.crearMeta(modelo)
       .pipe(takeUntil(this.onDestroy))
       .subscribe({
-        next: () => {
-          this.authService.usuarioLogueado.subscribe((usuario) => {
-            modelo.usuarioId = usuario!.id;
-            this.metaAhorroService.crearMeta(modelo).subscribe({
-              next: (res) => {
-                this.metaAhorroService.refrescarInformacion(usuario!.id);
-                this.modalesService.modalExitoso(res.mensaje);
-              },
-              error: (err) => this.modalesService.modalError(err),
-            });
-          });
-        },
-        error: (err) => this.modalesService.modalError(err),
+        next: (res) => {
+          this.metaAhorroService.refrescarInformacion(usuario!.id);
+          this.modalesService.modalExitoso(res.mensaje);
+        }
       });
-  };
-
-  obtenerCantidadMetasActivasPorUsuario(): void {
-    this.authService
-      .validarToken()
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe({
-        next: () => {
-          this.metaAhorroService.cantidadMetasObservable.subscribe((res) => {
-            this.cantidadMetasActivas = res;
-          });
-          this.metaAhorroService.metasActivasObservable.subscribe((res) => {
-            this.metas = res;
-          });
-        },
-        error: (err) => this.modalesService.modalError(err),
-      });
-  }
-
-  guardarAhorro = (ahorro: CrearNuevoAhorroDto): void => {
-    this.authService.validarToken().subscribe({
-      next: (res) => {
-        this.authService.usuarioLogueado.subscribe((usuario) => {
-          ahorro.metaAhorroId = Number(ahorro.metaAhorroId);
-          ahorro.usuarioId = usuario!.id;
-          this.ahorroService.agregarO(ahorro).subscribe({
-            next: (res) => {
-              this.ahorroService.refrescarInformacion(usuario!.id);
-              this.metaAhorroService.refrescarInformacion(usuario!.id);
-              this.modalesService.modalExitoso(res.mensaje);
-            },
-            error: (err) => this.modalesService.modalError(err),
-          });
-        });
-      },
-      error: (err) => this.modalesService.modalError(err),
     });
   };
 
-  obtenerTotales() {
-    this.authService
-      .validarToken()
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe({
-        next: () => {
-          this.authService.usuarioLogueado.subscribe((usuario) => {
-            this.metaAhorroService.refrescarInformacion(usuario!.id);
-            this.ahorroService.cantidadesTotalesObservable.subscribe({
-              next: (res) => (this.cantidadesTotales = res),
-              error: (err) => this.modalesService.modalError(err),
-            });
-          });
-        },
-        error: (err) => this.modalesService.modalError(err),
-      });
-  }
+  
 
-  obtenerUltimosMovimientos() {
-    this.authService
-      .validarToken()
+  guardarAhorro = (ahorro: CrearNuevoAhorroDto): void => {
+    this.authService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe((usuario) => {
+      ahorro.metaAhorroId = Number(ahorro.metaAhorroId);
+      ahorro.usuarioId = usuario!.id;
+      this.ahorroService.agregarO(ahorro)
       .pipe(takeUntil(this.onDestroy))
       .subscribe({
-        next: () => {
-          this.authService.usuarioLogueado.subscribe((usuario) => {
-            this.ahorroService.refrescarInformacion(usuario!.id);
-            this.ahorroService.movimientosObservable.subscribe({
-              next: (res) => (this.ultimosMovimientos = res),
-              error: (err) => this.modalesService.modalError(err),
-            });
-          });
+        next: (res) => {
+          this.ahorroService.refrescarInformacion(usuario!.id);
+          this.metaAhorroService.refrescarInformacion(usuario!.id);
+          this.modalesService.modalExitoso(res.mensaje);
         },
-        error: (err) => this.modalesService.modalError(err),
       });
-  }
-
-  obtenerMetasConCumplimiento(): void {
-    this.authService
-      .validarToken()
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe({
-        next: () => {
-          this.authService.usuarioLogueado.subscribe((usuario) => {
-            this.metaAhorroService.refrescarInformacion(usuario!.id);
-            this.metaAhorroService.metaCumplimientoObservable.subscribe({
-              next: (res) => (this.metasConCumplimiento = res),
-              error: (err) => this.modalesService.modalError(err),
-            });
-          });
-        },
-        error: (err) => this.modalesService.modalError(err),
-      });
-  }
+    });
+  };
 
   mostrarModalEliminarMovimiento = (id: number) => {
     Swal.fire({
@@ -331,27 +237,20 @@ export default class DashboardComponent implements OnInit, OnDestroy {
   };
 
   eliminarAhorro = (id: number) => {
-    this.authService
-      .validarToken()
+    this.authService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe((usuario) => {
+      this.ahorroService.eliminarAhorro(id)
       .pipe(takeUntil(this.onDestroy))
       .subscribe({
-        next: (res) => {
-          this.authService.usuarioLogueado
-            .pipe(takeUntil(this.onDestroy))
-            .subscribe((usuario) => {
-              this.ahorroService.eliminarAhorro(id).subscribe({
-                next: () => {
-                  this.ahorroService.refrescarInformacion(usuario!.id);
-                  this.metaAhorroService.refrescarInformacion(usuario!.id);
-                  this.modalesService.modalExitoso(
-                    'Registro eliminado exitosamente.',
-                  );
-                },
-                error: (err) => this.modalesService.modalError(err),
-              });
-            });
-        },
-        error: (err) => this.modalesService.modalError(err),
+        next: () => {
+          this.ahorroService.refrescarInformacion(usuario!.id);
+          this.metaAhorroService.refrescarInformacion(usuario!.id);
+          this.modalesService.modalExitoso(
+            'Registro eliminado exitosamente.',
+          );
+        }
       });
+    });
   };
 }

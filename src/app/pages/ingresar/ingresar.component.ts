@@ -6,9 +6,6 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { ModalesService } from '../../services/modales.service';
 import { Subject, takeUntil } from 'rxjs';
-import Swal from 'sweetalert2';
-import 'sweetalert2/themes/bootstrap-5.css'
-
 
 @Component({
   selector: 'app-ingresar',
@@ -37,7 +34,6 @@ export default class IngresarComponent implements OnDestroy {
       next: () => this.isIngresando = true,
       error: (err) => {
         this.isIngresando = false;
-        this.modalesService.modalError(err);
       }
     })
   }

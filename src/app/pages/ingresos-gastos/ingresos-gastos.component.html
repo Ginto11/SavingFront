@@ -11,7 +11,8 @@
     </p>
   </div>
 
-  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"
+    *ngIf="totalesIngresos$ | async as totalesIngresos">
     <div
       class="bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center"
       title="En este valor no se suman las metas cumplidas."
@@ -74,7 +75,7 @@
               <button class="bg-blue-800 rounded-full w-7 cursor-pointer flex items-center justify-center pi pi-plus" (click)="mostrarModalIngreso()"></button>
             </h3>
 
-            <ul class="flex flex-col gap-3">
+            <ul class="flex flex-col gap-3" *ngIf="listaIngresos$ | async as listaIngresos">
               @for (ingreso of listaIngresos; track ingreso.id) {
                 <li class="p-4 bg-gray-800 rounded-xl shadow-md flex justify-between items-center">
                   <div class="flex gap-3">
@@ -98,7 +99,7 @@
               <button class="bg-red-800 rounded-full w-7 cursor-pointer flex items-center justify-center pi pi-minus" (click)="mostrarModalEgreso()"></button>
             </h3>
 
-            <ul class="flex flex-col gap-3">
+            <ul class="flex flex-col gap-3" *ngIf="listaEgresos$ | async as listaEgresos">
               @for (egreso of listaEgresos; track egreso.id) {
                 <li class="p-4 bg-gray-800 rounded-xl shadow-md flex justify-between items-center">
                   <div class="flex gap-4"> 
