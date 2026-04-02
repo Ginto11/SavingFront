@@ -41,7 +41,7 @@ export class MetaAhorroService {
   }
 
   obtenerCantidadMetasActivasPorUsuarioId(id: number) :Observable<ServerResponse> {
-      return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/usuario/${id}`);
+      return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/usuario/${id}/activas`);
   }
 
   obtenerProgresoDeMetasPorUsuarioId(id: number):Observable<ServerResponse> {
@@ -58,6 +58,10 @@ export class MetaAhorroService {
         next: (res) => this.metasCumplidas.next(res.data),
         error: (err) => this.modalesService.modalError(err)
       });
+  }
+
+  obtenerMetasBuscadasPorNombre(id: number, nombre: string):Observable<ServerResponse> {
+    return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/busqueda/${id}`, { params: { nombre: nombre } })
   }
 
   refrescarInformacion(id: number){

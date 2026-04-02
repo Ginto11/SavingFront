@@ -38,7 +38,6 @@ export class AhorroService {
   }
 
   eliminarAhorro = (id: number): Observable<any> => {
-    console.log(id)
     return this.http.delete(`${environment.URL_SERVER}/api/ahorros/${id}`)
   }
 
