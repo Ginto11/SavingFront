@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { ModalesService } from '../../services/modales.service';
 import { Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
-import 'sweetalert2/themes/bootstrap-5.css'
 
 @Component({
   selector: 'app-registrarse',
@@ -72,7 +71,6 @@ export default class RegistrarseComponent {
         error: (err) => {
           this.isRegistrando = false;
           this.limpiarModelo();
-          this.modalesService.modalError(err);
         }
       })
   }

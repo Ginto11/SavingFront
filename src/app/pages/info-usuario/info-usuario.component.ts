@@ -16,7 +16,7 @@ import Swal from 'sweetalert2';
   templateUrl: './info-usuario.component.html',
   styles: ``
 })
-export default class InfoUsuarioCompPonent implements AfterViewInit{
+export default class InfoUsuarioCompPonent implements OnInit{
 
   private authService = inject(AuthService);
   private modalesService = inject(ModalesService);
@@ -45,32 +45,25 @@ export default class InfoUsuarioCompPonent implements AfterViewInit{
   fotoNueva!: File;
   edicioModo = false;
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.obtenerInformacionUsuario();
   }
 
   obtenerInformacionUsuario(){
-    this.authService.validarToken()
+    this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
-    .subscribe({
-      next: () => {
-        this.authService.usuarioLogueado.subscribe(usuario => {
-            this.usuarioService.refrescarInformacion(usuario!.id);
-            this.usuarioService.usuarioObservable.subscribe({ 
-              next: (res) => {
-                this.usuario = res;
-                this.urlFoto = `${this.URL}/${this.usuario.fotoPerfil}`;
-                this.nombre = `${this.usuario.primerNombre} ${this.usuario.primerApellido}`
-                this.correo = this.usuario.correo;
-              },
-              error: (err) => this.modalesService.modalError(err)
-            })
-          }
-        )
-      },
-      error: (err) => {
-        this.modalesService.modalError(err);
-      }
+    .subscribe(usuario => {
+      this.usuarioService.refrescarInformacion(usuario!.id);
+      this.usuarioService.usuarioObservable
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({ 
+        next: (res) => {
+          this.usuario = res;
+          this.urlFoto = `${this.URL}/${this.usuario.fotoPerfil}`;
+          this.nombre = `${this.usuario.primerNombre} ${this.usuario.primerApellido}`
+          this.correo = this.usuario.correo;
+        }
+      })
     })
   }
 
@@ -122,6 +115,7 @@ export default class InfoUsuarioCompPonent implements AfterViewInit{
     formData.append('correo', this.usuario.correo);
     formData.append('manejaGastos', this.usuario.manejaGastos.toString());
 
+
     if (this.usuario.fechaNacimiento) {
       formData.append(
         'fechaNacimiento',
@@ -133,7 +127,6 @@ export default class InfoUsuarioCompPonent implements AfterViewInit{
     }
 
     this.usuarioService.actualizar(id, formData).subscribe(res => {
-      console.log(res)
       this.usuarioService.refrescarInformacion(id);
     });
     this.edicioModo = false;

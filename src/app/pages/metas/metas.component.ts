@@ -24,61 +24,38 @@ export default class MetasComponent implements OnInit, OnDestroy {
   metasBuscadas: string | null = null;
 
   ngOnInit():void {
-    this.auhService.validarToken()
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe({
-        next: () => {
-          this.auhService.usuarioLogueado
-          .pipe(takeUntil(this.onDestroy))
-          .subscribe((usuario) => {
-            this.metaAhorroService.refrescarInformacion(usuario!.id);
-            this.metaAhorroService.todasLasMetasObservable.subscribe({
-            next: (res) => { this.metas = res; },
-            error: (err) => { this.modalesService.modalError(err) }
-            })
-          })
-        },
-        error: (err) => { this.modalesService.modalError(err) }})
+    this.auhService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe((usuario) => {
+      this.metaAhorroService.refrescarInformacion(usuario!.id);
+      this.metaAhorroService.todasLasMetasObservable.subscribe(res => {
+        this.metas = res;
+      })
+    })
   }
 
   buscarMetasPorEstado(estado: string):void {
-    this.auhService.validarToken()
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe({
-        next: () => {
-          this.auhService.usuarioLogueado
-            .pipe(takeUntil(this.onDestroy))
-            .subscribe(usuario => {
-              this.metaAhorroService.obtenerMetasPorEstadoPorUsuarioId(usuario!.id, estado);
-                this.metaAhorroService.metasCumplidasObservable
-                .subscribe({
-                  next: (res) => this.metas = res,
-                  error: (err) => this.modalesService.modalError(err) 
-                })
-            })
-        }, 
-        error: (err) => this.modalesService.modalError(err) 
-      })
+    this.auhService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(usuario => {
+      this.metaAhorroService.obtenerMetasPorEstadoPorUsuarioId(usuario!.id, estado);
+        this.metaAhorroService.metasCumplidasObservable
+        .subscribe({
+          next: (res) => this.metas = res
+        })
+    })
   }
 
   buscarMetaPorNombre():void {
-    this.auhService.validarToken()
+    this.auhService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(usuario => {
+      this.metaAhorroService.obtenerMetasBuscadasPorNombre(usuario!.id, (this.metasBuscadas)? this.metasBuscadas : '')
       .pipe(takeUntil(this.onDestroy))
       .subscribe({
-        next: (res) => {
-          this.auhService.usuarioLogueado
-            .pipe(takeUntil(this.onDestroy))
-            .subscribe(usuario => {
-              this.metaAhorroService.obtenerMetasBuscadasPorNombre(usuario!.id, (this.metasBuscadas)? this.metasBuscadas : '')
-              .pipe(takeUntil(this.onDestroy))
-              .subscribe({
-                next: (res) => this.metas = res.data,
-                error: (err) => this.modalesService.modalError(err)
-              })
-            })
-        },
-        error: (err) => this.modalesService.modalError(err)
+        next: (res) => this.metas = res.data
       })
+    })
   }
 
   ngOnDestroy(): void {
