@@ -5,10 +5,11 @@ import { MetaAhorroService } from '../../services/meta-ahorro.service';
 import { Meta } from '../../interfaces/meta.interface';
 import { Subject, takeUntil } from 'rxjs';
 import { ModalesService } from '../../services/modales.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-metas',
-  imports: [CardMetaComponent],
+  imports: [CardMetaComponent, FormsModule],
   templateUrl: './metas.component.html',
   styles: ``
 })
@@ -20,6 +21,7 @@ export default class MetasComponent implements OnInit, OnDestroy {
   private metaAhorroService = inject(MetaAhorroService);
 
   metas: Meta[] | null = null;
+  metasBuscadas: string | null = null;
 
   ngOnInit():void {
     this.auhService.validarToken()
@@ -56,6 +58,26 @@ export default class MetasComponent implements OnInit, OnDestroy {
             })
         }, 
         error: (err) => this.modalesService.modalError(err) 
+      })
+  }
+
+  buscarMetaPorNombre():void {
+    this.auhService.validarToken()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: (res) => {
+          this.auhService.usuarioLogueado
+            .pipe(takeUntil(this.onDestroy))
+            .subscribe(usuario => {
+              this.metaAhorroService.obtenerMetasBuscadasPorNombre(usuario!.id, (this.metasBuscadas)? this.metasBuscadas : '')
+              .pipe(takeUntil(this.onDestroy))
+              .subscribe({
+                next: (res) => this.metas = res.data,
+                error: (err) => this.modalesService.modalError(err)
+              })
+            })
+        },
+        error: (err) => this.modalesService.modalError(err)
       })
   }
 

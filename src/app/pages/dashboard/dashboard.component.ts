@@ -132,7 +132,7 @@ export default class DashboardComponent implements OnInit, OnDestroy {
 
     this.authService.usuarioLogueado.subscribe((usuario) => {
       this.metaAhorroService
-        .obtenerTodasLasMetasPorUsuarioId(usuario!.id)
+        .obtenerCantidadMetasActivasPorUsuarioId(usuario!.id)
         .subscribe((res) => {
           res.data.forEach((meta: any) => {
             opciones += `<option value="${meta.id}">${meta.nombre}</option>`;
