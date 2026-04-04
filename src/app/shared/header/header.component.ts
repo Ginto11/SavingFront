@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { ButtonThemeComponent } from "../button-theme/button-theme.component";
 
 @Component({
   selector: 'app-header',
-  imports: [],
+  imports: [ButtonThemeComponent],
   templateUrl: './header.component.html',
   styles: ``
 })

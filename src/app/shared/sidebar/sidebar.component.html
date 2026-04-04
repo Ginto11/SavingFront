@@ -1,7 +1,7 @@
-<nav class="w-full md:w-[300px] bg-gray-900 h-full fixed top-0 left-0 py-6 px-6 overflow-auto z-40">
+<nav class="w-full md:w-[300px] bg-white dark:bg-gray-900 h-full fixed top-0 left-0 py-6 px-6 overflow-auto z-40">
     <button (click)="cerrarMenu();" class="absolute top-0 right-0 m-6 cursor-pointer bg-red-200 px-2 py-1 rounded"><i class="pi pi-times"></i></button>
 
-    <h2 class="text-3xl font-bold text-green-200">Saving</h2>
+    <h2 class="text-3xl font-bold text-blue-700 dark:text-green-200">Saving</h2>
 
     <ul class="mt-8">
         <li>
@@ -11,10 +11,10 @@
 
     <div class="mt-6">
         <div (click)="toggleMenu(1)" class="flex items-center cursor-pointer group collapsible-toggle">
-            <h6 class="text-white group-hover:text-green-200 text-[15px] font-semibold px-4 flex-1">Información usuario</h6>
-            <span *ngIf="openMenu == 1; else flechaDerecha1" class="text-green-200 text-sm"><i class="pi pi-chevron-up"></i></span>
+            <h6 class="text-gray-700 group-hover:text-blue-700 dark:text-white dark:group-hover:text-green-200 text-[15px] font-semibold px-4 flex-1">Información usuario</h6>
+            <span *ngIf="openMenu == 1; else flechaDerecha1" class="text-blue-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-up"></i></span>
             <ng-template #flechaDerecha1>
-                <span class="text-green-200 text-sm"><i class="pi pi-chevron-right"></i></span>
+                <span class="text-gray-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-right"></i></span>
             </ng-template>
         </div>
 
@@ -28,10 +28,10 @@
 
     <div class="mt-6">
         <div (click)="toggleMenu(2)" class="flex items-center cursor-pointer group collapsible-toggle">
-            <h6 class="text-white group-hover:text-green-200 text-[15px] font-semibold px-4 flex-1">Gestión ahorros</h6>
-            <span *ngIf="openMenu == 2; else flechaDerecha2" class="text-green-200 text-sm"><i class="pi pi-chevron-up"></i></span>
+            <h6 class="text-gray-700 group-hover:text-blue-700 dark:text-white dark:group-hover:text-green-200 text-[15px] font-semibold px-4 flex-1">Gestión ahorros</h6>
+            <span *ngIf="openMenu == 2; else flechaDerecha2" class="text-blue-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-up"></i></span>
             <ng-template #flechaDerecha2>
-                <span class="text-green-200 text-sm"><i class="pi pi-chevron-right"></i></span>
+                <span class="text-gray-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-right"></i></span>
             </ng-template>
         </div>
 
@@ -45,10 +45,10 @@
 
     <div class="mt-6">
         <div (click)="toggleMenu(4)" class="flex items-center cursor-pointer group collapsible-toggle">
-            <h6 class="text-white group-hover:text-green-200 text-[15px] font-semibold px-4 flex-1">Otras Gestiones</h6>
-            <span *ngIf="openMenu == 4; else flechaDerecha4" class="text-green-200 text-sm"><i class="pi pi-chevron-up"></i></span>
+            <h6 class="text-gray-700 group-hover:text-blue-700 dark:text-white dark:group-hover:text-green-200 text-[15px] font-semibold px-4 flex-1">Otras Gestiones</h6>
+            <span *ngIf="openMenu == 4; else flechaDerecha4" class="text-blue-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-up"></i></span>
             <ng-template #flechaDerecha4>
-                <span class="text-green-200 text-sm"><i class="pi pi-chevron-right"></i></span>
+                <span class="text-gray-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-right"></i></span>
             </ng-template>
         </div>
 
@@ -62,10 +62,10 @@
 
     <div class="mt-6">
         <div (click)="toggleMenu(3)" class="flex items-center cursor-pointer group collapsible-toggle">
-            <h6 class="text-white group-hover:text-green-200 text-[15px] font-semibold px-4 flex-1">Seguridad</h6>
-            <span *ngIf="openMenu == 3; else flechaDerecha3" class="text-green-200 text-sm"><i class="pi pi-chevron-up"></i></span>
+            <h6 class="text-gray-700 group-hover:text-blue-700 dark:text-white dark:group-hover:text-green-200 text-[15px] font-semibold px-4 flex-1">Seguridad</h6>
+            <span *ngIf="openMenu == 3; else flechaDerecha3" class="text-blue-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-up"></i></span>
             <ng-template #flechaDerecha3>
-                <span class="text-green-200 text-sm"><i class="pi pi-chevron-right"></i></span>
+                <span class="text-gray-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-right"></i></span>
             </ng-template>
         </div>
 
@@ -81,7 +81,7 @@
         
         <button (click)="modalesService.modalCerrarSesion()"
           title="Salir"
-          class="w-full text-white hover:text-green-900 font-medium transition-all text-[15px] flex items-center gap-4 hover:bg-green-200 rounded-md px-4 py-2 cursor-pointer">
+          class="w-full text-gray-700 hover:bg-blue-200 hover:text-blue-700 dark:text-white dark:hover:text-green-900 font-medium transition-all text-[15px] flex items-center gap-4 dark:hover:bg-green-200 rounded-md px-4 py-2 cursor-pointer">
           <i class="pi pi-sign-out"></i>
           Cerrar Sesión
         </button>

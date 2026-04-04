@@ -1,7 +1,10 @@
-<header class="text-4xl text-green-200 border-b border-b-white font-extrabold bg-gray-900 py-5 flex justify-start gap-7">
+<header class="bg-white text-blue-700 text-4xl dark:text-green-200 border-b border-b-gray-900 dark:border-b-white font-extrabold dark:bg-gray-900 py-5 flex justify-start gap-7">
     <button (click)="enviarPropiedadShowMenu()" class="cursor-pointer ml-6"><i class="pi pi-bars"></i></button>
     <div class="flex gap-3">
         <img src="/icon-header.png" alt="Icono Header" title="Icono App">
         <h1>Saving</h1>
+    </div>
+    <div class="absolute right-0 pb-4 pr-4">
+        <app-button-theme />
     </div>
 </header>

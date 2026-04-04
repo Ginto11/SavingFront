@@ -1,9 +1,9 @@
-<section class="p-6">
+<section class="p-6 bg-white dark:bg-gray-900 h-screen">
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h1 class="text-2xl font-semibold text-white">Mi Perfil</h1>
-      <p class="text-sm text-gray-300">
+      <h1 class="text-2xl font-semibold text-gray-700 dark:text-white">Mi Perfil</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-300">
         Revisa y actualiza tu información personal.
       </p>
     </div>
@@ -12,7 +12,7 @@
       <button
         *ngIf="!edicioModo"
         (click)="iniciarEdicion()"
-        class="px-4 py-2 cursor-pointer bg-green-200 text-green-900 rounded-full font-semibold hover:brightness-95"
+        class="px-4 py-2 cursor-pointer bg-blue-200 text-blue-900 dark:bg-green-200 dark:ext-green-900 rounded-full font-semibold hover:brightness-95"
       >
         Editar Perfil
       </button>
@@ -20,7 +20,7 @@
       <button
         *ngIf="edicioModo"
         (click)="confirmacion()"
-        class="px-4 py-2 cursor-pointer bg-green-200 text-green-900 rounded-full font-semibold"
+        class="px-4 py-2 cursor-pointer bg-blue-200 text-blue-900 dark:bg-green-200 dark:text-green-900 rounded-full font-semibold"
       >
         Guardar
       </button>
@@ -38,7 +38,7 @@
   <!-- Card principal -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Foto + Nombre -->
-    <div class="bg-gray-800 rounded-lg p-6 flex flex-col items-center">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg  p-6 flex flex-col items-center">
       <!-- Usa la imagen local subida como placeholder -->
       <img
         *ngIf="urlFoto"
@@ -46,88 +46,88 @@
         alt="Foto de perfil"
         class="w-28 h-28 object-cover rounded-full border-4 border-slate-700 mb-4"
       />
-      <h2 class="text-lg font-semibold text-white mb-1">
+      <h2 class="text-lg font-semibold text-gray-700 dark:text-white mb-1">
         {{ nombre }}
       </h2>
-      <p class="text-sm text-gray-300 mb-4">{{ correo }}</p>
+      <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">{{ correo }}</p>
     </div>
 
     <!-- Info detallada / Formulario -->
-    <div class="md:col-span-2 bg-gray-800 rounded-lg p-6">
+    <div class="md:col-span-2 bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Nombre -->
         <div>
-          <label class="block text-xs text-gray-400 mb-1">Nombre</label>
+          <label class="block text-sm text-gray-400 mb-1">Nombre</label>
 
           <ng-container *ngIf="!edicioModo; else nombreEdit">
-            <div class="text-white">{{ usuario.primerNombre }}</div>
+            <div class="text-gray-700 dark:text-white">{{ usuario.primerNombre }}</div>
           </ng-container>
 
           <ng-template #nombreEdit>
             <input
               [(ngModel)]="usuario.primerNombre"
-              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+              class="w-full p-3 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-white rounded-xl outline-none focus:ring-2 dark:focus:ring-green-200 focus:ring-blue-200"
             />
           </ng-template>
         </div>
 
         <!-- Apellido -->
         <div>
-          <label class="block text-xs text-gray-400 mb-1">Apellido</label>
+          <label class="block text-sm text-gray-400 mb-1">Apellido</label>
 
           <ng-container *ngIf="!edicioModo; else apellidoEdit">
-            <div class="text-white">{{ usuario.primerApellido }}</div>
+            <div class="text-gray-700 dark:text-white">{{ usuario.primerApellido }}</div>
           </ng-container>
 
           <ng-template #apellidoEdit>
             <input
               [(ngModel)]="usuario.primerApellido"
-              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+              class="w-full p-3 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-white rounded-xl outline-none focus:ring-2 dark:focus:ring-green-200 focus:ring-blue-200"
             />
           </ng-template>
         </div>
 
         <!-- Correo -->
         <div>
-          <label class="block text-xs text-gray-400 mb-1">Correo</label>
+          <label class="block text-sm text-gray-400 mb-1">Correo</label>
 
           <ng-container *ngIf="!edicioModo; else correoEdit">
-            <div class="text-white">{{ usuario.correo }}</div>
+            <div class="text-gray-700 dark:text-white">{{ usuario.correo }}</div>
           </ng-container>
 
           <ng-template #correoEdit>
             <input
               [(ngModel)]="usuario.correo"
               type="email"
-              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+              class="w-full p-3 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-white rounded-xl outline-none focus:ring-2 dark:focus:ring-green-200 focus:ring-blue-200"
             />
           </ng-template>
         </div>
 
         <!-- Cédula -->
         <div>
-          <label class="block text-xs text-gray-400 mb-1">Cédula</label>
+          <label class="block text-sm text-gray-400 mb-1">Cédula</label>
 
           <ng-container *ngIf="!edicioModo; else cedulaEdit">
-            <div class="text-white">{{ usuario.cedula }}</div>
+            <div class="text-gray-700 dark:text-white">{{ usuario.cedula }}</div>
           </ng-container>
 
           <ng-template #cedulaEdit>
             <input
               [(ngModel)]="usuario.cedula"
-              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+              class="w-full p-3 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-white rounded-xl outline-none focus:ring-2 dark:focus:ring-green-200 focus:ring-blue-200"
             />
           </ng-template>
         </div>
 
         <!-- Fecha Nacimiento -->
         <div>
-          <label class="block text-xs text-gray-400 mb-1"
+          <label class="block text-sm text-gray-400 mb-1"
             >Fecha nacimiento</label
           >
 
           <ng-container *ngIf="!edicioModo; else fechaEdit">
-            <div class="text-white">
+            <div class="text-gray-700 dark:text-white">
               {{ usuario.fechaNacimiento | date : "dd/MM/yyyy" }}
             </div>
           </ng-container>
@@ -136,16 +136,16 @@
             <input
               [(ngModel)]="usuario.fechaNacimiento"
               type="datetime-local"
-              class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+              class="w-full p-3 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-white rounded-xl outline-none focus:ring-2 dark:focus:ring-green-200 focus:ring-green-200"
             />
           </ng-template>
         </div>
 
         <div *ngIf="edicioModo">
-          <label class="block text-xs text-gray-400 mb-1"
+          <label class="block text-sm text-gray-400 mb-1"
             >Cambiar foto</label
           >
-          <input (change)="seleccionarArchivo($event)" type="file" class="block w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200" />
+          <input (change)="seleccionarArchivo($event)" type="file" class="block w-full p-1 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-blue-200 dark:focus:ring-green-200" />
         </div>
       </div>
 
@@ -155,15 +155,15 @@
 
         <div class="flex flex-col md:flex-row gap-4">
           <div class="flex-1">
-            <label class="block text-xs text-gray-400 mb-1"
+            <label class="block text-sm text-gray-400 mb-1"
               >Manejo Gastos</label
             >
-            <div *ngIf="!edicioModo" class="text-white">
+            <div *ngIf="!edicioModo" class="text-gray-700 dark:text-white">
               {{ usuario.manejaGastos ? "Activo" : "Desactivado" }}
             </div>
             <div *ngIf="edicioModo" class="flex gap-3 items-center">
               <input [(ngModel)]="usuario.manejaGastos" type="checkbox" class="ml-2" />
-              <label class="text-sm text-gray-300"
+              <label class="text-sm text-gray-700 dark:text-gray-300"
                 >¿Desea activar el modulo de gastos?</label
               >
             </div>
