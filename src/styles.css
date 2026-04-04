@@ -7,7 +7,9 @@
 @source "../node_modules/flowbite";
 @custom-variant dark (&:where(.dark, .dark *));
 
-
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
 
 body::-webkit-scrollbar {
     width: .5rem;
