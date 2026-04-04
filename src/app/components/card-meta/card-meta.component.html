@@ -1,4 +1,4 @@
-<div class="bg-gray-700 shadow-md p-6 w-full max-w-sm rounded-lg overflow-hidden mx-auto">
+<div class="bg-white dark:bg-gray-700 shadow-md p-6 w-full max-w-sm rounded-lg overflow-hidden mx-auto">
     <div class="flex justify-between">
         <div class="inline-block bg-[#edf2f7] rounded-lg py-2 px-3">
             <img class="w-5" src="/images/estrella.png" alt="Icono de meta">
@@ -25,24 +25,24 @@
     </div>
 
     <div class="mt-4">
-        <h3 class="text-xl font-semibold text-green-200"> {{ meta.nombre }} </h3>
+        <h3 class="text-xl font-semibold text-blue-700 dark:text-green-200"> {{ meta.nombre }} </h3>
     </div>
 
     <div class="mt-6">
         <div class="mb-2">
-            <p class="text-white"><strong>Estado: </strong> <span [ngClass]="{
+            <p class="text-gray-700 dark:text-white"><strong>Estado: </strong> <span [ngClass]="{
                 'text-green-200': meta.estado == 'Activa',
                 'text-yellow-300': meta.estado == 'Cumplida',
                 'text-red-400': meta.estado == 'Cancelada'
             }">{{ meta.estado }}</span> </p>
         </div>
         <div class="flex mb-2">
-            <p class="text-sm text-gray-400 flex-1"> $ {{ (meta.montoActual) ? (meta.montoActual | currency:'
+            <p class="text-sm text-gray-500 dark:text-gray-400 flex-1"> $ {{ (meta.montoActual) ? (meta.montoActual | currency:'
                 ':'symbol':'1.0-0') : '0' }} </p>
-            <p class="text-sm text-gray-400"> $ {{ meta.montoObjetivo | currency:' ':'symbol':'1.0-0'}} </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400"> $ {{ meta.montoObjetivo | currency:' ':'symbol':'1.0-0'}} </p>
         </div>
         <div class="bg-gray-600 rounded-full w-full h-2.5 mb-1">
-            <div class="h-full rounded-full bg-green-200 flex items-center"
+            <div class="h-full rounded-full bg-blue-200 dark:bg-green-200 flex items-center"
                 [ngStyle]="{ width: (meta.montoActual) ? ((meta.montoActual * 100) / meta.montoObjetivo) + '%' : '0%' }">
             </div>
         </div>

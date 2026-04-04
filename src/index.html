@@ -10,11 +10,19 @@
   <meta name="author" content="Dev Studio MZ - SavingFront">
   <meta name="publisher" content="SavingFront">
   <meta name="keywords" content="Ahorro, Saving, Dev Studio MZ, Aplicación de ahorros, Web de ahorros, Gestion de ahorros, SavingFront">
-  <meta name="robots" content="index, follow">,
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://saving-front.vercel.app/inicio"> 
   <meta name="google-site-verification" content="WhQNLZ79fbMl9W8r5XEX_2gAOBPUWHAca-WNpuG3vrM" />
+  <script>
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+      if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+      } else {
+          document.documentElement.classList.remove('dark')
+      }
+  </script>
 </head>
-<body class="bg-gray-900">
+<body>
   <app-root></app-root>
 </body>
 </html>

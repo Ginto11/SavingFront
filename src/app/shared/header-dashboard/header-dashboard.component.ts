@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { ButtonThemeComponent } from "../button-theme/button-theme.component";
 
 @Component({
   selector: 'app-header-dashboard',
-  imports: [],
+  imports: [ButtonThemeComponent],
   templateUrl: './header-dashboard.component.html',
   styles: ``
 })

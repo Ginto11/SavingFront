@@ -1,22 +1,22 @@
-<section class="text-gray-600 body-font w-full p-6">
+<section class="text-gray-700 bg-white dark:text-gray-600 dark:bg-gray-900 body-font w-full p-6">
     <div class="mb-6">
-        <h2 class="text-2xl font-semibold text-white">Metas</h2>
-        <p class="text-sm text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-700 dark:text-white">Metas</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-300 text-justify">
             En esta sección podras administrar las metas que tengas creadas, desde actualizarlas, eliminarlas hasta filtrarlas por estado.
         </p>
     </div>
 
-    <div class="p-4 flex-col md:flex-row flex justify-between items-center bg-gray-800 rounded-xl mb-6 gap-2">
+    <div class="p-4 flex-col md:flex-row  shadow flex justify-between items-center bg-gray-50 dark:bg-gray-800 rounded-xl mb-6 gap-2">
         
         <div class="flex gap-3 w-full md:w-md">
-            <input [(ngModel)]="metasBuscadas" class="w-full! md:w-md p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200" type="search" placeholder="Busque sus metas">
-            <button (click)="buscarMetaPorNombre()" class="bg-green-200 rounded-xl w-10 cursor-pointer"><i class="pi pi-search text-green-900 font-medium"></i></button>
+            <input [(ngModel)]="metasBuscadas" class="w-full! md:w-md p-3 bg-white text-gray-700 dark:bg-gray-700 dark:text-white rounded-xl outline-none focus:ring-2 dark:focus:ring-green-200 focus:ring-blue-200" type="search" placeholder="Busque sus metas">
+            <button (click)="buscarMetaPorNombre()" class="bg-blue-200 dark:bg-green-200 rounded-xl w-10 cursor-pointer"><i class="pi pi-search text-blue-900 dark:text-green-900 font-medium"></i></button>
         </div>
 
         <ul class="w-full md:w-md grid gap-3 text-green-200 grid-cols-3">
-            <button (click)="buscarMetasPorEstado('Cumplida')" class="bg-green-200 py-3 rounded-xl text-green-900 font-medium text-center ms:text-sm cursor-pointer">Cumplidas</button>
-            <button (click)="buscarMetasPorEstado('Activa')" class="bg-green-200 py-3 rounded-xl text-green-900 font-medium text-center ms:text-sm cursor-pointer">Activas</button>
-            <button (click)="buscarMetasPorEstado('Cancelada')" class="bg-green-200 py-3 rounded-xl text-green-900 font-medium text-center ms:text-sm cursor-pointer">Canceladas</button>
+            <button (click)="buscarMetasPorEstado('Cumplida')" class="bg-blue-200 dark:bg-green-200 py-3 rounded-xl text-blue-900 dark:text-green-900 font-medium text-center ms:text-sm cursor-pointer">Cumplidas</button>
+            <button (click)="buscarMetasPorEstado('Activa')" class="bg-blue-200 dark:bg-green-200 py-3 rounded-xl text-blue-900 dark:text-green-900 font-medium text-center ms:text-sm cursor-pointer">Activas</button>
+            <button (click)="buscarMetasPorEstado('Cancelada')" class="bg-blue-200 dark:bg-green-200 py-3 rounded-xl text-blue-900 dark:text-green-900 font-medium text-center ms:text-sm cursor-pointer">Canceladas</button>
         </ul>
     </div>
 
@@ -27,14 +27,14 @@
         </div>
     }
     @else if (metas.length > 0) {
-        <div class="p-4 bg-gray-800 rounded-xl grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
+        <div class="p-4 bg-gray-50 dark:bg-gray-800 shadow rounded-xl grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
             @for(meta of metas; track meta.id){
                 <app-card-meta [meta]="meta" />
             }
         </div>
     }
     @else {
-        <div class="p-4 bg-gray-800 rounded-xl grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
+        <div class="p-4 bg-gray-200 dark:bg-gray-800 rounded-xl grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
             <p class="text-gray-400">No se encontraron metas en estado.</p>
         </div>
         }

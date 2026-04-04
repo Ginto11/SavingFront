@@ -1,79 +1,79 @@
-<section class="flex flex-col items-center justify-center bg-gray-900 p-6">
+<section class="bg-white dark:bg-gray-900 flex flex-col items-center justify-center p-6">
 
   <div class="text-center mb-10">
-    <h2 class="text-3xl font-extrabold text-green-200">Crear cuenta</h2>
-    <p class="text-gray-300 mt-2">Completa tus datos para continuar</p>
+    <h2 class="text-blue-700 dark:text-green-200 text-3xl font-extrabold">Crear cuenta</h2>
+    <p class="text-gray-700 dark:text-gray-300 mt-2">Completa tus datos para continuar</p>
   </div>
 
-  <form class="w-full max-w-md bg-gray-800 p-6 rounded-2xl shadow-lg space-y-5">
+  <form class="bg-white dark:bg-gray-800 w-full max-w-md p-6 rounded-2xl shadow-2xl dark:shadow-lg space-y-5">
 
     <div>
-      <label class="text-gray-300 font-medium" for="cedula">Cédula</label>
+      <label class="text-gray-700 dark:text-gray-300 font-medium" for="cedula">Cédula</label>
       <input 
         [(ngModel)]="usuario.cedula"
         name="cedula"
         type="number"
-        placeholder="Ingresa tu cédula"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+        placeholder="Ej: 12234343423"
+        class="text-gray-700 focus:ring-2 focus:ring-blue-200 w-full mt-1 p-3 dark:bg-gray-700 dark:text-white rounded-xl outline-none dark:focus:ring-green-200"
       />
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium" for="primerNombre">Primer nombre</label>
+      <label class="text-gray-700 dark:text-gray-300 font-medium" for="primerNombre">Primer nombre</label>
       <input 
         [(ngModel)]="usuario.primerNombre"
         name="primerNombre"
         type="text"
-        placeholder="Ingresa tu primer nombre"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+        placeholder="Ej: Carlos"
+        class="text-gray-700 focus:ring-2 focus:ring-blue-200 w-full mt-1 p-3 dark:bg-gray-700 dark:text-white rounded-xl outline-none dark:focus:ring-green-200"
       />
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium" for="segundoNombre">Primer apellido</label>
+      <label class="text-gray-700 dark:text-gray-300 font-medium" for="segundoNombre">Primer apellido</label>
       <input 
         [(ngModel)]="usuario.primerApellido"
         name="segundoNombre"
         type="text"
-        placeholder="Ingresa tu segundo nombre"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+        placeholder="Ej: Guillermo"
+        class="text-gray-700 focus:ring-2 focus:ring-blue-200 w-full mt-1 p-3 dark:bg-gray-700 dark:text-white rounded-xl outline-none dark:focus:ring-green-200"
       />
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium" for="usuario">Usuario</label>
+      <label class="text-gray-700 dark:text-gray-300 font-medium" for="usuario">Usuario</label>
       <input 
         [(ngModel)]="usuario.nombreUsuario"
         name="usuario"
         type="text"
-        placeholder="Ingresa tu usuario"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+        placeholder="Ej: CarlosGuillermo"
+        class="text-gray-700 focus:ring-2 focus:ring-blue-200 w-full mt-1 p-3 dark:bg-gray-700 dark:text-white rounded-xl outline-none dark:focus:ring-green-200"
       />
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium" for="correo">Correo</label>
+      <label class="text-gray-700 dark:text-gray-300 font-medium" for="correo">Correo</label>
       <input 
         [(ngModel)]="usuario.correo"
         name="correo"
         type="email"
-        placeholder="correo@ejemplo.com"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+        placeholder="Ej: correo@ejemplo.com"
+        class="text-gray-700 focus:ring-2 focus:ring-blue-200 w-full mt-1 p-3 dark:bg-gray-700 dark:text-white rounded-xl outline-none dark:focus:ring-green-200"
       />
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium" for="fechaNacimiento">Fecha de nacimiento</label>
+      <label class="text-ggray-700 dark:text-gray-300 font-medium" for="fechaNacimiento">Fecha de nacimiento</label>
       <input 
         [(ngModel)]="usuario.fechaNacimiento"
         name="fechaNacimiento"
         type="date"
-        class="w-full mt-1 p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+        class="text-gray-700 focus:ring-2 focus:ring-blue-200 w-full mt-1 p-3 dark:bg-gray-700 dark:text-white rounded-xl outline-none dark:focus:ring-green-200"
       />
     </div>
 
     <div>
-      <label class="text-gray-300 font-medium" for="contrasena">Contraseña</label>
+      <label class="text-gray-700 dark:text-gray-300 font-medium" for="contrasena">Contraseña</label>
 
       <div class="relative mt-1">
         <input 
@@ -81,14 +81,14 @@
           name="contrasena"
           id="passwordReg"
           type="password"
-          placeholder="Crea una contraseña"
-          class="w-full p-3 bg-gray-700 text-white rounded-xl outline-none focus:ring-2 focus:ring-green-200"
+          placeholder="Ej: **************"
+          class="text-gray-700 focus:ring-2 focus:ring-blue-200 w-full p-3 dark:bg-gray-700 dark:text-white rounded-xl outline-none dark:focus:ring-green-200"
         />
 
         <button
           type="button"
           onclick="const p=document.getElementById('passwordReg'); p.type = p.type === 'password' ? 'text' : 'password'"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white"
+          class=" text-gray-700 hover:text-gray-500 absolute right-3 top-1/2 -translate-y-1/2 dark:text-gray-300 dark:hover:text-white"
         >
           👁
         </button>
@@ -100,25 +100,25 @@
         [(ngModel)]="usuario.aceptaTerminos" 
         name="aceptaTerminos"
         type="checkbox" class="mt-1 w-5 h-5 bg-gray-700 rounded">
-      <p class="text-gray-300 text-sm">
+      <p class="text-gray-700 dark:text-gray-300 text-sm">
         Acepto los 
-        <span class="text-green-200 cursor-pointer hover:underline">términos y condiciones</span>.
+        <span class="text-blue-700 dark:text-green-200 cursor-pointer hover:underline">términos y condiciones</span>.
       </p>
     </div>
 
     <button 
       (click)="crear()"
       [ngClass]="{
-        'bg-green-200 hover:bg-green-300 cursor-pointer': isRegistrando == false,
-        'bg-gray-500 hover:bg-gray-400' : isRegistrando == true 
+        'bg-blue-700 hover:bg-blue-800 dark:bg-green-200 dark:hover:bg-green-300 cursor-pointer': isRegistrando == false,
+        'bg-blue-400 dark:bg-gray-500 dark:hover:bg-gray-400' : isRegistrando == true 
       }"
-      class="w-full text-gray-900 font-semibold py-3 rounded-xl shadow mt-3">
+      class="text-white w-full dark:text-gray-900 font-semibold py-3 rounded-xl shadow mt-3">
       {{ (isRegistrando) ? 'Registrando...' : 'Registrarme' }}
     </button>
 
-    <p class="text-gray-400 text-center text-sm mt-2">
+    <p class="text-gray-700 dark:text-gray-400 text-center text-sm mt-2">
       ¿Ya tienes una cuenta?
-      <a routerLink="/ingresar" class="text-green-200 hover:underline cursor-pointer">Iniciar sesión</a>
+      <a routerLink="/ingresar" class="text-blue-700 dark:text-green-200 hover:underline cursor-pointer">Iniciar sesión</a>
     </p>
 
   </form>
