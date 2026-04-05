@@ -11,6 +11,17 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+:root {
+    --color-fondo-dia: white;
+    --color-titulos-dia: #1447e6;
+    --color-fondo-noche: #101828;
+}
+
+@theme {
+    --color-fondo-dia: #f00;
+    --color-texto-dia: #00da00;
+}
+
 body::-webkit-scrollbar {
     width: .5rem;
     background-color: white;
