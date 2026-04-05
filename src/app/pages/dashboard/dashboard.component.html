@@ -1,4 +1,4 @@
-<section class="bg-white text-gray-700 w-full dark:bg-gray-900 dark:text-white p-6">
+<section class="text-gray-700 w-full dark:text-white p-6 pt-25">
 
   <header class="mb-8"
     *ngIf="usuarioLogueado$ | async as usuario"
@@ -48,7 +48,7 @@
       *ngIf="metasConCumplimiento$ | async as metasConCumplimiento"
     >
       @for (meta of metasConCumplimiento; track meta.id) {
-      <div class="flex items-center justify-between border-b border-gray-700">
+      <div class="flex items-center justify-between border-b border-gray-400/50">
         <div class="w-full">
           <div class="flex justify-between mb-2">
             <h2 class="font-bold dark:font-medium"> {{ meta.nombre }} </h2>
@@ -86,7 +86,7 @@
       *ngIf="ultimosMovimientos$ | async as ultimosMovimientos"
     >
       @for (movimiento of ultimosMovimientos; track movimiento.id) {
-      <div class="flex items-center justify-between py-3 border-b border-gray-700">
+      <div class="flex items-center justify-between py-3 border-b border-gray-400/50">
         <div class="flex gap-3">
           <div>
             <i class="pi pi-arrow-circle-up bg-blue-200 text-blue-900 dark:bg-green-200 p-3 rounded-3xl dark:text-green-900"></i>
