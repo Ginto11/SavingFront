@@ -16,6 +16,7 @@
           colorFondo="#FFA300" 
           tituloGrafica="Ahorros ingresados en metas."
           bordeColor="#FFA30030"
+          [alineacionVerticalLabelsX]="false"
           />
         
         <app-line-two-grafica-chart 
@@ -33,6 +34,29 @@
           bordeColor2="#FF000030"
           fondoColor1="green"
           fondoColor2="red"
+        />
+
+        <!--<app-line-grafica-chart 
+          [labels]="labelsEgresoPorCategoria"
+          [data]="dataEgresoPorCategoria"
+          tituloGrafica="Egresos por categorias"
+          tituloLabel="Egresos"
+          textoLabelX="Categorias"
+          textoLabelY="Valor en pesos."
+          colorFondo="#833AB4"
+          bordeColor="#833AB430"
+          [alineacionVerticalLabelsX]="true"
+        /> -->
+
+        <app-grafica-radar-chart 
+          class="lg:col-span-2"
+          [labels]="labelsEgresoPorCategoria"
+          [data]="dataEgresoPorCategoria"
+          colorFondo="#833AB430"
+          borderColor="#833AB430"
+          colorFondoPuntos="#833AB4"
+          tituloLabel="Egresos"
+          tituloGrafica="Egresos por categorias."
         />
     </div>
 

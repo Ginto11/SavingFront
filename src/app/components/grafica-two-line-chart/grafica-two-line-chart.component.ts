@@ -14,7 +14,7 @@ export class GraficaTwoLineChartComponent implements OnChanges, OnInit, OnDestro
   private eventosService = inject(EventosService);
   private onDestroy: Subject<boolean> = new Subject();
 
-  @Input() labels: number[] = [];
+  @Input() labels: string[] = [];
   @Input() data1: number[] = [];
   @Input() data2: number[] = [];
   @Input() tituloGrafica: string = '';
@@ -106,7 +106,7 @@ export class GraficaTwoLineChartComponent implements OnChanges, OnInit, OnDestro
               callback: function(value) {
                   return '$ ' + Number(value).toLocaleString();
                 },
-              color: (this.dark) ? '#DADAD9' : '#364153'
+              color: (this.dark) ? '#DADAD9' : '#6a7282'
             },
             position: 'right',
             title: {
@@ -122,7 +122,7 @@ export class GraficaTwoLineChartComponent implements OnChanges, OnInit, OnDestro
             title: {
               display: true,
               text: this.textoLabelX,
-              color: (this.dark) ? '#DADAD9' : '#364153'
+              color: (this.dark) ? '#FFF' : '#364153'
             },
             ticks: {
               color: (this.dark) ? '#DADAD9' : '#364153'
