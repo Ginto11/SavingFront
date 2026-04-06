@@ -14,6 +14,7 @@ export class ModalesService {
   private authService = inject(AuthService);
 
   modalError(err: any){
+    
     const error: string[] = Object.values(err.error.errors).flat() as string[];
 
     const mensajes: string[] = [];

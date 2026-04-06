@@ -61,6 +61,23 @@
     </div>
 
     <div class="mt-6">
+        <div (click)="toggleMenu(5)" class="flex items-center cursor-pointer group collapsible-toggle">
+            <h6 class="text-gray-700 group-hover:text-blue-700 dark:text-white dark:group-hover:text-green-200 text-[15px] font-semibold px-4 flex-1">Graficas</h6>
+            <span *ngIf="openMenu == 5; else flechaDerecha5" class="text-blue-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-up"></i></span>
+            <ng-template #flechaDerecha5>
+                <span class="text-gray-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-right"></i></span>
+            </ng-template>
+        </div>
+
+        <ul *ngIf="openMenu == 5" class="space-y-1 mt-2 pl-4 max-h-[500px] overflow-hidden transition-all duration-300">
+
+            @for (link of linksSeccion5; track link.nombreRuta) {
+                <app-link-menu [nombreIcon]="link.nombreIcon" [nombreLink]="link.nombreLink" [nombreRuta]="link.nombreRuta" />
+            }
+        </ul>
+    </div>
+
+    <div class="mt-6">
         <div (click)="toggleMenu(3)" class="flex items-center cursor-pointer group collapsible-toggle">
             <h6 class="text-gray-700 group-hover:text-blue-700 dark:text-white dark:group-hover:text-green-200 text-[15px] font-semibold px-4 flex-1">Seguridad</h6>
             <span *ngIf="openMenu == 3; else flechaDerecha3" class="text-blue-700 dark:text-green-200 text-sm"><i class="pi pi-chevron-up"></i></span>
