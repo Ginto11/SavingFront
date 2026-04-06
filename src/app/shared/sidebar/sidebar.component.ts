@@ -39,11 +39,6 @@ export class SidebarComponent {
       nombreIcon: 'pi-sparkles',
       nombreRuta: 'metas',
       nombreLink: 'Metas'
-    },
-    {
-      nombreIcon: 'pi-align-left',
-      nombreRuta: 'movimientos',
-      nombreLink: 'Movimientos'
     }
   ]
 
@@ -60,6 +55,14 @@ export class SidebarComponent {
       nombreIcon: 'pi-wallet',
       nombreRuta: 'ingresos-gastos',
       nombreLink: 'Ingresos y Gastos'
+    }
+  ]
+
+  linksSeccion5: LinkMenu[] = [
+    {
+      nombreIcon: 'pi-chart-bar',
+      nombreRuta: 'comportamientos',
+      nombreLink: 'Comportamientos'
     }
   ]
   

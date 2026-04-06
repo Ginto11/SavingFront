@@ -45,6 +45,10 @@ export const routes: Routes = [
             {
                 path: 'ingresos-gastos',
                 loadComponent: () => import('./pages/ingresos-gastos/ingresos-gastos.component')
+            },
+            {
+                path: 'comportamientos',
+                loadComponent: () => import('./pages/comportamientos/comportamientos.component')
             }
         ]
     }

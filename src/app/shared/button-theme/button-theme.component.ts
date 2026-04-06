@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { EventosSidebarService } from '../../services/eventos-sidebar.service';
+import { EventosService } from '../../services/eventos.service';
 
 @Component({
   selector: 'app-button-theme',
@@ -7,7 +9,11 @@ import { Component, OnInit } from '@angular/core';
   styles: ``,
 })
 export class ButtonThemeComponent implements OnInit {
+
+  private eventosService = inject(EventosService);
+
   ngOnInit(): void {
+
     var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
     var themeToggleLightIcon = document.getElementById(
       'theme-toggle-light-icon',
@@ -25,7 +31,7 @@ export class ButtonThemeComponent implements OnInit {
 
     var themeToggleBtn = document.getElementById('theme-toggle');
 
-    themeToggleBtn?.addEventListener('click', function () {
+    themeToggleBtn?.addEventListener('click', () => {
       // toggle icons inside button
       themeToggleDarkIcon?.classList.toggle('hidden');
       themeToggleLightIcon?.classList.toggle('hidden');
@@ -35,9 +41,11 @@ export class ButtonThemeComponent implements OnInit {
         if (localStorage.getItem('color-theme') === 'light') {
           document.documentElement.classList.add('dark');
           localStorage.setItem('color-theme', 'dark');
+          this.eventosService.emitir(true);
         } else {
           document.documentElement.classList.remove('dark');
           localStorage.setItem('color-theme', 'light');
+          this.eventosService.emitir(false);
         }
 
         // if NOT set via local storage previously
@@ -52,4 +60,5 @@ export class ButtonThemeComponent implements OnInit {
       }
     });
   }
+
 }
