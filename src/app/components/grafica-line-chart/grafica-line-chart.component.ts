@@ -2,7 +2,7 @@ import { Component, ElementRef, inject, Input, OnChanges, OnInit, ViewChild } fr
 import { Chart, ChartType } from 'chart.js/auto';
 import { EventosSidebarService } from '../../services/eventos-sidebar.service';
 import { EventosService } from '../../services/eventos.service';
-import { take } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-line-grafica-chart',
@@ -13,6 +13,8 @@ import { take } from 'rxjs';
 export class GraficaLineChartComponent implements OnChanges, OnInit {
 
   private eventosService = inject(EventosService);
+  private onDestroy: Subject<boolean> = new Subject();
+  
 
   @ViewChild('canvasElement') canvas!: ElementRef;
   chart!: Chart;
@@ -29,7 +31,9 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
   @Input() bordeColor: string = '';
 
   ngOnInit(): void {
-    this.eventosService.themeDarkObservable.subscribe(res => {
+    this.eventosService.themeDarkObservable
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(res => {
       if(document.documentElement.classList.contains('dark')){
         this.dark = res;
         if(this.chart){
@@ -114,5 +118,10 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
         }
       });
 
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy.next(true);
+    this.onDestroy.complete();
   }
 }

@@ -1,6 +1,7 @@
-import { Component, ElementRef, inject, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Chart, ChartType } from 'chart.js/auto';
 import { EventosService } from '../../services/eventos.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-line-two-grafica-chart',
@@ -8,9 +9,10 @@ import { EventosService } from '../../services/eventos.service';
   templateUrl: './grafica-two-line-chart.component.html',
   styles: ``,
 })
-export class GraficaTwoLineChartComponent implements OnChanges, OnInit {
+export class GraficaTwoLineChartComponent implements OnChanges, OnInit, OnDestroy {
 
   private eventosService = inject(EventosService);
+  private onDestroy: Subject<boolean> = new Subject();
 
   @Input() labels: number[] = [];
   @Input() data1: number[] = [];
@@ -32,7 +34,9 @@ export class GraficaTwoLineChartComponent implements OnChanges, OnInit {
   chart!: Chart;
 
   ngOnInit(): void {
-    this.eventosService.themeDarkObservable.subscribe(res => {
+    this.eventosService.themeDarkObservable
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(res => {
       if(document.documentElement.classList.contains('dark')){
         this.dark = res;
         if(this.chart){
@@ -128,5 +132,10 @@ export class GraficaTwoLineChartComponent implements OnChanges, OnInit {
       },
       
     });
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy.next(true);
+    this.onDestroy.complete();
   }
 }
