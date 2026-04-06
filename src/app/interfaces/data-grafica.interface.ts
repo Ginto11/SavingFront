@@ -4,6 +4,7 @@ export interface DataGrafica {
         listaAhorroPorDias: AhorroPorDias[];
         listaIngresoPorDias: IngresoPorDias[];
         listaEgresoPorDias: EgresoPorDias[];
+        listaEgresoPorCategoria: listaEgresoPorCategoria[]
     }
 }
 
@@ -19,5 +20,10 @@ interface IngresoPorDias {
 
 interface EgresoPorDias {
     dia: number;
+    total: number;
+}
+
+interface listaEgresoPorCategoria {
+    nombreCategoria: string;
     total: number;
 }

@@ -21,7 +21,7 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
 
   dark!:boolean;
 
-  @Input() labels: number[] = [];
+  @Input() labels: string[] = [];
   @Input() data: number[] = [];
   @Input() tituloGrafica: string = '';
   @Input() tituloLabel: string = '';
@@ -29,6 +29,7 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
   @Input() textoLabelY: string = '';
   @Input() colorFondo: string = '';
   @Input() bordeColor: string = '';
+  @Input() alineacionVerticalLabelsX: boolean = false;
 
   ngOnInit(): void {
     this.eventosService.themeDarkObservable
@@ -89,7 +90,11 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
                 color: (this.dark) ? '#FFF3' : '#36415330'
               },
               ticks: {
-                color: (this.dark) ? '#DADAD9' : '#364153'
+                color: (this.dark) ? '#DADAD9' : '#364153',
+                minRotation: (this.alineacionVerticalLabelsX) ? 90 : 0,
+                maxRotation: (this.alineacionVerticalLabelsX) ? 90 : 0,
+                font: {
+                }
               },
               title: {
                 display: true,
