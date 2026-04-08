@@ -36,6 +36,9 @@ export default class ComportamientosComponent implements OnInit, OnDestroy {
   dataMetaCumplimientoGraficaMontosActuales: number[] = [];
   dataMetaCumplimientoGraficaMontosObjetivos: number[] = [];
 
+  labelsRentabilidad: string[] = [];
+  dataRentabilidad: number[] = [];
+
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
@@ -61,6 +64,11 @@ export default class ComportamientosComponent implements OnInit, OnDestroy {
         this.labelsMetaCumplientoGrafica = resp.data.listaMetaCumplimiento.map((x: any) => x.nombreMeta);
         this.dataMetaCumplimientoGraficaMontosActuales = resp.data.listaMetaCumplimiento.map((x: any) => x.montoActual);
         this.dataMetaCumplimientoGraficaMontosObjetivos = resp.data.listaMetaCumplimiento.map((x: any) => x.montoObjetivo);
+
+        this.labelsRentabilidad = resp.data.listaRentabilidad.map((x: any) => x.dia.toString());
+        this.dataRentabilidad = resp.data.listaRentabilidad.map((x: any) => x.diferencia);
+
+        console.log(resp)
 
       })
     });
