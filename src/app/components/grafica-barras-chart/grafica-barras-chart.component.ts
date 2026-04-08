@@ -111,6 +111,11 @@ export class GraficaBarrasChartComponent implements OnInit, OnChanges, OnDestroy
               color: (this.dark) ? '#FFF3' : '#36415330'
             },
             ticks: {
+              callback: function(value) {
+                const valor = value as number;
+                const label = this.getLabelForValue(valor);
+                return label.length > 5 ? label.substring(0, 5) + '...' : label;
+              },
               color: (this.dark) ? '#DADAD9' : '#6a7282'
             },
             title: {
