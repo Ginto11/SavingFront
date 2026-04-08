@@ -6,10 +6,11 @@ import { GraficaLineChartComponent } from '../../components/grafica-line-chart/g
 import { GraficaTwoLineChartComponent } from '../../components/grafica-two-line-chart/grafica-two-line-chart.component';
 import { Subject, takeUntil } from 'rxjs';
 import { GraficaRadarChartComponent } from '../../components/grafica-radar-chart/grafica-radar-chart.component';
+import { GraficaBarrasChartComponent } from '../../components/grafica-barras-chart/grafica-barras-chart.component';
 
 @Component({
   selector: 'app-comportamientos',
-  imports: [GraficaLineChartComponent, GraficaTwoLineChartComponent, GraficaRadarChartComponent],
+  imports: [GraficaBarrasChartComponent, GraficaLineChartComponent, GraficaTwoLineChartComponent, GraficaRadarChartComponent],
   templateUrl: './comportamientos.component.html',
   styles: ``,
 })
@@ -31,6 +32,10 @@ export default class ComportamientosComponent implements OnInit, OnDestroy {
   labelsEgresoPorCategoria: string[] = [];
   dataEgresoPorCategoria: number[] = [];
 
+  labelsMetaCumplientoGrafica: string[] = [];
+  dataMetaCumplimientoGraficaMontosActuales: number[] = [];
+  dataMetaCumplimientoGraficaMontosObjetivos: number[] = [];
+
 
   ngOnInit(): void {
     this.authService.usuarioLogueado
@@ -51,6 +56,10 @@ export default class ComportamientosComponent implements OnInit, OnDestroy {
 
         this.labelsEgresoPorCategoria = resp.data.listaEgresoPorCategoria.map((x: any) => x.nombreCategoria);
         this.dataEgresoPorCategoria = resp.data.listaEgresoPorCategoria.map((x: any) => x.total);
+
+        this.labelsMetaCumplientoGrafica = resp.data.listaMetaCumplimiento.map((x: any) => x.nombreMeta);
+        this.dataMetaCumplimientoGraficaMontosActuales = resp.data.listaMetaCumplimiento.map((x: any) => x.montoActual);
+        this.dataMetaCumplimientoGraficaMontosObjetivos = resp.data.listaMetaCumplimiento.map((x: any) => x.montoObjetivo);
 
       })
     });

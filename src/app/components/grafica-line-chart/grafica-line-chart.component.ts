@@ -82,6 +82,17 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
               display: true,
               text: this.tituloGrafica,
               color: (this.dark) ? '#FFFFFF' : '#364153'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context){
+                  const valor = context.raw as number;
+                  return `Ahorro: $ ${valor.toLocaleString('es-CO')}`
+                },
+                title: function(context){
+                  return `Dia: ${context[0].label}`
+                }
+              }
             }
           },
           scales: {
@@ -114,7 +125,7 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
               position: 'right',
               ticks: {
                 callback: function(value) {
-                  return '$ ' + Number(value).toLocaleString();
+                  return '$ ' + Number(value).toLocaleString('es-CO');
                 },
                 color: (this.dark) ? '#DADAD9' : '#6a7282'
               }

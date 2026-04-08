@@ -4,7 +4,8 @@ export interface DataGrafica {
         listaAhorroPorDias: AhorroPorDias[];
         listaIngresoPorDias: IngresoPorDias[];
         listaEgresoPorDias: EgresoPorDias[];
-        listaEgresoPorCategoria: listaEgresoPorCategoria[]
+        listaEgresoPorCategoria: listaEgresoPorCategoria[];
+        listaMetaCumplimiento: MetaCumplientoGrafica[];
     }
 }
 
@@ -26,4 +27,10 @@ interface EgresoPorDias {
 interface listaEgresoPorCategoria {
     nombreCategoria: string;
     total: number;
+}
+
+interface MetaCumplientoGrafica {
+    nombreMeta: string;
+    montoActual: number;
+    montoObjetivo: number;
 }

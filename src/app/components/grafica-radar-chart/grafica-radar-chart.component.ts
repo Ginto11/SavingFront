@@ -81,7 +81,7 @@ export class GraficaRadarChartComponent implements OnInit, OnChanges, OnDestroy 
             },
             ticks: {
               callback: function(valor){
-                return `$ ${valor.toLocaleString()}`
+                return `$ ${valor.toLocaleString('es-CO')}`
               },
               color: (this.dark) ? '#DADAD9' : '#6a7282',
                 backdropColor: 'transparent' // 🔥 quita el fondo blanco
@@ -96,6 +96,17 @@ export class GraficaRadarChartComponent implements OnInit, OnChanges, OnDestroy 
             display: true,
             text: this.tituloGrafica,
             color: (this.dark) ? '#FFFFFF' : '#364153'
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const valor = context.raw as number;
+                return `${context.dataset.label}: $ ${valor.toLocaleString('es-CO')}`
+              },
+              title: (context) => {
+                return `Categoria gasto: ${context[0].label}`
+              }
+            }
           }
         },
         elements: {
