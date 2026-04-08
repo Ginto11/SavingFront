@@ -117,7 +117,10 @@ export class GraficaTwoLineChartComponent implements OnChanges, OnInit, OnDestro
               callback: (value) => {
                   return '$ ' + Number(value).toLocaleString('es-CO');
                 },
-              color: (this.dark) ? '#DADAD9' : '#6a7282'
+              color: (this.dark) ? '#DADAD9' : '#6a7282',
+              font: {
+                size: window.innerWidth < 500 ? 10 : 12
+              }
             },
             position: 'right',
             title: {
@@ -136,7 +139,10 @@ export class GraficaTwoLineChartComponent implements OnChanges, OnInit, OnDestro
               color: (this.dark) ? '#FFF' : '#364153'
             },
             ticks: {
-              color: (this.dark) ? '#DADAD9' : '#364153'
+              color: (this.dark) ? '#DADAD9' : '#364153',
+              font: {
+                size: window.innerWidth < 500 ? 10 : 12
+              }
             }
           }
         }

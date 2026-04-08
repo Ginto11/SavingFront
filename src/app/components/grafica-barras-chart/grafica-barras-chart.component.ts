@@ -120,7 +120,7 @@ export class GraficaBarrasChartComponent implements OnInit, OnChanges, OnDestroy
               minRotation: window.innerWidth < 500 ? 90 : 0,
               maxRotation: window.innerWidth < 500 ? 90 : 0,
               font: {
-                size: window.innerWidth < 500 ? 9 : 12
+                size: window.innerWidth < 500 ? 10 : 12
               }
             },
             title: {
@@ -140,7 +140,7 @@ export class GraficaBarrasChartComponent implements OnInit, OnChanges, OnDestroy
               },
               color: (this.dark) ? '#DADAD9' : '#6a7282',
               font: {
-                size: window.innerWidth < 500 ? 9 : 12
+                size: window.innerWidth < 500 ? 10 : 12
               }
             },
             title: {
