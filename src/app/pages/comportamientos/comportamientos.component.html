@@ -49,7 +49,6 @@
         /> -->
 
         <app-grafica-radar-chart 
-          class="lg:col-span-2"
           [labels]="labelsEgresoPorCategoria"
           [data]="dataEgresoPorCategoria"
           colorFondo="#833AB430"
@@ -57,6 +56,21 @@
           colorFondoPuntos="#833AB4"
           tituloLabel="Egresos"
           tituloGrafica="Egresos por categorias."
+        />
+
+        <app-grafica-barras-chart 
+          [labels]="labelsMetaCumplientoGrafica"
+          [data1]="dataMetaCumplimientoGraficaMontosObjetivos"
+          [data2]="dataMetaCumplimientoGraficaMontosActuales"
+          tituloGrafica="Progreso de las metas activas."
+          tituloLabel1="Monto objetivo"
+          tituloLabel2="Monto actual"
+          colorFondo1="#00A4EF30"
+          colorFondo2="#E1306C30"  
+          tituloLabelX="Metas"
+          tituloLabelY="Valor en pesos."
+          colorBorde1="#00A4EF"
+          colorBorde2="#E1306C"
         />
     </div>
 
