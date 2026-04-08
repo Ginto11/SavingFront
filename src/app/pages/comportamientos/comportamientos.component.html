@@ -7,35 +7,48 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-3">
-        <app-line-grafica-chart 
-          [labels]="labelsAhorro" 
-          [data]="dataAhorro" 
-          textoLabelX="Dias" 
-          textoLabelY="Valor en pesos." 
-          tituloLabel="Ahorros" 
-          colorFondo="#FFA300" 
-          tituloGrafica="Ahorros ingresados en metas."
-          bordeColor="#FFA30030"
-          [alineacionVerticalLabelsX]="false"
-          />
-        
-        <app-line-two-grafica-chart 
-          [labels]="labelsIngreso" 
-          [data1]="dataIngreso" 
-          [data2]="dataEgreso" 
-          tituloGrafica="Ingresos VS Egresos" 
-          tituloLabel1="Ingresos"
-          tituloLabel2="Egresos"
-          colorLabel1="green"
-          colorLabel2="red"  
-          textoLabelX="Dias"
-          textoLabelY="Valor en pesos."
-          bordeColor1="#00FF0030"
-          bordeColor2="#FF000030"
-          fondoColor1="green"
-          fondoColor2="red"
-        />
+      
+      <app-line-two-grafica-chart 
+      [labels]="labelsIngreso" 
+      [data1]="dataIngreso" 
+      [data2]="dataEgreso" 
+      tituloGrafica="Ingresos VS Egresos" 
+      tituloLabel1="Ingresos"
+      tituloLabel2="Egresos"
+      colorLabel1="green"
+      colorLabel2="red"  
+      textoLabelX="Dias"
+      textoLabelY="Valor en pesos."
+      bordeColor1="#00FF0060"
+      bordeColor2="#FF000060"
+      fondoColor1="#0F0"
+      fondoColor2="#F00"
+      />
+      
+      <app-line-grafica-chart 
+        [labels]="labelsRentabilidad"
+        [data]="dataRentabilidad"
+        tituloLabel="Rentabilidad"
+        textoLabelX="Dias"
+        textoLabelHover="Rentabilidad"
+        textoLabelY="Valor en pesos"
+        colorFondo="#44ffaa"
+        tituloGrafica="Rentabilidad por dias."
+        bordeColor="#44ffaa60"
+      />
 
+      <app-line-grafica-chart 
+        [labels]="labelsAhorro" 
+        [data]="dataAhorro" 
+        textoLabelX="Dias" 
+        textoLabelY="Valor en pesos." 
+        tituloLabel="Ahorros" 
+        textoLabelHover="Ahorro"
+        colorFondo="#FFA300" 
+        tituloGrafica="Ahorros ingresados en metas."
+        bordeColor="#FFA30060"
+        [alineacionVerticalLabelsX]="false"
+        />
         <!--<app-line-grafica-chart 
           [labels]="labelsEgresoPorCategoria"
           [data]="dataEgresoPorCategoria"
@@ -51,27 +64,29 @@
         <app-grafica-radar-chart 
           [labels]="labelsEgresoPorCategoria"
           [data]="dataEgresoPorCategoria"
-          colorFondo="#833AB430"
-          borderColor="#833AB430"
+          colorFondo="#833AB460"
+          borderColor="#833AB460"
           colorFondoPuntos="#833AB4"
           tituloLabel="Egresos"
           tituloGrafica="Egresos por categorias."
         />
-
+        
         <app-grafica-barras-chart 
+          class="md:col-span-2 lg:col-span-2"
           [labels]="labelsMetaCumplientoGrafica"
           [data1]="dataMetaCumplimientoGraficaMontosObjetivos"
           [data2]="dataMetaCumplimientoGraficaMontosActuales"
           tituloGrafica="Progreso de las metas activas."
           tituloLabel1="Monto objetivo"
           tituloLabel2="Monto actual"
-          colorFondo1="#00A4EF30"
-          colorFondo2="#E1306C30"  
+          colorFondo1="#00A4EF60"
+          colorFondo2="#E1306C60"  
           tituloLabelX="Metas"
           tituloLabelY="Valor en pesos."
           colorBorde1="#00A4EF"
           colorBorde2="#E1306C"
-        />
+          />
+
     </div>
 
 </section>

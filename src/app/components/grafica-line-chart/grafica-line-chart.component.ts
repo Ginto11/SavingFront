@@ -30,6 +30,7 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
   @Input() colorFondo: string = '';
   @Input() bordeColor: string = '';
   @Input() alineacionVerticalLabelsX: boolean = false;
+  @Input() textoLabelHover: string = '';
 
   ngOnInit(): void {
     this.eventosService.themeDarkObservable
@@ -71,7 +72,7 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
             data: this.data,
             borderColor: this.bordeColor,
             backgroundColor: this.colorFondo,
-            tension: 0.5
+            tension: 0.4,
           }]
         },
         options: {
@@ -85,9 +86,9 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
             },
             tooltip: {
               callbacks: {
-                label: function(context){
+                label: (context) => {
                   const valor = context.raw as number;
-                  return `Ahorro: $ ${valor.toLocaleString('es-CO')}`
+                  return `${this.textoLabelHover}: $ ${valor.toLocaleString('es-CO')}`
                 },
                 title: function(context){
                   return `Dia: ${context[0].label}`
