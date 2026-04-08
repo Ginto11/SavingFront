@@ -116,7 +116,12 @@ export class GraficaBarrasChartComponent implements OnInit, OnChanges, OnDestroy
                 const label = this.getLabelForValue(valor);
                 return label.length > 5 ? label.substring(0, 5) + '...' : label;
               },
-              color: (this.dark) ? '#DADAD9' : '#6a7282'
+              color: (this.dark) ? '#DADAD9' : '#6a7282',
+              minRotation: window.innerWidth < 500 ? 90 : 0,
+              maxRotation: window.innerWidth < 500 ? 90 : 0,
+              font: {
+                size: window.innerWidth < 500 ? 9 : 12
+              }
             },
             title: {
               display: true,
@@ -134,6 +139,9 @@ export class GraficaBarrasChartComponent implements OnInit, OnChanges, OnDestroy
                 return `$ ${valor.toLocaleString('es-CO')}`
               },
               color: (this.dark) ? '#DADAD9' : '#6a7282',
+              font: {
+                size: window.innerWidth < 500 ? 9 : 12
+              }
             },
             title: {
               display: true,
