@@ -38,6 +38,7 @@ export default class ComportamientosComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    window.scrollTo(0, 0);
     this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe((usuario) => {
