@@ -102,9 +102,8 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
               },
               ticks: {
                 color: (this.dark) ? '#DADAD9' : '#364153',
-                minRotation: (this.alineacionVerticalLabelsX) ? 90 : 0,
-                maxRotation: (this.alineacionVerticalLabelsX) ? 90 : 0,
                 font: {
+                  size: window.innerWidth < 500 ? 10 : 12
                 }
               },
               title: {
@@ -127,7 +126,10 @@ export class GraficaLineChartComponent implements OnChanges, OnInit {
                 callback: function(value) {
                   return '$ ' + Number(value).toLocaleString('es-CO');
                 },
-                color: (this.dark) ? '#DADAD9' : '#6a7282'
+                color: (this.dark) ? '#DADAD9' : '#6a7282',
+                font: {
+                  size: window.innerWidth < 500 ? 10 : 12
+                }
               }
             }
           }

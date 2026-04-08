@@ -84,7 +84,10 @@ export class GraficaRadarChartComponent implements OnInit, OnChanges, OnDestroy 
                 return `$ ${valor.toLocaleString('es-CO')}`
               },
               color: (this.dark) ? '#DADAD9' : '#6a7282',
-                backdropColor: 'transparent' // 🔥 quita el fondo blanco
+              backdropColor: 'transparent',
+              font: {
+                size: window.innerWidth < 500 ? 10 : 12
+              }
             }
           }
           
