@@ -7,6 +7,9 @@ import { GraficaTwoLineChartComponent } from '../../components/grafica-two-line-
 import { Subject, takeUntil } from 'rxjs';
 import { GraficaRadarChartComponent } from '../../components/grafica-radar-chart/grafica-radar-chart.component';
 import { GraficaBarrasChartComponent } from '../../components/grafica-barras-chart/grafica-barras-chart.component';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { ReportesService } from '../../services/reportes.service';
 
 @Component({
   selector: 'app-comportamientos',
@@ -15,11 +18,15 @@ import { GraficaBarrasChartComponent } from '../../components/grafica-barras-cha
   styles: ``,
 })
 export default class ComportamientosComponent implements OnInit, OnDestroy {
+  
   private onDestroy: Subject<boolean> = new Subject();
   private graficaService = inject(GraficaService);
+  private reportesService = inject(ReportesService);
   private authService = inject(AuthService);
+  private http = inject(HttpClient);
 
   public chart!: Chart;
+  exportando: boolean = false;
   labelsAhorro: string[] = [];
   dataAhorro: number[] = [];
 
@@ -68,8 +75,6 @@ export default class ComportamientosComponent implements OnInit, OnDestroy {
         this.labelsRentabilidad = resp.data.listaRentabilidad.map((x: any) => x.dia.toString());
         this.dataRentabilidad = resp.data.listaRentabilidad.map((x: any) => x.diferencia);
 
-        console.log(resp)
-
       })
     });
   }
@@ -77,5 +82,28 @@ export default class ComportamientosComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.onDestroy.next(true);
     this.onDestroy.complete();
+  }
+
+  exportar_excel():void {
+    this.authService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(usuario => {
+      this.exportando = true;
+        this.reportesService.exportarExcel(usuario!.id)
+        .pipe(takeUntil(this.onDestroy))
+        .subscribe({
+          next: res => {
+            const url = window.URL.createObjectURL(res);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Reporte.xlsx';
+            a.click();
+
+            window.URL.revokeObjectURL(url);
+          },
+          complete: () => this.exportando = false
+        })
+    })
   }
 }

@@ -29,7 +29,6 @@ export class UsuarioService {
   constructor() {}
 
   agregar = (usuario: CrearUsuarioDto) :Observable<any> => {
-    console.log(usuario)
     return this.http.post(`${environment.URL_SERVER}/api/usuarios`, usuario);
   }
 

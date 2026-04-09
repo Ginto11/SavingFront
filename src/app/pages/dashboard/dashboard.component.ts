@@ -112,9 +112,12 @@ export default class DashboardComponent implements OnInit, OnDestroy {
   mostrarModalCrearAhorro = () => {
     let opciones = `<option selected value="">Seleccionar</option>`;
 
-    this.authService.usuarioLogueado.subscribe((usuario) => {
+    this.authService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy)) 
+    .subscribe((usuario) => {
       this.metaAhorroService
         .obtenerCantidadMetasActivasPorUsuarioId(usuario!.id)
+        .pipe(takeUntil(this.onDestroy)) 
         .subscribe((res) => {
           res.data.forEach((meta: any) => {
             opciones += `<option value="${meta.id}">${meta.nombre}</option>`;
