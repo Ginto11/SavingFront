@@ -4,7 +4,6 @@ import { AuthService } from '../../services/auth.service';
 import { MetaAhorroService } from '../../services/meta-ahorro.service';
 import { Meta } from '../../interfaces/meta.interface';
 import { Subject, takeUntil } from 'rxjs';
-import { ModalesService } from '../../services/modales.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -16,7 +15,6 @@ import { FormsModule } from '@angular/forms';
 export default class MetasComponent implements OnInit, OnDestroy {
 
   private auhService = inject(AuthService);
-  private modalesService = inject(ModalesService);
   private onDestroy: Subject<boolean> = new Subject();
   private metaAhorroService = inject(MetaAhorroService);
 
@@ -28,7 +26,9 @@ export default class MetasComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.onDestroy))
     .subscribe((usuario) => {
       this.metaAhorroService.refrescarInformacion(usuario!.id);
-      this.metaAhorroService.todasLasMetasObservable.subscribe(res => {
+      this.metaAhorroService.todasLasMetasObservable
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(res => {
         this.metas = res;
       })
     })
@@ -40,6 +40,7 @@ export default class MetasComponent implements OnInit, OnDestroy {
     .subscribe(usuario => {
       this.metaAhorroService.obtenerMetasPorEstadoPorUsuarioId(usuario!.id, estado);
         this.metaAhorroService.metasCumplidasObservable
+        .pipe(takeUntil(this.onDestroy))
         .subscribe({
           next: (res) => this.metas = res
         })

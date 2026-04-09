@@ -4,7 +4,6 @@ import { UsuarioLogin } from '../../interfaces/usuario-login.interface';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { ModalesService } from '../../services/modales.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -16,7 +15,6 @@ import { Subject, takeUntil } from 'rxjs';
 export default class IngresarComponent implements OnDestroy {
   
   private authService = inject(AuthService);
-  private modalesService = inject(ModalesService);
   private onDestroy: Subject<boolean> = new Subject();
 
   isIngresando = false;

@@ -180,7 +180,9 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   }
 
   registrarEgreso = (egreso: CrearEgresoDto) => {
-    this.egresoService.agregar(egreso).subscribe({
+    this.egresoService.agregar(egreso)
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe({
       next: (res) => {
         this.ingresoService.actualizarInformacion();
         this.egresoService.actualizarInformacion();
