@@ -201,8 +201,6 @@ export default class DashboardComponent implements OnInit, OnDestroy {
                 tipoAhorro: result.value.tipoAhorro
               };
 
-              console.log(ahorro)
-
               this.guardarAhorro(ahorro);
             }
           });
