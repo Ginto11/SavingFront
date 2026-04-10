@@ -3,4 +3,5 @@ export interface CrearNuevoAhorroDto {
     monto: number | null,
     descripcion: string | null,
     metaAhorroId: any | null
+    tipoAhorro: string;
 }

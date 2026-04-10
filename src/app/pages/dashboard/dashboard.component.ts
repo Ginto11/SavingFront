@@ -15,10 +15,12 @@ import { CantidadesTotales } from '../../interfaces/cantidades-totales.interface
 import { UltimoMovimiento } from '../../interfaces/ultimo-movimiento.interface';
 import { CumplimientoMetaAhorro } from '../../interfaces/cumplimiento-meta-ahorro.interface';
 import { AuthService } from '../../services/auth.service';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, take, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ModalesService } from '../../services/modales.service';
 import { Meta } from '@angular/platform-browser';
+import { CategoriaGastoService } from '../../services/categoria-gasto.service';
+import { CategoriaGasto } from '../../interfaces/categoria-gasto-dto.interface';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,11 +29,13 @@ import { Meta } from '@angular/platform-browser';
   styles: ``,
 })
 export default class DashboardComponent implements OnInit, OnDestroy {
-  private modalesService = inject(ModalesService);
+
   private authService = inject(AuthService);
   private ahorroService = inject(AhorroService);
-  private metaAhorroService = inject(MetaAhorroService);
+  private modalesService = inject(ModalesService);
   private onDestroy: Subject<boolean> = new Subject();
+  private metaAhorroService = inject(MetaAhorroService);
+  private categoriaGastoService = inject(CategoriaGastoService);
 
   ultimosMovimientos$: Observable<UltimoMovimiento[] | null> = this.ahorroService.movimientosObservable;
   metasConCumplimiento$: Observable<CumplimientoMetaAhorro[]> = this.metaAhorroService.metaCumplimientoObservable;
@@ -151,6 +155,17 @@ export default class DashboardComponent implements OnInit, OnDestroy {
                   ${opciones}
                 </select>
               </div>
+
+              <div class="text-left">
+                <label>Tipo de ahorro</label>
+                <select id="tipo-ahorro" name="tipo-ahorro"
+                  class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700">
+                  <option value="">Seleccionar</option>
+                  <option value="Efectivo">Efectivo</option>
+                  <option value="Nequi">Nequi</option>
+                  <option value="Banco">Banco</option>
+                </select>
+              </div>
             </form>
           `,
             preConfirm: () => {
@@ -166,11 +181,14 @@ export default class DashboardComponent implements OnInit, OnDestroy {
                 modal!.querySelector('#descripcion-ahorro') as HTMLInputElement
               )?.value;
 
+              const tipoAhorro = (modal!.querySelector('#tipo-ahorro') as HTMLSelectElement)?.value;
+
               return {
                 metaAhorroId,
                 monto: Number(monto),
                 descripcion,
                 usuarioId: usuario!.id,
+                tipoAhorro: tipoAhorro
               };
             },
           }).then((result) => {
@@ -180,7 +198,10 @@ export default class DashboardComponent implements OnInit, OnDestroy {
                 usuarioId: result.value.usuarioId,
                 monto: result.value.monto,
                 metaAhorroId: result.value.metaAhorroId,
+                tipoAhorro: result.value.tipoAhorro
               };
+
+              console.log(ahorro)
 
               this.guardarAhorro(ahorro);
             }
