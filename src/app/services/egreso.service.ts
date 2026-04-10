@@ -30,7 +30,7 @@ export class EgresoService {
 
     egreso.usuarioId = usuario.id;
 
-    return this.http.post(`${environment.URL_SERVER}/api/egresos`, egreso);
+    return this.http.post(`${environment.URL_SERVER_VERSION_1}/egresos`, egreso);
   }
 
 
@@ -38,8 +38,8 @@ export class EgresoService {
 
     const usuario = this.localstorage.getItem('usuario-saving');
 
-    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/egresos/totales/usuario/${usuario.id}`).subscribe(res => this.totales.next(res.data));
-    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/egresos/usuario/${usuario.id}`).subscribe(res => this.listaEgresos.next(res.data));
+    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/egresos/totales/usuario/${usuario.id}`).subscribe(res => this.totales.next(res.data));
+    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/egresos/usuario/${usuario.id}`).subscribe(res => this.listaEgresos.next(res.data));
   }
 
 

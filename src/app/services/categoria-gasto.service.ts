@@ -18,7 +18,7 @@ export class CategoriaGastoService {
 
 
   obtenerCategoriasGastos() {
-    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/categoria-gasto`)
+    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/categoria-gasto`)
       .subscribe(res => this.categorias.next(res.data));
   }
 

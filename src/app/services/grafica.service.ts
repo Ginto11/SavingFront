@@ -14,6 +14,6 @@ export class GraficaService {
   constructor() { }
 
   obtenerDataGrafica(id: number):Observable<DataGrafica>{
-    return this.http.get<DataGrafica>(`${environment.URL_SERVER}/api/grafica/${id}`);
+    return this.http.get<DataGrafica>(`${environment.URL_SERVER_VERSION_1}/grafica/${id}`);
   }
 }

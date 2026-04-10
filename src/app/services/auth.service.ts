@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import type { UsuarioLogin } from '../interfaces/usuario-login.interface';
 import { ServerResponse } from '../interfaces/server-response.interface';
-import { BehaviorSubject, lastValueFrom, Observable, tap, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { UsuarioLogueado } from '../interfaces/usuario-logueado.interface';
 import { LocalstorageService } from './localstorage.service';
@@ -24,7 +24,7 @@ export class AuthService {
   constructor() { }
 
   login(usuario: UsuarioLogin):Observable<ServerResponse> {
-      return this.http.post<ServerResponse>(`${environment.URL_SERVER}/api/auth`, usuario).pipe(
+      return this.http.post<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/auth`, usuario).pipe(
         tap(res => {
         if(res.codigo == 200){
           this.localstorageService.setItem<UsuarioLogueado>(res.data);
@@ -42,7 +42,7 @@ export class AuthService {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${usuario.token}`
       })
-      return this.http.get(`${environment.URL_SERVER}/api/auth/validar_token`, { headers });
+      return this.http.get(`${environment.URL_SERVER_VERSION_1}/auth/validar_token`, { headers });
       
 
   }
