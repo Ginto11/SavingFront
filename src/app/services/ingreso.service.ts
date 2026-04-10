@@ -29,7 +29,7 @@ export class IngresoService {
 
     ingreso.usuarioId = usuario.id;
 
-    return this.http.post(`${environment.URL_SERVER}/api/ingresos`, ingreso);
+    return this.http.post(`${environment.URL_SERVER_VERSION_1}/api/ingresos`, ingreso);
   }
 
 
@@ -37,8 +37,8 @@ export class IngresoService {
 
     const usuario = this.localstorage.getItem('usuario-saving');
 
-    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/ingresos/totales/usuario/${usuario.id}`).subscribe(res => this.totales.next(res.data));
-    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/ingresos/usuario/${usuario.id}`).subscribe(res => this.listaIngresos.next(res.data));
+    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ingresos/totales/usuario/${usuario.id}`).subscribe(res => this.totales.next(res.data));
+    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ingresos/usuario/${usuario.id}`).subscribe(res => this.listaIngresos.next(res.data));
   }
 
 }

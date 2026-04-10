@@ -29,31 +29,31 @@ export class MetaAhorroService {
   todasLasMetasObservable = this.todasLasMetas.asObservable();
 
   crearMeta(meta: CrearMetaDTO) :Observable<any> {
-      return this.http.post<any>(`${environment.URL_SERVER}/api/metas`, meta);
+      return this.http.post<any>(`${environment.URL_SERVER_VERSION_1}/metas`, meta);
   } 
 
   cancelarMetaPorId(id: number): Observable<ServerResponse> {
-    return this.http.delete<ServerResponse>(`${environment.URL_SERVER}/api/metas/cancelar/${id}`);
+    return this.http.delete<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/metas/cancelar/${id}`);
   }
 
   actualizarMeta(id: number, actualizarMetaDto: ActualizarMetaDto): Observable<ServerResponse> {
-    return this.http.put<ServerResponse>(`${environment.URL_SERVER}/api/metas/${id}`,  actualizarMetaDto);
+    return this.http.put<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/metas/${id}`,  actualizarMetaDto);
   }
 
   obtenerCantidadMetasActivasPorUsuarioId(id: number) :Observable<ServerResponse> {
-      return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/usuario/${id}/activas`);
+      return this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/metas/usuario/${id}/activas`);
   }
 
   obtenerProgresoDeMetasPorUsuarioId(id: number):Observable<ServerResponse> {
-      return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/progreso/usuario/${id}`);
+      return this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/metas/progreso/usuario/${id}`);
   }
 
   obtenerTodasLasMetasPorUsuarioId(id: number):Observable<ServerResponse> {
-    return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/usuario/${id}/todas`);
+    return this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/metas/usuario/${id}/todas`);
   }
 
   obtenerMetasPorEstadoPorUsuarioId(id: number, estado: string) {
-    this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/estado/usuario/${id}`, { params: { estado: estado} })
+    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/metas/estado/usuario/${id}`, { params: { estado: estado} })
       .subscribe({
         next: (res) => this.metasCumplidas.next(res.data),
         error: (err) => this.modalesService.modalError(err)
@@ -61,7 +61,7 @@ export class MetaAhorroService {
   }
 
   obtenerMetasBuscadasPorNombre(id: number, nombre: string):Observable<ServerResponse> {
-    return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/metas/busqueda/${id}`, { params: { nombre: nombre } })
+    return this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/metas/busqueda/${id}`, { params: { nombre: nombre } })
   }
 
   refrescarInformacion(id: number){

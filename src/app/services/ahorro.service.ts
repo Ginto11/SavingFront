@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ServerResponse } from '../interfaces/server-response.interface';
-import { BehaviorSubject, lastValueFrom, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { CrearNuevoAhorroDto } from '../interfaces/crear-nuevo-ahorro-dto.interface';
 import { LocalstorageService } from './localstorage.service';
@@ -34,20 +34,20 @@ export class AhorroService {
       'Authorization': `Bearer ${usuario.token}`
     })
 
-      return this.http.post(`${environment.URL_SERVER}/api/ahorros`, ahorro, { headers })
+      return this.http.post(`${environment.URL_SERVER_VERSION_1}/ahorros`, ahorro, { headers })
   }
 
   eliminarAhorro = (id: number): Observable<any> => {
-    return this.http.delete(`${environment.URL_SERVER}/api/ahorros/${id}`)
+    return this.http.delete(`${environment.URL_SERVER_VERSION_1}/ahorros/${id}`)
   }
 
   obtenerTotalesPorUsuarioIdO(id: number):Observable<ServerResponse> {
-    return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/ahorros/usuario/cantidades/${id}`)
+    return this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ahorros/usuario/cantidades/${id}`)
   }
 
 
   obtenerUltimosMovimientosPorUsuarioIdO(id: number): Observable<ServerResponse> {
-      return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/ahorros/usuario/ultimos-movimientos/${id}`)
+      return this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ahorros/usuario/ultimos-movimientos/${id}`)
   }
 
   refrescarInformacion(id: number){

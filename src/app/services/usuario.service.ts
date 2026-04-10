@@ -29,15 +29,15 @@ export class UsuarioService {
   constructor() {}
 
   agregar = (usuario: CrearUsuarioDto) :Observable<any> => {
-    return this.http.post(`${environment.URL_SERVER}/api/usuarios`, usuario);
+    return this.http.post(`${environment.URL_SERVER_VERSION_1}/usuarios`, usuario);
   }
 
   actualizar(id: number, formData: FormData):Observable<ServerResponse> {
-    return this.http.put<ServerResponse>(`${environment.URL_SERVER}/api/usuarios/${id}`, formData)
+    return this.http.put<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/usuarios/${id}`, formData)
   }
 
   obtenerUsuarioPorId(id: number):Observable<ServerResponse> {
-    return this.http.get<ServerResponse>(`${environment.URL_SERVER}/api/usuarios/${id}`)
+    return this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/usuarios/${id}`)
   }
 
   refrescarInformacion(id: number){
