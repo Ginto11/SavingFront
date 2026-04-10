@@ -29,7 +29,7 @@ export class IngresoService {
 
     ingreso.usuarioId = usuario.id;
 
-    return this.http.post(`${environment.URL_SERVER_VERSION_1}/api/ingresos`, ingreso);
+    return this.http.post(`${environment.URL_SERVER_VERSION_1}/ingresos`, ingreso);
   }
 
 
