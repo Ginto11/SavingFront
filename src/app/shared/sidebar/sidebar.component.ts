@@ -61,8 +61,8 @@ export class SidebarComponent {
   linksSeccion5: LinkMenu[] = [
     {
       nombreIcon: 'pi-chart-bar',
-      nombreRuta: 'comportamientos',
-      nombreLink: 'Comportamientos'
+      nombreRuta: 'graficas',
+      nombreLink: 'Graficas'
     }
   ]
   

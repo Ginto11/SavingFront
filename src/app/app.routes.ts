@@ -47,7 +47,7 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/ingresos-gastos/ingresos-gastos.component')
             },
             {
-                path: 'comportamientos',
+                path: 'graficas',
                 loadComponent: () => import('./pages/comportamientos/comportamientos.component')
             }
         ]
