@@ -84,7 +84,7 @@
                     </div>
                     <div>
                       <p class="font-semibold"> {{ ingreso.tipo }} </p>
-                      <p class="text-sm text-gray-400"> {{ ingreso.fechaRegistro | date: 'dd MMM yyyy' }} </p>
+                      <p class="text-xs md:text-sm lg:text-sm text-gray-400"> {{ ingreso.fechaRegistro | date: 'dd MMM yyyy' }} </p>
                     </div>
                   </div>
                   <p class="font-semibold text-green-500 dark:text-green-200">+ $ {{ ingreso.monto | currency: ' ':'symbol':'1.0-0'}} </p>
@@ -108,7 +108,7 @@
                     </div>
                     <div>
                       <p class="font-semibold"> {{ egreso.tipo }} </p>
-                      <p class="text-sm text-gray-400"> {{ egreso.fechaRegistro | date: 'dd MMM yyyy' }} - {{ egreso.nombreCategoriaGasto }} </p>
+                      <p class="text-xs md:text-sm lg:text-sm text-gray-400"> {{ egreso.fechaRegistro | date: 'dd MMM yyyy' }} - {{ egreso.nombreCategoriaGasto.split(' ')[1] }} </p>
                     </div>
                   </div>
                   <p class="text-red-400 font-semibold">- $ {{ egreso.monto | currency: ' ':'symbol':'1.0-0' }} </p>
