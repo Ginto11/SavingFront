@@ -39,6 +39,11 @@ export class SidebarComponent {
       nombreIcon: 'pi-sparkles',
       nombreRuta: 'metas',
       nombreLink: 'Metas'
+    },
+    {
+      nombreIcon: 'pi-chart-line',
+      nombreLink: 'Movimientos Ahorros',
+      nombreRuta: 'movimientos-ahorros'
     }
   ]
 

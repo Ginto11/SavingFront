@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   inject,
   OnDestroy,
@@ -15,12 +14,10 @@ import { CantidadesTotales } from '../../interfaces/cantidades-totales.interface
 import { UltimoMovimiento } from '../../interfaces/ultimo-movimiento.interface';
 import { CumplimientoMetaAhorro } from '../../interfaces/cumplimiento-meta-ahorro.interface';
 import { AuthService } from '../../services/auth.service';
-import { Observable, Subject, take, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ModalesService } from '../../services/modales.service';
-import { Meta } from '@angular/platform-browser';
 import { CategoriaGastoService } from '../../services/categoria-gasto.service';
-import { CategoriaGasto } from '../../interfaces/categoria-gasto-dto.interface';
 
 @Component({
   selector: 'app-dashboard',
@@ -264,15 +261,13 @@ export default class DashboardComponent implements OnInit, OnDestroy {
     .subscribe((usuario) => {
       this.ahorroService.eliminarAhorro(id)
       .pipe(takeUntil(this.onDestroy))
-      .subscribe({
-        next: () => {
-          this.ahorroService.refrescarInformacion(usuario!.id);
-          this.metaAhorroService.refrescarInformacion(usuario!.id);
-          this.modalesService.modalExitoso(
-            'Registro eliminado exitosamente.',
-          );
-        }
-      });
+      .subscribe(res => {
+        this.ahorroService.refrescarInformacion(usuario!.id);
+        this.metaAhorroService.refrescarInformacion(usuario!.id);
+        this.modalesService.modalExitoso(
+          'Registro eliminado exitosamente.',
+        );
+      })
     });
   };
 }
