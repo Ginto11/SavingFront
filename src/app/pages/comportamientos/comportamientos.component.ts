@@ -8,12 +8,12 @@ import { Subject, takeUntil } from 'rxjs';
 import { GraficaRadarChartComponent } from '../../components/grafica-radar-chart/grafica-radar-chart.component';
 import { GraficaBarrasChartComponent } from '../../components/grafica-barras-chart/grafica-barras-chart.component';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
 import { ReportesService } from '../../services/reportes.service';
+import { ExportarExcelButtonComponent } from "../../shared/exportar-excel-button/exportar-excel-button.component";
 
 @Component({
   selector: 'app-comportamientos',
-  imports: [GraficaBarrasChartComponent, GraficaLineChartComponent, GraficaTwoLineChartComponent, GraficaRadarChartComponent],
+  imports: [GraficaBarrasChartComponent, GraficaLineChartComponent, GraficaTwoLineChartComponent, GraficaRadarChartComponent, ExportarExcelButtonComponent],
   templateUrl: './comportamientos.component.html',
   styles: ``,
 })

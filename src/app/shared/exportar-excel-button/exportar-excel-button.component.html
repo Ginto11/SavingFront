@@ -1,0 +1,11 @@
+<button (click)="exportarExcel()" [disabled]="exportando" class="w-full md:w-45 cursor-pointer h-10 p-2 rounded-lg bg-blue-300 hover:bg-blue-400 text-gray-800 dark:bg-green-300 dark:hover:bg-green-400 font-semibold flex justify-center gap-2 items-center">
+    @if (exportando) {
+        <i class="pi pi-spin pi-spinner w-4 h-4"></i>
+    }
+    @else {
+        Exportar Excel
+        <svg class="w-4 h-4 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01"/>
+        </svg>
+    }
+</button>          

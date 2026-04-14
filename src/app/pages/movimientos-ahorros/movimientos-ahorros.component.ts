@@ -5,11 +5,11 @@ import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ModalesService } from '../../services/modales.service';
-import { ResultadoPaginaAhorros } from '../../interfaces/resultado-pagina-ahorro.interface';
+import { TablaComponent } from '../../components/tabla/tabla.component';
 
 @Component({
   selector: 'app-movimientos-ahorros',
-  imports: [CommonModule],
+  imports: [CommonModule, TablaComponent],
   templateUrl: './movimientos-ahorros.component.html',
   styles: ``
 })
@@ -21,60 +21,53 @@ export default class MovimientosAhorrosComponent implements OnInit, OnDestroy {
   private onDestroy: Subject<boolean> = new Subject<boolean>();
   resultadoPaginaAhorros$ = this.ahorroService.resultadoPaginaAhorros;
 
-  paginaActual: number = 1;
-  tamanoPagina: number = 10;
+  paginaActual = 1;
+  listaCampos = ['Código', 'Monto', 'Fecha', 'Descripción', 'Nombre Meta', 'Tipo Ahorro', 'Estado Meta', 'Acción']
 
 
   ngOnInit(): void {
     this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe(usuario => {
-      this.ahorroService.obtenerPaginaAhorros(usuario!.id, this.paginaActual, this.tamanoPagina);
+      this.ahorroService.obtenerPaginaAhorros(usuario!.id, this.paginaActual, 10);
     })
-  }
+  } 
 
-  paginaAnteriorAhorros():void {
-    this.paginaActual -= 1;
+  obtenerInformacionTabla(paginaActual: number):void {
+    this.paginaActual = paginaActual;
     this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe(usuario => {
-      this.ahorroService.obtenerPaginaAhorros(usuario!.id, this.paginaActual, this.tamanoPagina);
-      this.resultadoPaginaAhorros$.subscribe(res => {
-        this.paginaActual = res!.paginaActual;
-      })
+      this.ahorroService.obtenerPaginaAhorros(usuario!.id, paginaActual, 10);
     })
   }
 
-  paginaSiguienteAhorros():void{
-    this.paginaActual += 1;
+  buscarAhorro(descripcion: string):void {
     this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe(usuario => {
-      this.ahorroService.obtenerPaginaAhorros(usuario!.id, this.paginaActual, this.tamanoPagina);
-      this.resultadoPaginaAhorros$.subscribe(res => {
-        this.paginaActual = res!.paginaActual;
+      this.ahorroService.obtenerPaginaAhorrosPorDescripcion(usuario!.id, this.paginaActual, 10, descripcion);
+    })
+  }
+
+  mostrarModalEliminarElemento(id: number){
+      Swal.fire({
+        icon: 'question',
+        showCancelButton: true,
+        text: '¿Seguro que desea eliminar este registro?',
+        confirmButtonText: 'Si, continuar'
+      }).then(result => {
+        if(result.isConfirmed){
+          this.eliminarAhorro(id);
+        }
       })
-    })
-  }
+    }
 
-  mostrarModalEliminarAhorro(id: number){
-    Swal.fire({
-      icon: 'question',
-      showCancelButton: true,
-      text: '¿Seguro que desea eliminar este registro?',
-      confirmButtonText: 'Si, continuar'
-    }).then(result => {
-      if(result.isConfirmed){
-        this.eliminarAhorro(id);
-      }
-    })
-  }
-
-  eliminarAhorro(id: number){
+  eliminarAhorro = (id: number):void => {
     console.log(id);
     this.authService.usuarioLogueado.subscribe(usuario => {
       this.ahorroService.eliminarAhorro(id).subscribe(res => {
-        this.ahorroService.obtenerPaginaAhorros(usuario!.id, this.paginaActual, this.tamanoPagina);
+        this.ahorroService.obtenerPaginaAhorros(usuario!.id, this.paginaActual, 10);
         this.modalesService.modalExitoso('Registro eliminado exitosamente.');
       })
     })

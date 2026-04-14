@@ -1,11 +1,11 @@
-export interface ResultadoPaginaAhorros {
+export interface ResultadoPaginado<T> {
     totalPaginas: number;
     totalRegistros: number;
     paginaActual: number;
     tamanoPagina: number;
     registroInicial: number;
     registroFinal: number;
-    data: AhorroDto[]
+    data: T[]
 }
 
 export interface AhorroDto {

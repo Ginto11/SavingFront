@@ -6,17 +6,7 @@
       </p>
     </div>
     <div class="w-full flex justify-end mb-5">
-      <button (click)="exportar_excel()" [disabled]="exportando" class="h-10 w-45 bg-blue-300 hover:bg-blue-400 text-gray-800 dark:bg-green-300 dark:hover:bg-green-400 font-semibold rounded p-2 cursor-pointer flex justify-center items-center gap-2">
-        @if (exportando) {
-          <i class="pi pi-spin pi-spinner w-4 h-4"></i>
-        }
-        @else {
-          Exportar Excel
-          <svg class="w-4 h-4 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01"/>
-          </svg>
-        }
-      </button>
+      <app-exportar-excel-button />
     </div>
     <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-3">
       

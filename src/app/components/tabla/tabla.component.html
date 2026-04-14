@@ -1,0 +1,63 @@
+<section class="dark:bg-gray-900">
+    <div class="mx-auto max-w-screen">
+        <!-- Start coding here -->
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+                <div class="w-full md:w-1/2">
+                    <form class="flex items-center gap-2">
+                        <div class="relative w-full z-1">
+                            <div class="flex gap-3 w-full md:w-md">
+                                <input [(ngModel)]="descripcion" name="descripcion" class="w-full! md:w-md p-2 bg-white text-gray-700 dark:bg-gray-700 dark:text-white rounded-xl outline-none focus:ring-2 dark:focus:ring-green-200 focus:ring-blue-200" type="search" placeholder="Busque sus ahorros">
+                                <button (click)="enviarDescripcion()" class="bg-blue-200 dark:bg-green-200 rounded-xl w-10 cursor-pointer"><i class="pi pi-search text-blue-900 dark:text-green-900 font-medium"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="w-full md:w-autos flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3">
+                    <div class="flex items-center space-x-3 w-full md:w-auto">
+                        <app-exportar-excel-button  />              
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
+                        <tr>
+                            @for (campo of camposHeader; track $index) {
+                                <th scope="col" class="px-5 py-3"> {{ campo }} </th>
+                            }
+                        </tr>
+                    </thead>
+                    <ng-content></ng-content>
+                </table>
+            </div>
+            <nav *ngIf="datos$ | async as resultado" class="flex md:flex-row justify-between items-center md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Registros
+                    <span class="font-semibold text-gray-900 dark:text-white"> {{ resultado.registroInicial }} - {{ resultado.registroFinal }} </span>
+                    de
+                    <span class="font-semibold text-gray-900 dark:text-white"> {{ resultado.totalRegistros }} </span>
+                </span>
+                <ul class="inline-flex items-stretch -space-x-px">
+                    <li>
+                        <a (click)="anterior()" class="cursor-pointer flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"> {{ resultado.paginaActual }} </a>
+                    </li>
+                    <li>
+                        <a (click)="siguiente()" class="cursor-pointer flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    </section>
