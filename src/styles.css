@@ -34,9 +34,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 
-h1, h2 {
+h1, h2, h3, h4, label {
     font-family: "Alegreya", serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
   font-style: normal;
 }
