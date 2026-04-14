@@ -34,6 +34,18 @@ export default class MetasComponent implements OnInit, OnDestroy {
     })
   }
 
+  buscarMetaPorNombre():void {
+    this.auhService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(usuario => {
+      this.metaAhorroService.obtenerMetasBuscadasPorNombre(usuario!.id, (this.metasBuscadas)? this.metasBuscadas : '')
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: (res) => this.metas = res.data
+      })
+    })
+  }
+
   buscarMetasPorEstado(estado: string):void {
     this.auhService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
@@ -44,18 +56,6 @@ export default class MetasComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (res) => this.metas = res
         })
-    })
-  }
-
-  buscarMetaPorNombre():void {
-    this.auhService.usuarioLogueado
-    .pipe(takeUntil(this.onDestroy))
-    .subscribe(usuario => {
-      this.metaAhorroService.obtenerMetasBuscadasPorNombre(usuario!.id, (this.metasBuscadas)? this.metasBuscadas : '')
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe({
-        next: (res) => this.metas = res.data
-      })
     })
   }
 

@@ -6,9 +6,8 @@ import { environment } from '../../environments/environment';
 import { CrearNuevoAhorroDto } from '../interfaces/crear-nuevo-ahorro-dto.interface';
 import { LocalstorageService } from './localstorage.service';
 import { UltimoMovimiento } from '../interfaces/ultimo-movimiento.interface';
-import { AuthService } from './auth.service';
 import { CantidadesTotales } from '../interfaces/cantidades-totales.interface';
-import { AhorroDto, ResultadoPaginaAhorros } from '../interfaces/resultado-pagina-ahorro.interface';
+import { AhorroDto, ResultadoPaginado } from '../interfaces/resultado-paginado.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +19,7 @@ export class AhorroService {
   private movimientos = new BehaviorSubject<UltimoMovimiento[] | null>(null);
   private cantidadesTotales = new BehaviorSubject<CantidadesTotales>({ ahorroMes: 0, totalAhorrado: 0 });
   private listaAhorros = new BehaviorSubject<AhorroDto[] | null>(null);
-  private resultadoPaginaAhorro = new BehaviorSubject<ResultadoPaginaAhorros | null>(null);
+  private resultadoPaginaAhorro = new BehaviorSubject<ResultadoPaginado<AhorroDto> | null>(null);
 
   movimientosObservable = this.movimientos.asObservable();
   listaAhorrosObservable = this.listaAhorros.asObservable();
@@ -56,6 +55,16 @@ export class AhorroService {
         tamanoPagina
       }
     }).subscribe(res => this.resultadoPaginaAhorro.next(res.data))
+  }
+
+  obtenerPaginaAhorrosPorDescripcion(id: number, paginaActual: number, tamanoPagina: number, descripcion: string):void{
+    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ahorros/descripcion/${id}`, {
+      params: {
+        paginaActual,
+        tamanoPagina,
+        descripcion
+      }
+    }).subscribe(res => {this.resultadoPaginaAhorro.next(res.data);  console.log(res) })
   }
 
 
