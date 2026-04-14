@@ -32,3 +32,11 @@ body::-webkit-scrollbar-thumb {
     border-radius: 3px;
     background-color: oklch(21% 0.034 264.665);
 }
+
+
+h1, h2 {
+    font-family: "Alegreya", serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
