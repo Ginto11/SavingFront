@@ -32,13 +32,18 @@ export class IngresoService {
     return this.http.post(`${environment.URL_SERVER_VERSION_1}/ingresos`, ingreso);
   }
 
+  eliminarIngreso(id: number, tipo: string, usuarioId: number):Observable<ServerResponse> {
+    return this.http.delete<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ingresos/${id}`, {
+      params: {
+        tipo,
+        usuarioId
+      }   
+    })
+  }
 
   actualizarInformacion = () => {
-
     const usuario = this.localstorage.getItem('usuario-saving');
-
     this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ingresos/totales/usuario/${usuario.id}`).subscribe(res => this.totales.next(res.data));
     this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ingresos/usuario/${usuario.id}`).subscribe(res => this.listaIngresos.next(res.data));
   }
-
 }

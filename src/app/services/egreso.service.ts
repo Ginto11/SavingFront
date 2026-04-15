@@ -33,6 +33,14 @@ export class EgresoService {
     return this.http.post(`${environment.URL_SERVER_VERSION_1}/egresos`, egreso);
   }
 
+  eliminarEgreso(id: number, tipo: string, usuarioId: number):Observable<ServerResponse> {
+    return this.http.delete<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/egresos/${id}`, {
+      params: {
+        tipo,
+        usuarioId
+      }
+    });
+  }
 
   actualizarInformacion = () => {
 

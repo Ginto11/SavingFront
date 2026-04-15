@@ -42,7 +42,7 @@ export class SidebarComponent {
     },
     {
       nombreIcon: 'pi-chart-line',
-      nombreLink: 'Movimientos Ahorros',
+      nombreLink: 'Movimientos ahorros',
       nombreRuta: 'movimientos-ahorros'
     }
   ]

@@ -74,6 +74,6 @@ export class AhorroService {
 
   refrescarInformacion(id: number){
     this.obtenerTotalesPorUsuarioIdO(id).subscribe(res => this.cantidadesTotales.next(res.data));
-    this.obtenerUltimosMovimientosPorUsuarioIdO(id).subscribe(res => {this.movimientos.next(res.data); console.log(res)});
+    this.obtenerUltimosMovimientosPorUsuarioIdO(id).subscribe(res => {this.movimientos.next(res.data)});
   }
 }
