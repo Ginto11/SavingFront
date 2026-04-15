@@ -1,20 +1,16 @@
-import { TiposIngresosTotales } from '../../interfaces/tipos-ingresos-totales-dto.interface';
 import { CrearIngresoDto } from '../../interfaces/crear-ingreso-dto.interface';
 import { CrearEgresoDto } from '../../interfaces/crear-egreso-dto.interface';
-import { TiposEgresosTotales } from '../../interfaces/tipos-egresos-totales-dto.interface';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { IngresoDto } from '../../interfaces/ingreso-dto.interface';
-import { EgresoDto } from '../../interfaces/egreso-dto.interface';
 import { ModalesService } from '../../services/modales.service';
 import { IngresoService } from '../../services/ingreso.service';
 import { EgresoService } from '../../services/egreso.service';
-import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { combineLatest, shareReplay, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { CategoriaGastoService } from '../../services/categoria-gasto.service';
 import { CategoriaGasto } from '../../interfaces/categoria-gasto-dto.interface';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-ingresos-gastos',
@@ -24,11 +20,12 @@ import { CategoriaGasto } from '../../interfaces/categoria-gasto-dto.interface';
 })
 export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   
-  private ingresoService = inject(IngresoService);
-  private categoriaGastoService = inject(CategoriaGastoService);
+  private authService = inject(AuthService);
   private egresoService = inject(EgresoService);
-  private onDestroy: Subject<boolean> = new Subject();
+  private ingresoService = inject(IngresoService);
   private modalesService = inject(ModalesService);
+  private onDestroy: Subject<boolean> = new Subject();
+  private categoriaGastoService = inject(CategoriaGastoService);
   
   categorias$ = this.categoriaGastoService.categoriasObservable;
   totalesIngresos$ = this.ingresoService.totalesObservable;
@@ -191,6 +188,58 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
       }
     })
   }
+
+  mostrarModalEliminarIngreso = (id: number, tipo: string) => {
+    Swal.fire({
+      icon: 'warning',
+      text: '¿Seguro que desea eliminar este registro?',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Si, continuar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.eliminarIngreso(id, tipo);
+      }
+    });
+  };
+
+  mostrarModalEliminarEgreso = (id: number, tipo: string) => {
+    Swal.fire({
+      icon: 'warning',
+      text: '¿Seguro que desea eliminar este registro?',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Si, continuar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.eliminarEgreso(id, tipo);
+      }
+    });
+  };
+
+  eliminarIngreso(id: number, tipo: string) :void {
+    this.authService.usuarioLogueado.subscribe(usuario => {
+      this.ingresoService.eliminarIngreso(id, tipo, usuario!.id)
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(res => {
+        this.ingresoService.actualizarInformacion();
+        this.modalesService.modalExitoso(res.data);
+      });
+    })
+  }
+
+  eliminarEgreso(id: number, tipo: string) :void {
+    this.authService.usuarioLogueado.subscribe(usuario => {
+      this.egresoService.eliminarEgreso(id, tipo, usuario!.id)
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(res => {
+        this.ingresoService.actualizarInformacion();
+        this.egresoService.actualizarInformacion();
+        this.modalesService.modalExitoso(res.data);
+      })
+    })
+  }
+
 
 }
 
