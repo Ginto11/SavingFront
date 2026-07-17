@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
-import { GraficaService } from '../../services/grafica.service';
 import { AuthService } from '../../services/auth.service';
 import { GraficaLineChartComponent } from '../../components/grafica-line-chart/grafica-line-chart.component';
 import { GraficaTwoLineChartComponent } from '../../components/grafica-two-line-chart/grafica-two-line-chart.component';
@@ -8,8 +7,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { GraficaRadarChartComponent } from '../../components/grafica-radar-chart/grafica-radar-chart.component';
 import { GraficaBarrasChartComponent } from '../../components/grafica-barras-chart/grafica-barras-chart.component';
 import { HttpClient } from '@angular/common/http';
-import { ReportesService } from '../../services/reportes.service';
 import { ExportarExcelButtonComponent } from "../../shared/exportar-excel-button/exportar-excel-button.component";
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-comportamientos',
@@ -19,11 +18,9 @@ import { ExportarExcelButtonComponent } from "../../shared/exportar-excel-button
 })
 export default class ComportamientosComponent implements OnInit, OnDestroy {
   
-  private onDestroy: Subject<boolean> = new Subject();
-  private graficaService = inject(GraficaService);
-  private reportesService = inject(ReportesService);
   private authService = inject(AuthService);
-  private http = inject(HttpClient);
+  private usuarioService = inject(UsuarioService);
+  private onDestroy: Subject<boolean> = new Subject();
 
   public chart!: Chart;
   exportando: boolean = false;
@@ -52,7 +49,7 @@ export default class ComportamientosComponent implements OnInit, OnDestroy {
     this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe((usuario) => {
-      this.graficaService.obtenerDataGrafica(usuario!.id)
+      this.usuarioService.obtenerDataGrafica(usuario!.id)
       .pipe(takeUntil(this.onDestroy))
       .subscribe((resp) => {
 
@@ -89,7 +86,7 @@ export default class ComportamientosComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.onDestroy))
     .subscribe(usuario => {
       this.exportando = true;
-        this.reportesService.exportarExcel(usuario!.id)
+        this.usuarioService.exportarExcel(usuario!.id)
         .pipe(takeUntil(this.onDestroy))
         .subscribe({
           next: res => {

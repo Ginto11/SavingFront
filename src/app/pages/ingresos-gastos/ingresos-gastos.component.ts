@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
 import { CategoriaGastoService } from '../../services/categoria-gasto.service';
 import { CategoriaGasto } from '../../interfaces/categoria-gasto-dto.interface';
 import { AuthService } from '../../services/auth.service';
+import { UsuarioService } from '../../services/usuario.service';
+import { TransferenciaDto } from '../../interfaces/transferencia-dto.interface';
 
 @Component({
   selector: 'app-ingresos-gastos',
@@ -23,14 +25,15 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private egresoService = inject(EgresoService);
   private ingresoService = inject(IngresoService);
+  private usuarioService = inject(UsuarioService);
   private modalesService = inject(ModalesService);
   private onDestroy: Subject<boolean> = new Subject();
   private categoriaGastoService = inject(CategoriaGastoService);
   
   categorias$ = this.categoriaGastoService.categoriasObservable;
-  totalesIngresos$ = this.ingresoService.totalesObservable;
-  listaIngresos$ = this.ingresoService.listaIngresosObservable;
-  listaEgresos$ = this.egresoService.listaEgresosObservable
+  totalesIngresos$ = this.usuarioService.totalesObservable;
+  listaIngresos$ = this.usuarioService.listaIngresosObservable;
+  listaEgresos$ = this.usuarioService.listaEgresosObservable
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
@@ -42,6 +45,80 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.onDestroy.next(true);
     this.onDestroy.complete();
+  }
+
+  mostrarModalTransferencia = () => {
+    Swal.fire({
+      title: 'Registrar transferencia',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      theme: 'bootstrap-5-light',
+      confirmButtonText: 'Guardar',
+      html: `
+        <form class="flex flex-col gap-4">
+          <div class="text-left"> 
+            <label>Sale de: </label>
+            <select id="tipoActual" class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700">
+              <option value="" selected>Seleccionar</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Nequi">Nequi</option>
+              <option value="App">App</option>
+              <option value="Banco">Banco</option>
+            </select>
+          </div>
+
+          <div class="text-left"> 
+            <label>Ingresa a: </label>
+            <select id="tipoDestino" class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700">
+              <option value="" selected>Seleccionar</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Nequi">Nequi</option>
+              <option value="Banco">Banco</option>
+            </select>
+          </div>
+
+          <div class="text-left">
+            <label>Monto (Sin puntos)</label>
+            <input id="monto-transferencia" name="monto-transferencia" type="number"
+              class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700" placeholder="Ej: 3000000">
+          </div>
+
+          <div class="text-left">
+            <label>Costo transferencia (Sin puntos)</label>
+            <input id="costo-transferencia" name="costo-transferencia" type="number"
+              class="w-full p-2 rounded-lg bg-gray-800 text-white border border-gray-700" placeholder="Ej: 3000000">
+          </div>
+        </form>
+      `,
+      preConfirm: () => {
+        const popup = Swal.getPopup();
+
+        const tipoActual = (popup?.querySelector('#tipoActual') as HTMLSelectElement)?.value;
+        const tipoDestino = (popup?.querySelector('#tipoDestino') as HTMLSelectElement)?.value;
+
+        const monto = (popup?.querySelector('#monto-transferencia') as HTMLInputElement)?.value;
+        const costo = (popup?.querySelector('#costo-transferencia') as HTMLInputElement)?.value;
+
+        return {
+          tipoActual,
+          tipoDestino,
+          monto: Number(monto),
+          costoTransferencia: Number(costo)
+        }
+      }
+    }).then(result => {
+      if(result.isConfirmed){
+        const transferencia = {
+          tipoActual: result.value.tipoActual,
+          tipoDestino: result.value.tipoDestino,
+          monto: result.value.monto,
+          costoTransferencia: result.value.costoTransferencia,
+          usuarioId: 0
+        }
+
+        this.registrarTransferencia(transferencia);
+      }
+    })
   }
 
   mostrarModalIngreso = () => {
@@ -96,11 +173,35 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   }
 
   registrarAhorro = (ingreso: CrearIngresoDto) => {
-    this.ingresoService.agregar(ingreso).subscribe({
+    this.ingresoService.agregar(ingreso)
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe({
       next: (res) => {
         this.ingresoService.actualizarInformacion();
         this.modalesService.modalExitoso(res.mensaje);        
       }
+    })
+  }
+
+  registrarTransferencia = (transferencia: TransferenciaDto) => {
+    this.authService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(usuario => {
+      transferencia.usuarioId = usuario!.id;
+      this.usuarioService.transferirDinero(transferencia)
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe({
+        next: (res) => {
+          this.ingresoService.actualizarInformacion();
+          this.egresoService.actualizarInformacion();
+          this.categoriaGastoService.obtenerCategoriasGastos();
+          Swal.fire({
+            text: res.data,
+            icon: 'success'
+          })
+        }
+      })
+
     })
   }
 
@@ -218,7 +319,9 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   };
 
   eliminarIngreso(id: number, tipo: string) :void {
-    this.authService.usuarioLogueado.subscribe(usuario => {
+    this.authService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(usuario => {
       this.ingresoService.eliminarIngreso(id, tipo, usuario!.id)
       .pipe(takeUntil(this.onDestroy))
       .subscribe(res => {
@@ -229,7 +332,9 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
   }
 
   eliminarEgreso(id: number, tipo: string) :void {
-    this.authService.usuarioLogueado.subscribe(usuario => {
+    this.authService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(usuario => {
       this.egresoService.eliminarEgreso(id, tipo, usuario!.id)
       .pipe(takeUntil(this.onDestroy))
       .subscribe(res => {

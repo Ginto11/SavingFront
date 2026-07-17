@@ -6,6 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ModalesService } from '../../services/modales.service';
 import { TablaComponent } from '../../components/tabla/tabla.component';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-movimientos-ahorros',
@@ -15,11 +16,12 @@ import { TablaComponent } from '../../components/tabla/tabla.component';
 })
 export default class MovimientosAhorrosComponent implements OnInit, OnDestroy {
 
-  ahorroService = inject(AhorroService);
   private authService = inject(AuthService);
+  private ahorroService = inject(AhorroService);
+  private usuarioService = inject(UsuarioService);
   private modalesService = inject(ModalesService);
   private onDestroy: Subject<boolean> = new Subject<boolean>();
-  resultadoPaginaAhorros$ = this.ahorroService.resultadoPaginaAhorros;
+  resultadoPaginaAhorros$ = this.usuarioService.resultadoPaginaAhorros;
 
   paginaActual = 1;
   listaCampos = ['Código', 'Monto', 'Fecha', 'Descripción', 'Nombre Meta', 'Tipo Ahorro', 'Estado Meta', 'Acción']
@@ -29,7 +31,7 @@ export default class MovimientosAhorrosComponent implements OnInit, OnDestroy {
     this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe(usuario => {
-      this.ahorroService.obtenerPaginaAhorros(usuario!.id, this.paginaActual, 10);
+      this.usuarioService.obtenerAhorrosPorUsuario(usuario!.id, this.paginaActual, 10, '');
     })
   } 
 
@@ -38,7 +40,7 @@ export default class MovimientosAhorrosComponent implements OnInit, OnDestroy {
     this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe(usuario => {
-      this.ahorroService.obtenerPaginaAhorros(usuario!.id, paginaActual, 10);
+      this.usuarioService.obtenerAhorrosPorUsuario(usuario!.id, paginaActual, 10, '');
     })
   }
 
@@ -46,7 +48,7 @@ export default class MovimientosAhorrosComponent implements OnInit, OnDestroy {
     this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe(usuario => {
-      this.ahorroService.obtenerPaginaAhorrosPorDescripcion(usuario!.id, this.paginaActual, 10, descripcion);
+      this.usuarioService.obtenerAhorrosPorUsuario(usuario!.id, this.paginaActual, 10, descripcion);
     })
   }
 
@@ -64,10 +66,13 @@ export default class MovimientosAhorrosComponent implements OnInit, OnDestroy {
     }
 
   eliminarAhorro = (id: number):void => {
-    console.log(id);
-    this.authService.usuarioLogueado.subscribe(usuario => {
-      this.ahorroService.eliminarAhorro(id).subscribe(res => {
-        this.ahorroService.obtenerPaginaAhorros(usuario!.id, this.paginaActual, 10);
+    this.authService.usuarioLogueado
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(usuario => {
+      this.ahorroService.eliminarAhorro(id)
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(res => {
+        this.usuarioService.obtenerAhorrosPorUsuario(usuario!.id, this.paginaActual, 10, '');
         this.modalesService.modalExitoso('Registro eliminado exitosamente.');
       })
     })

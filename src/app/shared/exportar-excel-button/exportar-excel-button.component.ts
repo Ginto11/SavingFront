@@ -1,7 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { ReportesService } from '../../services/reportes.service';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-exportar-excel-button',
@@ -12,7 +12,7 @@ import { ReportesService } from '../../services/reportes.service';
 export class ExportarExcelButtonComponent {
 
   private authService = inject(AuthService);
-  private reportesService = inject(ReportesService);
+  private usuarioService = inject(UsuarioService);
   private onDestroy: Subject<boolean> = new Subject();
 
   exportando: boolean = false;
@@ -22,7 +22,7 @@ export class ExportarExcelButtonComponent {
       .pipe(takeUntil(this.onDestroy))
       .subscribe(usuario => {
         this.exportando = true;
-        this.reportesService.exportarExcel(usuario!.id)
+        this.usuarioService.exportarExcel(usuario!.id)
         .pipe(takeUntil(this.onDestroy))
         .subscribe({
           next: res => {
