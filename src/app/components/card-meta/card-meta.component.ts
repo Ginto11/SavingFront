@@ -6,7 +6,6 @@ import { MetaAhorroService } from '../../services/meta-ahorro.service';
 import { FormsModule } from '@angular/forms';
 import { ActualizarMetaDto } from '../../interfaces/actualizar-meta-dto.interface';
 import Swal from 'sweetalert2';
-import 'sweetalert2/themes/bootstrap-5.css';
 import { ModalesService } from '../../services/modales.service';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -44,23 +43,16 @@ export class CardMetaComponent {
   }
 
   cancelarMeta(id: number): void {
-    this.authService
-      .validarToken()
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe({
-        next: () => {
-          this.metaAhorroService.cancelarMetaPorId(id).subscribe({
-            next: (res) => {
-              Swal.fire({
-                icon: 'success',
-                text: res.data,
-                confirmButtonText: 'Ok',
-              }).finally(() => window.location.reload());
-            },
-            error: (err) => this.modalesService.modalError(err)
-          })
-        }
-      });
+    this.metaAhorroService.cancelarMetaPorId(id).subscribe({
+      next: (res) => {
+        Swal.fire({
+          icon: 'success',
+          text: res.data,
+          confirmButtonText: 'Ok',
+        }).finally(() => window.location.reload());
+      },
+      error: (err) => this.modalesService.modalError(err)
+    })
   };
 
   abrirModalActualizacion(meta: Meta):void{
@@ -119,30 +111,20 @@ export class CardMetaComponent {
   }
 
   actualizarMeta = (meta: Meta):void => {
-    this.authService
-      .validarToken()
-      .pipe(takeUntil(this.onDestroy))  
-      .subscribe(res => {
-
-      this.metaAhorroService.actualizarMeta(meta.id, this.metaPorActualizar).subscribe({
-        next: (res) => {
-          Swal.fire({
-            icon: 'success',
-            text: res.data,
-            confirmButtonText: 'Ok'
-          }).then(result => {
-            if(result.isConfirmed){
-              window.location.reload();
-            }
-          })
-        },
-        error: (err) => this.modalesService.modalError(err)
-      })
+    this.metaAhorroService.actualizarMeta(meta.id, this.metaPorActualizar).subscribe({
+      next: (res) => {
+        Swal.fire({
+          icon: 'success',
+          text: res.data,
+          confirmButtonText: 'Ok'
+        }).then(result => {
+          if(result.isConfirmed){
+            window.location.reload();
+          }
+        })
+      },
+      error: (err) => this.modalesService.modalError(err)
     })
   }
 
-  /*
-
-
-  }*/
 }

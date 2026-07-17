@@ -5,6 +5,7 @@ import { MetaAhorroService } from '../../services/meta-ahorro.service';
 import { Meta } from '../../interfaces/meta.interface';
 import { Subject, takeUntil } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-metas',
@@ -15,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 export default class MetasComponent implements OnInit, OnDestroy {
 
   private auhService = inject(AuthService);
+  private usuarioService = inject(UsuarioService);
   private onDestroy: Subject<boolean> = new Subject();
   private metaAhorroService = inject(MetaAhorroService);
 
@@ -25,11 +27,10 @@ export default class MetasComponent implements OnInit, OnDestroy {
     this.auhService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe((usuario) => {
-      this.metaAhorroService.refrescarInformacion(usuario!.id);
-      this.metaAhorroService.todasLasMetasObservable
+      this.usuarioService.buscarMetaPorNombreYEstado(usuario!.id, '', '')
       .pipe(takeUntil(this.onDestroy))
       .subscribe(res => {
-        this.metas = res;
+        this.metas = res.data;
       })
     })
   }
@@ -38,7 +39,7 @@ export default class MetasComponent implements OnInit, OnDestroy {
     this.auhService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe(usuario => {
-      this.metaAhorroService.obtenerMetasBuscadasPorNombre(usuario!.id, (this.metasBuscadas)? this.metasBuscadas : '')
+      this.usuarioService.buscarMetaPorNombreYEstado(usuario!.id, (this.metasBuscadas)? this.metasBuscadas : '', '')
       .pipe(takeUntil(this.onDestroy))
       .subscribe({
         next: (res) => this.metas = res.data
@@ -50,11 +51,10 @@ export default class MetasComponent implements OnInit, OnDestroy {
     this.auhService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe(usuario => {
-      this.metaAhorroService.obtenerMetasPorEstadoPorUsuarioId(usuario!.id, estado);
-        this.metaAhorroService.metasCumplidasObservable
+      this.usuarioService.buscarMetaPorNombreYEstado(usuario!.id, '', estado)
         .pipe(takeUntil(this.onDestroy))
-        .subscribe({
-          next: (res) => this.metas = res
+        .subscribe(res => {
+          this.metas = res.data;
         })
     })
   }

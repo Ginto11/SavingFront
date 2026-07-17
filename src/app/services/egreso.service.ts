@@ -7,6 +7,7 @@ import { TiposEgresosTotales } from '../interfaces/tipos-egresos-totales-dto.int
 import { CrearEgresoDto } from '../interfaces/crear-egreso-dto.interface';
 import { environment } from '../../environments/environment';
 import { ServerResponse } from '../interfaces/server-response.interface';
+import { UsuarioService } from './usuario.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +15,9 @@ import { ServerResponse } from '../interfaces/server-response.interface';
 export class EgresoService {
 
   private http = inject(HttpClient);
+  private usuarioService = inject(UsuarioService);
   private localstorage = inject(LocalstorageService);
-  private totales = new BehaviorSubject<TiposEgresosTotales>({ totalApp: 0, totalEfectivo: 0, totalNequi: 0, totalBanco: 0 });
-  private listaEgresos = new BehaviorSubject<EgresoDto[] | null>(null);
 
-  totalesObservable = this.totales.asObservable();
-  listaEgresosObservable = this.listaEgresos.asObservable();
 
 
   constructor() { }
@@ -46,8 +44,9 @@ export class EgresoService {
 
     const usuario = this.localstorage.getItem('usuario-saving');
 
-    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/egresos/totales/usuario/${usuario.id}`).subscribe(res => this.totales.next(res.data));
-    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/egresos/usuario/${usuario.id}`).subscribe(res => this.listaEgresos.next(res.data));
+    this.usuarioService.listarEgresos(usuario.id);
+    this.usuarioService.obtenerTotalesEgresos(usuario.id);
+
   }
 
 

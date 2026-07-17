@@ -18,6 +18,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ModalesService } from '../../services/modales.service';
 import { CategoriaGastoService } from '../../services/categoria-gasto.service';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,17 +30,18 @@ export default class DashboardComponent implements OnInit, OnDestroy {
 
   private authService = inject(AuthService);
   private ahorroService = inject(AhorroService);
+  private usuarioService = inject(UsuarioService);
   private modalesService = inject(ModalesService);
   private onDestroy: Subject<boolean> = new Subject();
   private metaAhorroService = inject(MetaAhorroService);
   private categoriaGastoService = inject(CategoriaGastoService);
 
-  ultimosMovimientos$: Observable<UltimoMovimiento[] | null> = this.ahorroService.movimientosObservable;
-  metasConCumplimiento$: Observable<CumplimientoMetaAhorro[]> = this.metaAhorroService.metaCumplimientoObservable;
-  cantidadMetasActivas$: Observable<number> = this.metaAhorroService.cantidadMetasObservable;
+  metas$ = this.usuarioService.metasObservable;
   usuarioLogueado$ = this.authService.usuarioLogueado;
-  metas$ = this.metaAhorroService.metasActivasObservable;
-  cantidadesTotales$: Observable<CantidadesTotales> = this.ahorroService.cantidadesTotalesObservable;
+  cantidadMetasActivas$: Observable<number> = this.usuarioService.cantidadMetasActivasObservable;
+  cantidadesTotales$: Observable<CantidadesTotales> = this.usuarioService.cantidadesTotalesObservable;
+  ultimosMovimientos$: Observable<UltimoMovimiento[] | null> = this.usuarioService.movimientosObservable;
+  metasConCumplimiento$: Observable<CumplimientoMetaAhorro[]> = this.usuarioService.metaCumplimientoObservable;
 
 
   ultimosMovimientos: UltimoMovimiento[] | null = [];
@@ -48,6 +50,7 @@ export default class DashboardComponent implements OnInit, OnDestroy {
     this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy))
     .subscribe(usuario => {
+      this.usuarioService.refrescarInformacion(usuario!.id);
       this.metaAhorroService.refrescarInformacion(usuario!.id);
       this.ahorroService.refrescarInformacion(usuario!.id);
     })
@@ -116,8 +119,8 @@ export default class DashboardComponent implements OnInit, OnDestroy {
     this.authService.usuarioLogueado
     .pipe(takeUntil(this.onDestroy)) 
     .subscribe((usuario) => {
-      this.metaAhorroService
-        .obtenerCantidadMetasActivasPorUsuarioId(usuario!.id)
+      this.usuarioService
+        .obtenerMetasActivasConProgresoPorUsuarioId(usuario!.id)
         .pipe(takeUntil(this.onDestroy)) 
         .subscribe((res) => {
           res.data.forEach((meta: any) => {
@@ -214,14 +217,12 @@ export default class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy))
       .subscribe({
         next: (res) => {
-          this.metaAhorroService.refrescarInformacion(usuario!.id);
+          this.usuarioService.refrescarInformacion(usuario!.id);
           this.modalesService.modalExitoso(res.mensaje);
         }
       });
     });
   };
-
-  
 
   guardarAhorro = (ahorro: CrearNuevoAhorroDto): void => {
     this.authService.usuarioLogueado
@@ -235,6 +236,7 @@ export default class DashboardComponent implements OnInit, OnDestroy {
         next: (res) => {
           this.ahorroService.refrescarInformacion(usuario!.id);
           this.metaAhorroService.refrescarInformacion(usuario!.id);
+          this.usuarioService.refrescarInformacion(usuario!.id);
           this.modalesService.modalExitoso(res.mensaje);
         },
       });
@@ -262,7 +264,7 @@ export default class DashboardComponent implements OnInit, OnDestroy {
       this.ahorroService.eliminarAhorro(id)
       .pipe(takeUntil(this.onDestroy))
       .subscribe(res => {
-        this.ahorroService.refrescarInformacion(usuario!.id);
+        this.usuarioService.refrescarInformacion(usuario!.id);
         this.metaAhorroService.refrescarInformacion(usuario!.id);
         this.modalesService.modalExitoso(
           'Registro eliminado exitosamente.',

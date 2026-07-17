@@ -7,7 +7,8 @@ import { CrearNuevoAhorroDto } from '../interfaces/crear-nuevo-ahorro-dto.interf
 import { LocalstorageService } from './localstorage.service';
 import { UltimoMovimiento } from '../interfaces/ultimo-movimiento.interface';
 import { CantidadesTotales } from '../interfaces/cantidades-totales.interface';
-import { AhorroDto, ResultadoPaginado } from '../interfaces/resultado-paginado.interface';
+import { AhorroDto } from '../interfaces/resultado-paginado.interface';
+import { UsuarioService } from './usuario.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,17 +16,13 @@ import { AhorroDto, ResultadoPaginado } from '../interfaces/resultado-paginado.i
 export class AhorroService {
 
   private http = inject(HttpClient);
+  private usuarioService = inject(UsuarioService);
   private localstorageService = inject(LocalstorageService);
-  private movimientos = new BehaviorSubject<UltimoMovimiento[] | null>(null);
-  private cantidadesTotales = new BehaviorSubject<CantidadesTotales>({ ahorroMes: 0, totalAhorrado: 0 });
+  
   private listaAhorros = new BehaviorSubject<AhorroDto[] | null>(null);
-  private resultadoPaginaAhorro = new BehaviorSubject<ResultadoPaginado<AhorroDto> | null>(null);
 
-  movimientosObservable = this.movimientos.asObservable();
   listaAhorrosObservable = this.listaAhorros.asObservable();
-  resultadoPaginaAhorros = this.resultadoPaginaAhorro.asObservable();
-  cantidadesTotalesObservable = this.cantidadesTotales.asObservable();
-
+  
   constructor() { }
 
   agregarO = (ahorro: CrearNuevoAhorroDto):Observable<any> => {
@@ -36,7 +33,6 @@ export class AhorroService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${usuario.token}`
     })
-
       return this.http.post(`${environment.URL_SERVER_VERSION_1}/ahorros`, ahorro, { headers })
   }
 
@@ -44,36 +40,8 @@ export class AhorroService {
     return this.http.delete(`${environment.URL_SERVER_VERSION_1}/ahorros/${id}`)
   }
 
-  obtenerTotalesPorUsuarioIdO(id: number):Observable<ServerResponse> {
-    return this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ahorros/usuario/cantidades/${id}`)
-  }
-
-  obtenerPaginaAhorros(id: number, paginaActual: number, tamanoPagina: number) {
-    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ahorros/usuario/${id}`, {
-      params: {
-        paginaActual,
-        tamanoPagina
-      }
-    }).subscribe(res => this.resultadoPaginaAhorro.next(res.data))
-  }
-
-  obtenerPaginaAhorrosPorDescripcion(id: number, paginaActual: number, tamanoPagina: number, descripcion: string):void{
-    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ahorros/descripcion/${id}`, {
-      params: {
-        paginaActual,
-        tamanoPagina,
-        descripcion
-      }
-    }).subscribe(res => {this.resultadoPaginaAhorro.next(res.data);  console.log(res) })
-  }
-
-
-  obtenerUltimosMovimientosPorUsuarioIdO(id: number): Observable<ServerResponse> {
-      return this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ahorros/usuario/ultimos-movimientos/${id}`)
-  }
-
   refrescarInformacion(id: number){
-    this.obtenerTotalesPorUsuarioIdO(id).subscribe(res => this.cantidadesTotales.next(res.data));
-    this.obtenerUltimosMovimientosPorUsuarioIdO(id).subscribe(res => {this.movimientos.next(res.data)});
+    this.usuarioService.obtenerTotalesPorUsuario(id);
+    this.usuarioService.obtenerUltimosMovimientos(id);
   }
 }

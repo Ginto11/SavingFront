@@ -7,18 +7,16 @@ import { environment } from '../../environments/environment';
 import { TiposIngresosTotales } from '../interfaces/tipos-ingresos-totales-dto.interface';
 import { ServerResponse } from '../interfaces/server-response.interface';
 import { CrearIngresoDto } from '../interfaces/crear-ingreso-dto.interface';
+import { UsuarioService } from './usuario.service';
 @Injectable({
   providedIn: 'root'
 })
 export class IngresoService {
 
   private http = inject(HttpClient);
+  private usuarioService = inject(UsuarioService);
   private localstorage = inject(LocalstorageService);
-  private totales = new BehaviorSubject<TiposIngresosTotales>({ totalApp: 0, totalEfectivo: 0, totalNequi: 0, totalBanco: 0 });
-  private listaIngresos = new BehaviorSubject<IngresoDto[] | null>(null);
 
-  totalesObservable = this.totales.asObservable();
-  listaIngresosObservable = this.listaIngresos.asObservable();
 
 
   constructor() { }
@@ -43,7 +41,7 @@ export class IngresoService {
 
   actualizarInformacion = () => {
     const usuario = this.localstorage.getItem('usuario-saving');
-    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ingresos/totales/usuario/${usuario.id}`).subscribe(res => this.totales.next(res.data));
-    this.http.get<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/ingresos/usuario/${usuario.id}`).subscribe(res => this.listaIngresos.next(res.data));
+    this.usuarioService.obtenerTotalesIngresos(usuario.id);
+    this.usuarioService.listarIngresos(usuario.id);
   }
 }
