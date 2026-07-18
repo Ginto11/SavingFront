@@ -3,4 +3,5 @@ export interface TiposEgresosTotales {
     totalNequi: number;
     totalApp: number;
     totalBanco: number; 
+    totalNube: number;
 }

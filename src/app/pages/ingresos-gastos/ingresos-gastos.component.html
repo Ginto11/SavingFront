@@ -6,12 +6,13 @@
     <p class="text-sm text-gray-500 dark:text-gray-300 text-justify">
       En esta sección podras gestionar ingresos y gastos, las opciones que hay son: <strong>Efectivo</strong>, 
       <strong>Billetera Digital (Nequi, Daviplata, etc)</strong>, <strong>App (Para personas que trabajan en 
-        aplicaciones)</strong> y <strong>Banco (Para llevar un control en entidades financieras) </strong>. Esto 
-        con el fin de llevar un control 360 de nuestros ingresos y gastos.
+      aplicaciones)</strong>, <strong>Banco (Para llevar un control en entidades financieras)</strong> y  
+      <strong>Nube (Para trasnferencias qué se demoran en llegar a la cuenta de destino)</strong>. Esto 
+      con el fin de llevar un control 360 de nuestros ingresos y gastos.
     </p>
   </div>
 
-  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"
+  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
     *ngIf="totalesIngresos$ | async as totalesIngresos">
     <div
       class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center"
@@ -55,11 +56,22 @@
     </div>
 
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center col-span-1 sm:col-span-2 md:col-span-2 lg:col-span-1"
+      class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center"
+      title="En este valor no se suman las metas cumplidas."
+    >
+      <div>
+        <h2 class="text-sm text-gray-400">Nube</h2>
+        <p class="text-3xl lg:text-2xl font-bold mt-2"> $ {{ (totalesIngresos.totalNube) ? (totalesIngresos.totalNube | currency: ' ':'symbol':'1.0-0') : '0' }} </p>
+      </div>
+      <i class="pi pi-cloud bg-blue-200 text-blue-900 dark:bg-green-200 p-4 lg:p-3 rounded-3xl dark:text-green-900"></i>
+    </div>
+
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md flex justify-between items-center"
     >
       <div>
         <h2 class="text-sm text-gray-400">Total</h2>
-        <p class="text-3xl lg:text-2xl font-bold mt-2">$ {{ (totalesIngresos.totalEfectivo + totalesIngresos.totalNequi + totalesIngresos.totalApp + totalesIngresos.totalBanco) | currency: ' ':'symbol':'1.0-0' }} </p>
+        <p class="text-3xl lg:text-2xl font-bold mt-2">$ {{ (totalesIngresos.totalEfectivo + totalesIngresos.totalNequi + totalesIngresos.totalApp + totalesIngresos.totalBanco + totalesIngresos.totalNube) | currency: ' ':'symbol':'1.0-0' }} </p>
       </div>
       <i class="pi pi-wallet bg-blue-200 text-blue-900 dark:bg-green-200 p-4 lg:p-3 rounded-3xl dark:text-green-900"></i>
     </div>
