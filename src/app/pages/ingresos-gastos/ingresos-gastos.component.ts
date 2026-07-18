@@ -64,6 +64,7 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
               <option value="Nequi">Nequi</option>
               <option value="App">App</option>
               <option value="Banco">Banco</option>
+              <option value="Nube">Nube</option>
             </select>
           </div>
 
@@ -74,6 +75,7 @@ export default class TrabajoAplicacionesComponent implements OnInit, OnDestroy {
               <option value="Efectivo">Efectivo</option>
               <option value="Nequi">Nequi</option>
               <option value="Banco">Banco</option>
+              <option value="Nube">Nube</option>
             </select>
           </div>
 

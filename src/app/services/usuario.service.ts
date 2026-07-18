@@ -32,8 +32,8 @@ export class UsuarioService {
   private metaCumplimiento = new BehaviorSubject<CumplimientoMetaAhorro[]>([]);
   private resultadoPaginaAhorro = new BehaviorSubject<ResultadoPaginado<AhorroDto> | null>(null);
   private cantidadesTotales = new BehaviorSubject<CantidadesTotales>({ ahorroMes: 0, totalAhorrado: 0 });
-  private totalesEgresos = new BehaviorSubject<TiposEgresosTotales>({ totalApp: 0, totalEfectivo: 0, totalNequi: 0, totalBanco: 0 });
-  private totalesIngresos = new BehaviorSubject<TiposIngresosTotales>({ totalApp: 0, totalEfectivo: 0, totalNequi: 0, totalBanco: 0 });
+  private totalesEgresos = new BehaviorSubject<TiposEgresosTotales>({ totalApp: 0, totalEfectivo: 0, totalNequi: 0, totalBanco: 0, totalNube: 0 });
+  private totalesIngresos = new BehaviorSubject<TiposIngresosTotales>({ totalApp: 0, totalEfectivo: 0, totalNequi: 0, totalBanco: 0, totalNube: 0 });
   
   
 
