@@ -16,6 +16,7 @@ import { CumplimientoMetaAhorro } from '../interfaces/cumplimiento-meta-ahorro.i
 import { Meta } from '../interfaces/meta.interface';
 import { DataGrafica } from '../interfaces/data-grafica.interface';
 import { TransferenciaDto } from '../interfaces/transferencia-dto.interface';
+import { ServerResponsePdf } from '../interfaces/server-response-pdf';
 
 @Injectable({
   providedIn: 'root'
@@ -150,6 +151,12 @@ export class UsuarioService {
   //#region METODO TRANSFERENCIA
   transferirDinero(transferencia: TransferenciaDto): Observable<ServerResponse>{
     return this.http.post<ServerResponse>(`${environment.URL_SERVER_VERSION_1}/usuarios/transferencia`, transferencia) 
+  }
+  //#endregion
+
+  //#region METODO REPORTE PDF
+  obtenerDataPdf(metaAhorroId: number): Observable<ServerResponsePdf> {
+    return this.http.get<ServerResponsePdf>(`${environment.URL_SERVER_VERSION_1}/usuarios/metas/${metaAhorroId}/pdf`)
   }
   //#endregion
 

@@ -9,8 +9,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(catchError((err: any) => {
 
-    console.log(req)
-
     if(err.error == null && err.status == 401){
       const errors = { 'Error:': ['Token expirado o inexistente, inicie sesión nuevamente'] }
       const error = { errors }
