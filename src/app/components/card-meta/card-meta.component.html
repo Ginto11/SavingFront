@@ -4,6 +4,16 @@
             <img class="w-5" src="/images/estrella.png" alt="Icono de meta">
         </div>
         <div class="flex gap-4">
+
+            <button
+            [disabled]="meta.estado != 'Activa' && meta.estado != 'Cumplida'"
+            (click)="abrirPdf(meta.id)">
+                <i class="pi pi-file-pdf" [title]="'Abrir pdf de movimientos.'"
+                [ngClass]="{
+                    'cursor-not-allowed text-gray-400': meta.estado == 'Cancelada' || meta.montoActual == 0,
+                    'cursor-pointer text-blue-400': meta.estado != 'Cancelada'
+                }"></i></button>
+
             <button 
                 [disabled]="meta.estado != 'Activa'"
                 (click)="abrirModalCancelarMeta(meta.id);">

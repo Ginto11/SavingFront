@@ -1,4 +1,4 @@
-import { Component, inject, Input, ViewChild } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { Meta } from '../../interfaces/meta.interface';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -8,6 +8,8 @@ import { ActualizarMetaDto } from '../../interfaces/actualizar-meta-dto.interfac
 import Swal from 'sweetalert2';
 import { ModalesService } from '../../services/modales.service';
 import { Subject, takeUntil } from 'rxjs';
+import generarPdfMetaAhorro from '../../libs/generar-pdf-meta-ahorro';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-card-meta',
@@ -16,10 +18,12 @@ import { Subject, takeUntil } from 'rxjs';
   styles: ``,
 })
 export class CardMetaComponent {
+
   private authService = inject(AuthService);
+  private usuarioService = inject(UsuarioService);
   private modalesService = inject(ModalesService);
-  private metaAhorroService = inject(MetaAhorroService);
   private onDestroy: Subject<Boolean> = new Subject();
+  private metaAhorroService = inject(MetaAhorroService);
 
   @Input() meta!: Meta;
 
@@ -43,7 +47,9 @@ export class CardMetaComponent {
   }
 
   cancelarMeta(id: number): void {
-    this.metaAhorroService.cancelarMetaPorId(id).subscribe({
+    this.metaAhorroService.cancelarMetaPorId(id)
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe({
       next: (res) => {
         Swal.fire({
           icon: 'success',
@@ -111,7 +117,9 @@ export class CardMetaComponent {
   }
 
   actualizarMeta = (meta: Meta):void => {
-    this.metaAhorroService.actualizarMeta(meta.id, this.metaPorActualizar).subscribe({
+    this.metaAhorroService.actualizarMeta(meta.id, this.metaPorActualizar)
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe({
       next: (res) => {
         Swal.fire({
           icon: 'success',
@@ -122,6 +130,18 @@ export class CardMetaComponent {
             window.location.reload();
           }
         })
+      },
+      error: (err) => this.modalesService.modalError(err)
+    })
+  }
+
+  abrirPdf = (metaAhorroId: number):void => {
+    this.usuarioService.obtenerDataPdf(metaAhorroId)
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe({
+      next: (res) => {
+        console.log(res);
+        generarPdfMetaAhorro(res.data);
       },
       error: (err) => this.modalesService.modalError(err)
     })
